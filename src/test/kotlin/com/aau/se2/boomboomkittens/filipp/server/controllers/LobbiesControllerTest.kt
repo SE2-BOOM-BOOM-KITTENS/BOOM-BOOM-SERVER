@@ -1,7 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.controllers
 
 import com.aau.se2.boomboomkittens.filipp.server.models.Lobby
-import com.aau.se2.boomboomkittens.filipp.server.models.Player
 import com.aau.se2.boomboomkittens.filipp.server.services.LobbyService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
