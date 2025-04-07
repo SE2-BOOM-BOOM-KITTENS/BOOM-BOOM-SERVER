@@ -27,6 +27,7 @@ class PlayerRestControllerTest {
     @Autowired
     lateinit var objectMapper: ObjectMapper
 
+
     @MockBean
     lateinit var playerService: PlayerService
 

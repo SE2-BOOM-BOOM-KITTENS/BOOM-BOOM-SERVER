@@ -1,6 +1,5 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
-
 import com.aau.se2.boomboomkittens.filipp.server.models.Player
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -9,9 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import java.util.UUID
 
 
+
 @SpringBootTest
 class LobbyServiceTest {
-
 
     @Autowired
     lateinit var lobbyService: LobbyService

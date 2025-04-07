@@ -30,6 +30,7 @@ class LobbyWebSocketController(
     @MessageMapping("/ready")
     @SendTo("/topic/lobby/status/{lobbyId}")
     fun handlePlayerReady(message: ReadyMessage): LobbyStatusUpdate {
+
         println("Player ${message.playerId} is ready in lobby ${message.lobbyId}")
 
         return LobbyStatusUpdate(
