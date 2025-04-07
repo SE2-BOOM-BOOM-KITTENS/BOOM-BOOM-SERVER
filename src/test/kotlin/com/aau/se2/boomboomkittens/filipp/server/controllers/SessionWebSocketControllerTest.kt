@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class SessionControllerTest {
+class SessionWebSocketControllerTest {
 
     @LocalServerPort
     private val port = 0

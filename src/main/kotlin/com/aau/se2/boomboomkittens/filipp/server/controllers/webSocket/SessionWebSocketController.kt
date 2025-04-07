@@ -1,11 +1,11 @@
-package com.aau.se2.boomboomkittens.filipp.server.controllers
+package com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket
 
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.stereotype.Controller
 
 @Controller
-class SessionController {
+class SessionWebSocketController {
 
     @MessageMapping("/session")
     @SendTo("/topic/session")
