@@ -8,7 +8,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
-class WebSocketConfig : WebSocketMessageBrokerConfigurer {
+open class WebSocketConfig : WebSocketMessageBrokerConfigurer {
+
+
 
     @Override
     override fun configureMessageBroker(config: MessageBrokerRegistry) {

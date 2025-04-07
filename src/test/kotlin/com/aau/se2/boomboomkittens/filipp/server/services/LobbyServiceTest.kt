@@ -1,14 +1,13 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
 import com.aau.se2.boomboomkittens.filipp.server.models.Player
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import java.util.UUID
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+
+
 
 @SpringBootTest
 class LobbyServiceTest {
@@ -48,7 +47,9 @@ class LobbyServiceTest {
         val fetchedLobby = lobbyService.getLobby(lobby.id.toString())
 
         assertNotNull(fetchedLobby)
-        assertEquals(lobby.id, fetchedLobby.id)
+        if (fetchedLobby != null) {
+            assertEquals(lobby.id, fetchedLobby.id)
+        }
     }
 
     @Test

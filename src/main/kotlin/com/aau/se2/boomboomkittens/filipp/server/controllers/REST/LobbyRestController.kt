@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap
 class LobbyRestController(private val lobbyService: LobbyService) {
 
     @GetMapping
-    fun getLobbies(): ConcurrentHashMap<String,Lobby> = lobbyService.getLobbies()
+    fun getLobbies(): ConcurrentHashMap<String, Lobby> = lobbyService.getLobbies()
 
     @GetMapping("/players")
     fun getPlayersInLobby(@RequestHeader lobbyId:String): List<Player>{
@@ -29,7 +29,7 @@ class LobbyRestController(private val lobbyService: LobbyService) {
     }
 
     @PostMapping
-    fun createLobby(@RequestBody creator:Player, maxPlayers:Int): String{
+    fun createLobby(@RequestBody creator: Player, maxPlayers:Int): String{
         val lobby = lobbyService.createLobby(creator,maxPlayers)
         return "Created lobby ${lobby.id}"
     }

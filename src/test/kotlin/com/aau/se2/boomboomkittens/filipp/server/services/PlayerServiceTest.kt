@@ -1,13 +1,11 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
+
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 @SpringBootTest
 class PlayerServiceTest {
@@ -48,7 +46,9 @@ class PlayerServiceTest {
         val fetchedPlayer = playerService.getPlayer(player.id.toString())
 
         assertNotNull(fetchedPlayer)
-        assertEquals(player.id, fetchedPlayer.id)
+        if (fetchedPlayer != null) {
+            assertEquals(player.id, fetchedPlayer.id)
+        }
     }
 
     @Test

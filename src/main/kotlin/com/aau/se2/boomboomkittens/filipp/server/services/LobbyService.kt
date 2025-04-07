@@ -9,14 +9,13 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class LobbyService(
-    @Lazy private val lobbyWebSocketController: LobbyWebSocketController
 ) {
-    private val lobbies = ConcurrentHashMap<String,Lobby>()
+    private val lobbies = ConcurrentHashMap<String, Lobby>()
 
-    fun createLobby(creator:Player, maxPlayers:Int): Lobby{
+    fun createLobby(creator: Player, maxPlayers:Int): Lobby {
         val lobby = Lobby(creator=creator,players = mutableListOf(), maxPlayers = maxPlayers)
         lobbies[lobby.id.toString()] = lobby
-        lobbyWebSocketController.broadcastLobbyUpdate()
+        //lobbyWebSocketController.broadcastLobbyUpdate()
         return lobby
     }
 
@@ -30,7 +29,7 @@ class LobbyService(
 
     private fun deleteLobby(id:String){
         this.lobbies.remove(id)
-        lobbyWebSocketController.broadcastLobbyUpdate()
+        //lobbyWebSocketController.broadcastLobbyUpdate()
     }
 
     fun joinPlayer(lobbyId: String,player: Player){
