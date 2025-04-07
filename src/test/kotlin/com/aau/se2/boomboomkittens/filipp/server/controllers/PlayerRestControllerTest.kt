@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.controllers
 
+import com.aau.se2.boomboomkittens.filipp.server.controllers.REST.PlayerRestController
 import com.aau.se2.boomboomkittens.filipp.server.models.Player
 import com.aau.se2.boomboomkittens.filipp.server.models.Lobby
 import com.aau.se2.boomboomkittens.filipp.server.services.LobbyService
@@ -14,11 +15,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import java.util.UUID
 
 
 @ExtendWith(SpringExtension::class)
-@WebMvcTest(PlayerController::class)
-class PlayerControllerTest {
+@WebMvcTest(PlayerRestController::class)
+class PlayerRestControllerTest {
 
     @Autowired
     lateinit var mockMvc : MockMvc
@@ -28,8 +30,9 @@ class PlayerControllerTest {
 
     @Test
     fun getPlayersTest(){
+        val dummyCreator = Player(UUID.randomUUID(), "DummyPlayer")
         val players = mutableListOf(Player(name = "player1"), Player(name = "player2"))
-        val lobby = Lobby(players = players)
+        val lobby = Lobby(creator = dummyCreator,players = players, maxPlayers = 3)
 
         given(lobbyService.getLobby(lobby.id.toString())).willReturn(lobby)
 
