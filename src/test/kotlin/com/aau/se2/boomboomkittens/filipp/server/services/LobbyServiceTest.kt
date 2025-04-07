@@ -4,6 +4,7 @@ import com.aau.se2.boomboomkittens.filipp.server.models.Player
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -15,9 +16,11 @@ class LobbyServiceTest {
     @Autowired
     lateinit var lobbyService: LobbyService
 
+
     @Test
     fun createLobbyTest(){
-        val lobby = lobbyService.createLobby()
+        val creatorDummy = Player(UUID.randomUUID(),"Dummy")
+        val lobby = lobbyService.createLobby(creatorDummy,3)
 
         assertNotNull(lobby)
         assertNotNull(lobby.id)
@@ -26,8 +29,9 @@ class LobbyServiceTest {
 
     @Test
     fun getLobbiesTest(){
-        val lobby1 = lobbyService.createLobby()
-        val lobby2 = lobbyService.createLobby()
+        val creatorDummy = Player(UUID.randomUUID(),"Dummy")
+        val lobby1 = lobbyService.createLobby(creatorDummy,3)
+        val lobby2 = lobbyService.createLobby(creatorDummy,3)
 
         val lobbies = lobbyService.getLobbies()
 
@@ -38,7 +42,8 @@ class LobbyServiceTest {
 
     @Test
     fun getLobbyTest(){
-        val lobby = lobbyService.createLobby()
+        val creatorDummy = Player(UUID.randomUUID(),"Dummy")
+        val lobby = lobbyService.createLobby(creatorDummy,3)
 
         val fetchedLobby = lobbyService.getLobby(lobby.id.toString())
 
@@ -48,7 +53,8 @@ class LobbyServiceTest {
 
     @Test
     fun joinPlayerTest(){
-        val lobby = lobbyService.createLobby()
+        val creatorDummy = Player(UUID.randomUUID(),"Dummy")
+        val lobby = lobbyService.createLobby(creatorDummy,3)
         val player = Player(name = "Player1")
 
         lobbyService.joinPlayer(lobby.id.toString(), player)
@@ -58,7 +64,8 @@ class LobbyServiceTest {
 
     @Test
     fun removePlayerTest(){
-        val lobby = lobbyService.createLobby()
+        val creatorDummy = Player(UUID.randomUUID(),"Dummy")
+        val lobby = lobbyService.createLobby(creatorDummy,3)
         val player = Player(name = "Player1")
         lobbyService.joinPlayer(lobby.id.toString(), player)
 

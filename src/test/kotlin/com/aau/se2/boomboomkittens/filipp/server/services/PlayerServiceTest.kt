@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -13,6 +14,11 @@ class PlayerServiceTest {
 
     @Autowired
     lateinit var playerService: PlayerService
+
+    @BeforeEach
+    fun resetPlayers(){
+        playerService.clearPlayers()
+    }
 
     @Test
     fun createPlayerTest(){

@@ -5,6 +5,7 @@ import com.aau.se2.boomboomkittens.filipp.server.models.Player
 import com.aau.se2.boomboomkittens.filipp.server.services.LobbyService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -28,7 +29,7 @@ class LobbyRestController(private val lobbyService: LobbyService) {
     }
 
     @PostMapping
-    fun createLobby(@RequestHeader creator:Player, maxPlayers:Int): String{
+    fun createLobby(@RequestBody creator:Player, maxPlayers:Int): String{
         val lobby = lobbyService.createLobby(creator,maxPlayers)
         return "Created lobby ${lobby.id}"
     }

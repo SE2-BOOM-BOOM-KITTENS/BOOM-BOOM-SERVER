@@ -25,4 +25,8 @@ class PlayerService {
     fun removePlayer(id:String){
         players.remove(id)
     }
+
+    fun clearPlayers(){
+        players.clear()
+    }
 }

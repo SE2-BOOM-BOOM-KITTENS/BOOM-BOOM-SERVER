@@ -1,4 +1,4 @@
-package com.aau.se2.boomboomkittens.filipp.server.controllers
+package com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket
 
 import com.aau.se2.boomboomkittens.filipp.server.controllers.clientImpl.StompFrameClient
 import org.assertj.core.api.Assertions.assertThat

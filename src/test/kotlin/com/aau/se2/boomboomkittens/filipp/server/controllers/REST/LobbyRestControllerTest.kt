@@ -1,8 +1,7 @@
-package com.aau.se2.boomboomkittens.filipp.server.controllers
+package com.aau.se2.boomboomkittens.filipp.server.controllers.REST
 
-import com.aau.se2.boomboomkittens.filipp.server.controllers.REST.PlayerRestController
-import com.aau.se2.boomboomkittens.filipp.server.models.Player
 import com.aau.se2.boomboomkittens.filipp.server.models.Lobby
+import com.aau.se2.boomboomkittens.filipp.server.models.Player
 import com.aau.se2.boomboomkittens.filipp.server.services.LobbyService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -16,11 +15,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import java.util.UUID
-
+import java.util.concurrent.ConcurrentHashMap
 
 @ExtendWith(SpringExtension::class)
-@WebMvcTest(PlayerRestController::class)
-class PlayerRestControllerTest {
+@WebMvcTest(LobbyRestController::class)
+class LobbyRestControllerTest {
 
     @Autowired
     lateinit var mockMvc : MockMvc
@@ -29,21 +28,22 @@ class PlayerRestControllerTest {
     lateinit var lobbyService: LobbyService
 
     @Test
-    fun getPlayersTest(){
-        val dummyCreator = Player(UUID.randomUUID(), "DummyPlayer")
-        val players = mutableListOf(Player(name = "player1"), Player(name = "player2"))
-        val lobby = Lobby(creator = dummyCreator,players = players, maxPlayers = 3)
+    fun getLobbiesTest(){
+        val dummyPlayer = Player(UUID.randomUUID(),"Dummy")
+        val lobby1 = Lobby(creator = dummyPlayer , players = mutableListOf(), maxPlayers = 3)
+        val lobby2 = Lobby(creator = dummyPlayer, players = mutableListOf(), maxPlayers = 3)
+        val lobbies = ConcurrentHashMap<String, Lobby>()
+        lobbies[lobby1.id.toString()] = lobby1
+        lobbies[lobby2.id.toString()] = lobby2
 
-        given(lobbyService.getLobby(lobby.id.toString())).willReturn(lobby)
+        given(lobbyService.getLobbies()).willReturn(lobbies)
 
-        mockMvc.get("/players?lobbyId=${lobby.id.toString()}")
+        mockMvc.get("/lobbies")
             .andExpect {
                 status { isOk() }
-                jsonPath("$.size()"){value(2)}
-                jsonPath("$[0].name"){value("player1")}
-                jsonPath("$[1].name"){value("player2")}
+                jsonPath("$.length()"){value(2)}
             }
 
-        Mockito.verify(lobbyService, times(1)).getLobby(lobby.id.toString())
+        Mockito.verify(lobbyService, times(1)).getLobbies()
     }
 }

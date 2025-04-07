@@ -3,12 +3,13 @@ package com.aau.se2.boomboomkittens.filipp.server.services
 import com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket.LobbyWebSocketController
 import com.aau.se2.boomboomkittens.filipp.server.models.Lobby
 import com.aau.se2.boomboomkittens.filipp.server.models.Player
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class LobbyService(
-    private val lobbyWebSocketController: LobbyWebSocketController
+    @Lazy private val lobbyWebSocketController: LobbyWebSocketController
 ) {
     private val lobbies = ConcurrentHashMap<String,Lobby>()
 
