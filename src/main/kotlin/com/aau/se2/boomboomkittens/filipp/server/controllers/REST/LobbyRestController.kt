@@ -30,10 +30,7 @@ class LobbyRestController(private val lobbyService: LobbyService) {
     @PostMapping
     fun createLobby(@RequestHeader creator:Player, maxPlayers:Int): String{
         val lobby = lobbyService.createLobby(creator,maxPlayers)
-        if(lobby != null){
-            return "Created lobby ${lobby.id}"
-        }
-        return "Failed to create lobby"
+        return "Created lobby ${lobby.id}"
     }
 
 }
