@@ -1,17 +1,21 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
+import com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket.LobbyWebSocketController
 import com.aau.se2.boomboomkittens.filipp.server.models.Lobby
 import com.aau.se2.boomboomkittens.filipp.server.models.Player
 import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
-class LobbyService {
+class LobbyService(
+    private val lobbyWebSocketController: LobbyWebSocketController
+) {
     private val lobbies = ConcurrentHashMap<String,Lobby>()
 
-    fun createLobby(): Lobby{
-        val lobby = Lobby(players = mutableListOf())
+    fun createLobby(creator:Player, maxPlayers:Int): Lobby{
+        val lobby = Lobby(creator=creator,players = mutableListOf(), maxPlayers = maxPlayers)
         lobbies[lobby.id.toString()] = lobby
+        lobbyWebSocketController.broadcastLobbyUpdate()
         return lobby
     }
 
@@ -25,6 +29,7 @@ class LobbyService {
 
     private fun deleteLobby(id:String){
         this.lobbies.remove(id)
+        lobbyWebSocketController.broadcastLobbyUpdate()
     }
 
     fun joinPlayer(lobbyId: String,player: Player){
