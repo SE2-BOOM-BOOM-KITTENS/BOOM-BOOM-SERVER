@@ -4,7 +4,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class BoomboomkittensApplication
+open class BoomboomkittensApplication
 
 fun main(args: Array<String>) {
 	runApplication<BoomboomkittensApplication>(*args)

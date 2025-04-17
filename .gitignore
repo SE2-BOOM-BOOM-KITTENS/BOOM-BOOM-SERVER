@@ -39,3 +39,7 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+local.properties
+
+/target/
