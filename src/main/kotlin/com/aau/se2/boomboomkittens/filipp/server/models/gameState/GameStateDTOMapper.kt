@@ -32,7 +32,7 @@ class GameStateDTOMapper {
         val winner = gameState.getWinner()
         var winnerDTO: PlayerDTO? = null
         if(winner != null) {
-            val winnerHand = gameState.playerCircle.getPlayerHand(winner!!.playerId)
+            val winnerHand = gameState.playerCircle.getPlayerHand(winner.playerId)
             winnerDTO = playerToDTO(gameState.getWinner(), winnerHand)
         }
 
@@ -62,7 +62,7 @@ class GameStateDTOMapper {
         val cardCount = cardPile.size
         var cards : MutableList<CardDTO>? = null
         if(!isDrawPile){
-            val list = cardPile.getPileList()
+            val list : List<Card> = cardPile.getPileList()
             cards = mutableListOf()
             for(card in list){
                 cards.add(cardToDTO(card))
