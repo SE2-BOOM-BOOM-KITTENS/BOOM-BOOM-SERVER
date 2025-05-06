@@ -1,7 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.models.gameState
 
 import com.aau.se2.boomboomkittens.filipp.server.models.cards.Card
-import com.aau.se2.boomboomkittens.filipp.server.models.dtos.PlayerDTO
 import com.aau.se2.boomboomkittens.filipp.server.models.player.Player
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
