@@ -1,5 +1,5 @@
-package com.aau.se2.boomboomkittens.filipp.server.controllers.REST
-import com.aau.se2.boomboomkittens.filipp.server.models.Player
+package com.aau.se2.boomboomkittens.filipp.server.controllers.rest
+import com.aau.se2.boomboomkittens.filipp.server.models.player.Player
 import com.aau.se2.boomboomkittens.filipp.server.services.PlayerService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.concurrent.ConcurrentHashMap
 
 
 @RestController

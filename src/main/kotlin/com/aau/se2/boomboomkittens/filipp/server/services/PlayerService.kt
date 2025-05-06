@@ -1,6 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
-import com.aau.se2.boomboomkittens.filipp.server.models.Player
+import com.aau.se2.boomboomkittens.filipp.server.models.player.Player
 import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
 
@@ -10,7 +10,7 @@ class PlayerService {
 
     fun createPlayer(name:String): Player {
         val player = Player(name = name)
-        players[player.id.toString()] = player
+        players[player.playerId.toString()] = player
         return player
     }
 
