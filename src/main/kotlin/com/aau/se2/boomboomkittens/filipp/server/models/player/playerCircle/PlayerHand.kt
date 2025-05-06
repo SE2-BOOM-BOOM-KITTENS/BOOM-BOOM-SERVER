@@ -1,8 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.models.player.playerCircle
 
 import com.aau.se2.boomboomkittens.filipp.server.models.cards.Card
-import java.security.SecureRandom
-import java.util.Random
 import java.util.UUID
 
 class PlayerHand(

@@ -2,14 +2,8 @@ package com.aau.se2.boomboomkittens.filipp.server.models.gameState
 
 import com.aau.se2.boomboomkittens.filipp.server.models.cards.Card
 import com.aau.se2.boomboomkittens.filipp.server.models.cards.CardPile
-import com.aau.se2.boomboomkittens.filipp.server.models.dtos.CardDTO
-import com.aau.se2.boomboomkittens.filipp.server.models.dtos.CardPileDTO
-import com.aau.se2.boomboomkittens.filipp.server.models.dtos.GameStateDTO
-import com.aau.se2.boomboomkittens.filipp.server.models.dtos.PlayerDTO
-import com.aau.se2.boomboomkittens.filipp.server.models.dtos.PlayerHandDTO
 import com.aau.se2.boomboomkittens.filipp.server.models.player.Player
 import com.aau.se2.boomboomkittens.filipp.server.models.player.playerCircle.PlayerCircle
-import com.aau.se2.boomboomkittens.filipp.server.models.player.playerCircle.PlayerHand
 import java.util.UUID
 
 class GameState constructor(
