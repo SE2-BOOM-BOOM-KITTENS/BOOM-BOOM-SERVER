@@ -22,7 +22,7 @@ class GameState constructor(
     }
 
     fun drawCard(playerId: UUID){
-        if(drawPile.isEmpty()){
+        check(!(drawPile.isEmpty())){
             throw IllegalStateException("Cannot draw from empty pile")
         }
         val card = drawPile.draw()
