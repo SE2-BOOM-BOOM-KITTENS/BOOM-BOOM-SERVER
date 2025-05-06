@@ -78,12 +78,18 @@ class PlayerCircle {
     }
 
     fun addCardToPlayer(playerId: UUID, card: Card){
-        val player = playerMap[playerId]!!.player
+        val player = playerMap[playerId]?.player
+        if(player == null){
+            throw IllegalArgumentException("Player with id $playerId not found")
+        }
         player.playerHand.addCard(card)
     }
 
     fun removeCardFromPlayer(playerId: UUID, card: Card){
-        val player = playerMap[playerId]!!.player
+        val player = playerMap[playerId]?.player
+        if(player == null){
+            throw IllegalArgumentException("Player with id $playerId not found")
+        }
         player.playerHand.removeCard(card)
     }
 
