@@ -1,6 +1,7 @@
 package com.aau.se2.boomboomkittens.filipp.server.models.player.playerCircle
 
 import com.aau.se2.boomboomkittens.filipp.server.models.cards.Card
+import java.security.SecureRandom
 import java.util.Random
 import java.util.UUID
 
@@ -17,12 +18,9 @@ class PlayerHand(
         cards.remove(card)
     }
 
-    fun getRandomCard(seed: Long? = null): Card? {
+    fun getRandomCard(): Card? {
         if (cards.isEmpty()){
             return null
-        }
-        if(seed != null){
-            return cards.shuffled(Random(seed)).first()
         }
         return cards.shuffled().first()
     }
