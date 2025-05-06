@@ -9,7 +9,7 @@ class PlayerCircle {
     private var currentPlayer: PlayerNode? = null
 
     fun addPlayer(player: Player) {
-        if(playerMap.containsKey(player.playerId)){
+        require(!(playerMap.containsKey(player.playerId))){
             throw IllegalArgumentException("Player with id ${player.playerId} already exists")
         }
         val newNode = PlayerNode(player)
@@ -79,7 +79,7 @@ class PlayerCircle {
 
     fun addCardToPlayer(playerId: UUID, card: Card){
         val player = playerMap[playerId]?.player
-        if(player == null){
+        requireNotNull(player){
             throw IllegalArgumentException("Player with id $playerId not found")
         }
         player.playerHand.addCard(card)
@@ -87,7 +87,7 @@ class PlayerCircle {
 
     fun removeCardFromPlayer(playerId: UUID, card: Card){
         val player = playerMap[playerId]?.player
-        if(player == null){
+        requireNotNull(player){
             throw IllegalArgumentException("Player with id $playerId not found")
         }
         player.playerHand.removeCard(card)
