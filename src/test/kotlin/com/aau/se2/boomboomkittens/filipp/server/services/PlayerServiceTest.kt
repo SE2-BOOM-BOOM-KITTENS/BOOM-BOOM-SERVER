@@ -23,7 +23,7 @@ class PlayerServiceTest {
         val player = playerService.createPlayer("Player1")
 
         assertNotNull(player)
-        assertNotNull(player.id)
+        assertNotNull(player.playerId)
         assertNotNull(player.name)
     }
 
@@ -35,19 +35,19 @@ class PlayerServiceTest {
         val players = playerService.getPlayers()
 
         assertEquals(2, players.size)
-        assertTrue(players.containsKey(player1.id.toString()))
-        assertTrue(players.containsKey(player2.id.toString()))
+        assertTrue(players.containsKey(player1.playerId.toString()))
+        assertTrue(players.containsKey(player2.playerId.toString()))
     }
 
     @Test
     fun getPlayerTest(){
         val player = playerService.createPlayer("player")
 
-        val fetchedPlayer = playerService.getPlayer(player.id.toString())
+        val fetchedPlayer = playerService.getPlayer(player.playerId.toString())
 
         assertNotNull(fetchedPlayer)
         if (fetchedPlayer != null) {
-            assertEquals(player.id, fetchedPlayer.id)
+            assertEquals(player.playerId, fetchedPlayer.playerId)
         }
     }
 
@@ -55,12 +55,12 @@ class PlayerServiceTest {
     fun removePlayerTest(){
         val player = playerService.createPlayer("player")
 
-        val fetchedPlayer = playerService.getPlayer(player.id.toString())
+        val fetchedPlayer = playerService.getPlayer(player.playerId.toString())
         assertNotNull(fetchedPlayer)
 
-        playerService.removePlayer(player.id.toString())
+        playerService.removePlayer(player.playerId.toString())
 
-        val deletedPlayer = playerService.getPlayer(player.id.toString())
+        val deletedPlayer = playerService.getPlayer(player.playerId.toString())
         assertNull(deletedPlayer)
     }
 }

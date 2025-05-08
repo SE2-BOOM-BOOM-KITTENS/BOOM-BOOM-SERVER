@@ -2,7 +2,7 @@ package com.aau.se2.boomboomkittens.filipp.server.services
 
 import com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket.LobbyWebSocketController
 import com.aau.se2.boomboomkittens.filipp.server.models.Lobby
-import com.aau.se2.boomboomkittens.filipp.server.models.Player
+import com.aau.se2.boomboomkittens.filipp.server.models.player.Player
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
