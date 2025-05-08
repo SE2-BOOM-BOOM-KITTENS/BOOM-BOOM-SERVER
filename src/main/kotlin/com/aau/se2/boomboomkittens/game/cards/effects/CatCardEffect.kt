@@ -1,6 +1,6 @@
-package com.aau.se2.boomboomkittens.game.logic.effects
+package com.aau.se2.boomboomkittens.game.cards.effects
 
-import com.aau.se2.boomboomkittens.game.logic.CardEffect
+import com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffect
 import com.aau.se2.boomboomkittens.game.logic.GameManager
 import com.aau.se2.boomboomkittens.game.model.Player
 

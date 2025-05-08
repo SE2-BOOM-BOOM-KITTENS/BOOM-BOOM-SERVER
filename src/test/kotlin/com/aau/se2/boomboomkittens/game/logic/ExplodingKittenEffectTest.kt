@@ -1,6 +1,6 @@
 package com.aau.se2.boomboomkittens.game.logic
 
-import com.aau.se2.boomboomkittens.game.logic.effects.ExplodingKittenEffect
+import com.aau.se2.boomboomkittens.game.cards.effects.ExplodingKittenEffect
 import com.aau.se2.boomboomkittens.game.logic.GameManager
 import com.aau.se2.boomboomkittens.game.model.Player
 import org.junit.jupiter.api.Assertions.*

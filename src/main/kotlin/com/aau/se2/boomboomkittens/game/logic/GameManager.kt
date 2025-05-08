@@ -1,7 +1,7 @@
 package com.aau.se2.boomboomkittens.game.logic
 
 import com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket.SessionWebSocketController
-import com.aau.se2.boomboomkittens.game.logic.effects.CatComboEffectHandler
+import com.aau.se2.boomboomkittens.game.cards.effects.CatComboEffectHandler
 import com.aau.se2.boomboomkittens.game.model.Card
 import com.aau.se2.boomboomkittens.game.model.CardType
 import com.aau.se2.boomboomkittens.game.model.Player

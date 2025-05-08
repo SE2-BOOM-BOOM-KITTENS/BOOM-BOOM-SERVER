@@ -1,5 +1,8 @@
-package com.aau.se2.boomboomkittens.game.logic
+package com.aau.se2.boomboomkittens.game.cards.effects.registry
 
+import com.aau.se2.boomboomkittens.game.cards.effects.CatCardEffect
+import com.aau.se2.boomboomkittens.game.cards.effects.DefuseEffect
+import com.aau.se2.boomboomkittens.game.cards.effects.ExplodingKittenEffect
 import com.aau.se2.boomboomkittens.game.model.CardType
 import com.aau.se2.boomboomkittens.game.logic.effects.*
 
@@ -14,7 +17,7 @@ object CardEffectRegistry {
         CardType.CAT_RAINBOW_RALPHING to CatCardEffect(),
     )
 
-    fun getEffect (cardType: CardType): CardEffect{
+    fun getEffect (cardType: CardType): CardEffect {
         return effects [cardType]
             ?: throw IllegalArgumentException ("No effect registered for $cardType")
     }

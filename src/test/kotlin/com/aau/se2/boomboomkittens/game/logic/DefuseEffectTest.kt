@@ -1,6 +1,6 @@
 package com.aau.se2.boomboomkittens.game.logic
 
-import com.aau.se2.boomboomkittens.game.logic.effects.DefuseEffect
+import com.aau.se2.boomboomkittens.game.cards.effects.DefuseEffect
 import com.aau.se2.boomboomkittens.game.logic.GameManager
 import com.aau.se2.boomboomkittens.game.model.Player
 import org.junit.jupiter.api.Assertions.*

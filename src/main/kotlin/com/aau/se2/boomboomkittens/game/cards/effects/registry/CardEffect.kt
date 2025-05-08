@@ -1,4 +1,4 @@
-package com.aau.se2.boomboomkittens.game.logic
+package com.aau.se2.boomboomkittens.game.cards.effects.registry
 
 import com.aau.se2.boomboomkittens.game.model.Player
 import com.aau.se2.boomboomkittens.game.logic.GameManager
