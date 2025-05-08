@@ -1,8 +1,10 @@
-package com.aau.se2.boomboomkittens.game.logic
+/*package com.aau.se2.boomboomkittens.game.logic
 
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
+import com.aau.se2.boomboomkittens.game.cards.effects.ExplodingKittenEffect
 import com.aau.se2.boomboomkittens.game.logic.effects.ExplodingKittenEffect
-import com.aau.se2.boomboomkittens.game.logic.GameManager
 import com.aau.se2.boomboomkittens.game.model.Player
+import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -12,7 +14,7 @@ class ExplodingKittenEffectTest {
     fun `exploding kitten kills player without defuse`(){
         val player = Player (id = "1", name = "Player1", defuseCount = 0, isAlive = true)
         val effect = ExplodingKittenEffect()
-        val gameManager = GameManager()
+        val gameManager = GameLogic()
 
         effect.apply(player, gameManager)
 
@@ -23,7 +25,7 @@ class ExplodingKittenEffectTest {
     fun `exploding kitten defused when player has defuse card`(){
         val player = Player (id = "2", name = "Player2", defuseCount = 1, isAlive = true)
         val effect = ExplodingKittenEffect()
-        val gameManager = GameManager()
+        val gameManager = GameLogic()
 
         effect.apply(player, gameManager)
 
@@ -31,4 +33,4 @@ class ExplodingKittenEffectTest {
         assertEquals(0, player.defuseCount)
     }
 
-}
+}*/

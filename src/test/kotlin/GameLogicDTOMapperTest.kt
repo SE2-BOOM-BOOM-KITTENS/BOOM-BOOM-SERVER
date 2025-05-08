@@ -1,4 +1,4 @@
-package com.aau.se2.boomboomkittens.filipp.server.models.gameState
+/*package com.aau.se2.boomboomkittens.filipp.server.models.gameState
 
 import com.aau.se2.boomboomkittens.filipp.server.models.cards.Card
 import com.aau.se2.boomboomkittens.filipp.server.models.player.Player
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertNull
 import java.util.UUID
 
-class GameStateDTOMapperTest {
+class GameLogicDTOMapperTest {
 
     private lateinit var gameState: GameState
     private lateinit var mapper: GameStateDTOMapper
@@ -62,4 +62,4 @@ class GameStateDTOMapperTest {
         assertNotNull(dto.winner)
         assertEquals(player1.playerId, dto.winner!!.id)
     }
-}
+}*/

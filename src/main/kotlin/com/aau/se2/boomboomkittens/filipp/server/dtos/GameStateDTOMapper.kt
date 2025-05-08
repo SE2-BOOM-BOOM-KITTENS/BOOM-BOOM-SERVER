@@ -1,43 +1,43 @@
 package com.aau.se2.boomboomkittens.filipp.server.dtos
 
 import com.aau.se2.boomboomkittens.game.cards.CardPile
-import com.aau.se2.boomboomkittens.game.GameState
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 
 class GameStateDTOMapper {
-    fun gameStateToDTO(gameState: GameState): GameStateDTO {
-        val playerList = gameState.playerCircle.getPlayerList()
+    fun gameStateToDTO(gameLogic: GameLogic): GameStateDTO {
+        val playerList = gameLogic.playerLogic.getPlayerList()
 
         val playerDTOs = mutableListOf<PlayerDTO>()
         for(player in playerList){
-            val playerHand = gameState.playerCircle.getPlayerHand(player.playerId)
+            val playerHand = gameLogic.playerLogic.getPlayerHand(player.playerId)
             playerDTOs.add(playerToDTO(player, playerHand))
         }
 
-        val currentPlayer = gameState.playerCircle.getCurrentPlayer()
-        val currentPlayerHand = gameState.playerCircle.getPlayerHand(currentPlayer!!.playerId)
+        val currentPlayer = gameLogic.playerLogic.getCurrentPlayer()
+        val currentPlayerHand = gameLogic.playerLogic.getPlayerHand(currentPlayer!!.playerId)
         val currentPlayerDTO = playerToDTO(currentPlayer,currentPlayerHand)
 
-        val nextPlayer = gameState.playerCircle.getCurrentPlayerNode()!!.next!!.player
-        val nextPlayerHand = gameState.playerCircle.getPlayerHand(nextPlayer.playerId)
+        val nextPlayer = gameLogic.playerLogic.getCurrentPlayerNode()!!.next!!.player
+        val nextPlayerHand = gameLogic.playerLogic.getPlayerHand(nextPlayer.playerId)
         val nextPlayerDTO = playerToDTO(nextPlayer,nextPlayerHand)
 
-        val winner = gameState.getWinner()
+        val winner = gameLogic.getWinner()
         var winnerDTO: PlayerDTO? = null
         if(winner != null) {
-            val winnerHand = gameState.playerCircle.getPlayerHand(winner.playerId)
-            winnerDTO = playerToDTO(gameState.getWinner(), winnerHand)
+            val winnerHand = gameLogic.playerLogic.getPlayerHand(winner.playerId)
+            winnerDTO = playerToDTO(gameLogic.getWinner(), winnerHand)
         }
 
-        val drawPile = cardPileToDTO(gameState.drawPile,true)
-        val discardPile = cardPileToDTO(gameState.discardPile,false)
+        val drawPile = cardPileToDTO(gameLogic.drawPile,true)
+        val discardPile = cardPileToDTO(gameLogic.discardPile,false)
 
 
         return GameStateDTO(
-            lobbyId = gameState.lobbyId,
-            playerCount = gameState.playerCircle.getPlayerCount(),
+            lobbyId = gameLogic.lobbyId,
+            playerCount = gameLogic.playerLogic.getPlayerCount(),
             players = playerDTOs,
             currentPlayer = currentPlayerDTO,
             nextPlayer = nextPlayerDTO,

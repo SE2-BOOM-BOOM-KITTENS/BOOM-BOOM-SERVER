@@ -1,9 +1,12 @@
-package com.aau.se2.boomboomkittens.game.player
+package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
 import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.player.Player
+import com.aau.se2.boomboomkittens.game.player.PlayerHand
+import com.aau.se2.boomboomkittens.game.player.PlayerNode
 import java.util.UUID
 
-class PlayerCircle {
+class PlayerLogic {
     private val playerMap = mutableMapOf<UUID, PlayerNode>()
     private var currentPlayer: PlayerNode? = null
 

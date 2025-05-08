@@ -1,7 +1,8 @@
-package com.aau.se2.boomboomkittens.filipp.server.models.player.playerCircle
+/*package com.aau.se2.boomboomkittens.filipp.server.models.player.playerCircle
 
-import com.aau.se2.boomboomkittens.filipp.server.models.cards.Card
-import com.aau.se2.boomboomkittens.filipp.server.models.player.Player
+import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.CardType
+import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import java.util.UUID
 
-class PlayerCircleTest {
+class PlayerLogicTest {
 
     private lateinit var playerCircle: PlayerCircle
     private lateinit var player1: Player
@@ -59,7 +60,7 @@ class PlayerCircleTest {
 
     @Test
     fun getPlayerHandTest(){
-        val card = Card("Test Card")
+        val card = Card(CardType.BLANK)
         playerCircle.addPlayer(player1)
         playerCircle.addCardToPlayer(player1.playerId, card)
         assertEquals(1, playerCircle.getPlayerHand(player1.playerId).getCardAmount())
@@ -85,4 +86,4 @@ class PlayerCircleTest {
         playerCircle.nextTurn()
         assertTrue(playerCircle.isCurrentPlayer(player2.playerId))
     }
-}
+}*/

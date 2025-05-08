@@ -1,22 +1,22 @@
-package com.aau.se2.boomboomkittens.game
+package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
-import com.aau.se2.boomboomkittens.game.player.PlayerCircle
+import com.aau.se2.boomboomkittens.game.player.Player
 import java.util.UUID
 
-class GameState constructor(
+class GameLogic constructor(
     var lobbyId: UUID,
     val players: MutableList<Player> = mutableListOf(),
 ){
-    var playerCircle: PlayerCircle = PlayerCircle()
+    var playerLogic: PlayerLogic = PlayerLogic()
     var drawPile: CardPile = buildInitialPile(players.size)
     var discardPile: CardPile = CardPile()
 
 
     init {
         for(player in players){
-            playerCircle.addPlayer(player)
+            playerLogic.addPlayer(player)
         }
     }
 
@@ -25,19 +25,19 @@ class GameState constructor(
             throw IllegalStateException("Cannot draw from empty pile")
         }
         val card = drawPile.draw()
-        playerCircle.addCardToPlayer(playerId, card)
+        playerLogic.addCardToPlayer(playerId, card)
     }
 
     fun removePlayer(playerId: UUID){
-        playerCircle.removePlayerById(playerId)
+        playerLogic.removePlayerById(playerId)
     }
 
     fun addCardToPlayer(playerId: UUID, card: Card) {
-        playerCircle.addCardToPlayer(playerId, card)
+        playerLogic.addCardToPlayer(playerId, card)
     }
 
     fun removeCardFromPlayer(playerId: UUID, card: Card) {
-        playerCircle.removeCardFromPlayer(playerId, card)
+        playerLogic.removeCardFromPlayer(playerId, card)
     }
 
     fun putCardToDiscardPile(card: Card){
@@ -45,8 +45,8 @@ class GameState constructor(
     }
 
     fun getWinner(): Player? {
-        if(playerCircle.getPlayerCount() == 1){
-            val winner = playerCircle.getCurrentPlayer()
+        if(playerLogic.getPlayerCount() == 1){
+            val winner = playerLogic.getCurrentPlayer()
             return winner
         }
         return null
