@@ -17,12 +17,12 @@ class GameLogic(
 
     init {
         for(player in players){
-            playerLogic.addPlayer(player)
+            playerLogic.addPlayerByID(player)
         }
     }
 
     fun removePlayer(playerId: UUID){
-        playerLogic.removePlayerById(playerId)
+        playerLogic.removePlayerByID(playerId)
     }
 
     fun getWinner(): Player? {

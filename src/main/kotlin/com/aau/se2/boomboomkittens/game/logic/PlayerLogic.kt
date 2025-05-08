@@ -8,7 +8,7 @@ class PlayerLogic {
     private val playerMap = mutableMapOf<UUID, PlayerNode>()
     private var currentPlayer: PlayerNode? = null
 
-    fun addPlayer(player: Player) {
+    fun addPlayerByID(player: Player) {
         require(!(playerMap.containsKey(player.playerId))){
             throw IllegalArgumentException("Player with id ${player.playerId} already exists")
         }
@@ -27,7 +27,7 @@ class PlayerLogic {
         playerMap[player.playerId] = newNode
     }
 
-    fun removePlayerById(playerId: UUID) {
+    fun removePlayerByID(playerId: UUID) {
         val node = playerMap.remove(playerId)
         if(node?.next == node){
             currentPlayer = null
@@ -40,7 +40,7 @@ class PlayerLogic {
         }
     }
 
-    fun getPlayerById(playerId: UUID): Player? {
+    fun getPlayerByID(playerId: UUID): Player? {
         return playerMap[playerId]?.player
     }
 

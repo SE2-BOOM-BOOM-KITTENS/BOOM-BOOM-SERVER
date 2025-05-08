@@ -1,8 +1,12 @@
-/*package com.aau.se2.boomboomkittens.filipp.server.models.gameState
+package com.aau.se2.boomboomkittens.filipp.server.models.gameState
 
-import com.aau.se2.boomboomkittens.filipp.server.models.cards.Card
-import com.aau.se2.boomboomkittens.filipp.server.models.player.Player
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
+import com.aau.se2.boomboomkittens.filipp.server.dtos.GameStateDTOMapper
+import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.CardType
 import org.junit.jupiter.api.Assertions.assertEquals
+import com.aau.se2.boomboomkittens.game.player.Player
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
@@ -11,7 +15,8 @@ import java.util.UUID
 
 class GameLogicDTOMapperTest {
 
-    private lateinit var gameState: GameState
+    private lateinit var gameLogic: GameLogic
+    private lateinit var cardLogic: CardLogic
     private lateinit var mapper: GameStateDTOMapper
     private lateinit var player1: Player
     private lateinit var player2: Player
@@ -20,23 +25,22 @@ class GameLogicDTOMapperTest {
     fun setUp() {
         mapper = GameStateDTOMapper()
 
-        player1 = Player(UUID.randomUUID(), "player1")
-        player2 = Player(UUID.randomUUID(), "player2")
+        player1 = Player(UUID.randomUUID().toString(), "player1")
+        player2 = Player(UUID.randomUUID().toString(), "player2")
 
-        gameState = GameState(UUID.randomUUID(), mutableListOf(player1,player2))
+        gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player1,player2))
 
-        gameState.drawPile.insertAt(0, Card("Card1"))
-        gameState.discardPile.insertAt(0, Card("Card2"))
+        cardLogic.drawPile.insertAt(0, Card(CardType.BLANK))
 
-        gameState.addCardToPlayer(player1.playerId, Card("Card3"))
-        gameState.addCardToPlayer(player2.playerId, Card("Card4"))
+        cardLogic.addCardToPlayer(player1.playerId, Card(CardType.BLANK))
+        cardLogic.addCardToPlayer(player2.playerId, Card(CardType.BLANK))
     }
 
     @Test
     fun gameStateToDTOTest(){
-        val dto = mapper.gameStateToDTO(gameState)
+        val dto = mapper.gameStateToDTO(gameLogic)
 
-        assertEquals(gameState.lobbyId, dto.lobbyId)
+        assertEquals(gameLogic.lobbyId, dto.lobbyId)
         assertEquals(2, dto.playerCount)
 
         assertNotNull(dto.currentPlayer)
@@ -51,15 +55,15 @@ class GameLogicDTOMapperTest {
 
     @Test
     fun gameStateToDTOWinnerNullTest(){
-        val dto = mapper.gameStateToDTO(gameState)
+        val dto = mapper.gameStateToDTO(gameLogic)
         assertNull(dto.winner)
     }
 
     @Test
     fun gameStateToDTOWinnerTest(){
-        gameState.removePlayer(player2.playerId)
-        val dto = mapper.gameStateToDTO(gameState)
+        gameLogic.removePlayer(player2.playerId)
+        val dto = mapper.gameStateToDTO(gameLogic)
         assertNotNull(dto.winner)
-        assertEquals(player1.playerId, dto.winner!!.id)
+        assertEquals(player1.playerId, dto.winner.id)
     }
-}*/
+}
