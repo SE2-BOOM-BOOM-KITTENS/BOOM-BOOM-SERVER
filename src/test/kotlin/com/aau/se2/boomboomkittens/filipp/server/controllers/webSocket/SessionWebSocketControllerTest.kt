@@ -36,7 +36,7 @@ class SessionWebSocketControllerTest {
         session.send("/app/session", message)
 
         val expectedResponse = "WebSocket works!"
-        assertThat(messages.poll(1,TimeUnit.SECONDS)).isEqualTo(expectedResponse    )
+        assertThat(messages.poll(1,TimeUnit.SECONDS)).isEqualTo(expectedResponse)
     }
 
     private fun initStompSession(): StompSession{
