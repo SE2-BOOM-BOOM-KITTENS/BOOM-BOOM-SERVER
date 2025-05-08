@@ -1,4 +1,4 @@
-package com.aau.se2.boomboomkittens.filipp.server.models.dtos
+package com.aau.se2.boomboomkittens.filipp.server.dtos
 
 import java.util.UUID
 

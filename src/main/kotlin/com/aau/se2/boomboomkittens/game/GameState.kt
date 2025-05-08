@@ -1,9 +1,8 @@
-package com.aau.se2.boomboomkittens.filipp.server.models.gameState
+package com.aau.se2.boomboomkittens.game
 
-import com.aau.se2.boomboomkittens.filipp.server.models.cards.Card
-import com.aau.se2.boomboomkittens.filipp.server.models.cards.CardPile
-import com.aau.se2.boomboomkittens.filipp.server.models.player.Player
-import com.aau.se2.boomboomkittens.filipp.server.models.player.playerCircle.PlayerCircle
+import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.CardPile
+import com.aau.se2.boomboomkittens.game.player.PlayerCircle
 import java.util.UUID
 
 class GameState constructor(

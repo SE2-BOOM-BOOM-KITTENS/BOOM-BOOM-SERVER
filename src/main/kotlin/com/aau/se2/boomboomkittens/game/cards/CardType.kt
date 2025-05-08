@@ -1,4 +1,4 @@
-package com.aau.se2.boomboomkittens.game.model
+package com.aau.se2.boomboomkittens.game.cards
 
 enum class CardType {
     EXPLODING_KITTEN,

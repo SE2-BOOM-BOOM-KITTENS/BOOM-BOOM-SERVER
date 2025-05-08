@@ -1,6 +1,6 @@
 package com.aau.se2.boomboomkittens.game.logic
 
-import com.aau.se2.boomboomkittens.game.model.Player
+import com.aau.se2.boomboomkittens.game.player.Player
 
 class GameManager {
 
@@ -11,7 +11,7 @@ class GameManager {
         players.add(player)
     }
 
-    fun eliminatePlayer (player:Player){
+    fun eliminatePlayer (player: Player){
         player.isAlive = false
         println ("${player.name} has been eliminated!")
     }

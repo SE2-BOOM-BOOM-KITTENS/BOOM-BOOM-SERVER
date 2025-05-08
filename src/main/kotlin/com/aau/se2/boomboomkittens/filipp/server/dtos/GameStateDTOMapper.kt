@@ -1,18 +1,13 @@
-package com.aau.se2.boomboomkittens.filipp.server.models.gameState
+package com.aau.se2.boomboomkittens.filipp.server.dtos
 
-import com.aau.se2.boomboomkittens.filipp.server.models.cards.Card
-import com.aau.se2.boomboomkittens.filipp.server.models.cards.CardPile
-import com.aau.se2.boomboomkittens.filipp.server.models.dtos.CardDTO
-import com.aau.se2.boomboomkittens.filipp.server.models.dtos.CardPileDTO
-import com.aau.se2.boomboomkittens.filipp.server.models.dtos.GameStateDTO
-import com.aau.se2.boomboomkittens.filipp.server.models.dtos.PlayerDTO
-import com.aau.se2.boomboomkittens.filipp.server.models.dtos.PlayerHandDTO
-import com.aau.se2.boomboomkittens.filipp.server.models.player.Player
-import com.aau.se2.boomboomkittens.filipp.server.models.player.playerCircle.PlayerHand
+import com.aau.se2.boomboomkittens.game.cards.CardPile
+import com.aau.se2.boomboomkittens.game.GameState
+import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.player.Player
+import com.aau.se2.boomboomkittens.game.player.PlayerHand
 
 class GameStateDTOMapper {
-
-    fun gameStateToDTO(gameState: GameState): GameStateDTO{
+    fun gameStateToDTO(gameState: GameState): GameStateDTO {
         val playerList = gameState.playerCircle.getPlayerList()
 
         val playerDTOs = mutableListOf<PlayerDTO>()
@@ -58,7 +53,7 @@ class GameStateDTOMapper {
         return PlayerDTO(id,name,cardCount)
     }
 
-    private fun cardPileToDTO(cardPile: CardPile,isDrawPile: Boolean): CardPileDTO {
+    private fun cardPileToDTO(cardPile: CardPile, isDrawPile: Boolean): CardPileDTO {
         val cardCount = cardPile.size
         var cards : MutableList<CardDTO>? = null
         if(!isDrawPile){
@@ -76,7 +71,7 @@ class GameStateDTOMapper {
         return CardDTO(name)
     }
 
-    private fun playerHandToDTO(playerHand: PlayerHand): PlayerHandDTO{
+    private fun playerHandToDTO(playerHand: PlayerHand): PlayerHandDTO {
         val playerId = playerHand.playerId
 
         val cards = playerHand.cards

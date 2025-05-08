@@ -1,4 +1,4 @@
-package com.aau.se2.boomboomkittens.filipp.server.models.cards
+package com.aau.se2.boomboomkittens.game.cards
 
 class CardPile {
     private val pile:MutableList<Card> = mutableListOf()
@@ -6,11 +6,11 @@ class CardPile {
     val size: Int
     get() = pile.size
 
-    fun draw():Card{
+    fun draw(): Card {
         return pile.removeFirst()
     }
 
-    fun drawAt(index:Int):Card{
+    fun drawAt(index:Int): Card {
         return pile.removeAt(index)
     }
 

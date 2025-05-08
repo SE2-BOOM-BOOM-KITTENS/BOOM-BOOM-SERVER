@@ -1,7 +1,8 @@
-package com.aau.se2.boomboomkittens.game.logic
+package com.aau.se2.boomboomkittens.game.cards
 
-import com.aau.se2.boomboomkittens.game.model.CardType
-import com.aau.se2.boomboomkittens.game.logic.effects.*
+import com.aau.se2.boomboomkittens.game.cards.effects.BlankEffect
+import com.aau.se2.boomboomkittens.game.cards.effects.DefuseEffect
+import com.aau.se2.boomboomkittens.game.cards.effects.ExplodingKittenEffect
 
 object CardEffectRegistry {
     private val effects = mapOf(
@@ -10,7 +11,7 @@ object CardEffectRegistry {
         CardType.EXPLODING_KITTEN  to ExplodingKittenEffect()
     )
 
-    fun getEffect (cardType: CardType): CardEffect{
+    fun getEffect (cardType: CardType): CardEffect {
         return effects [cardType]
             ?: throw IllegalArgumentException ("No effect registered for $cardType")
     }
