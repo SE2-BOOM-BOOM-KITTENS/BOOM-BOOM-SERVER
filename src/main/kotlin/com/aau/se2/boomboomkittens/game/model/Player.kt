@@ -4,7 +4,8 @@ data class Player(
     val id: String,
     val name: String,
     var defuseCount: Int = 1,
-    var isAlive: Boolean = true
+    var isAlive: Boolean = true,
+    val hand: Hand = Hand()
 ){
 
     fun useDefuseCard(): Boolean {

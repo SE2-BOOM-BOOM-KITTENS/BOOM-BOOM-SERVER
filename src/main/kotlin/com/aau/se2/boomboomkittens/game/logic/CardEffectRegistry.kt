@@ -5,9 +5,13 @@ import com.aau.se2.boomboomkittens.game.logic.effects.*
 
 object CardEffectRegistry {
     private val effects = mapOf(
-        CardType.BLANK to BlankEffect(),
         CardType.DEFUSE to DefuseEffect(),
-        CardType.EXPLODING_KITTEN  to ExplodingKittenEffect()
+        CardType.EXPLODING_KITTEN  to ExplodingKittenEffect(),
+        CardType.CAT_TACO to CatCardEffect(),
+        CardType.CAT_BEARD to CatCardEffect(),
+        CardType.CAT_CATERMELON to CatCardEffect(),
+        CardType.CAT_HAIRY_POTATO to CatCardEffect(),
+        CardType.CAT_RAINBOW_RALPHING to CatCardEffect(),
     )
 
     fun getEffect (cardType: CardType): CardEffect{

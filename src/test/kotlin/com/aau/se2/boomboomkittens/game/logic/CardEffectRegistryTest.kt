@@ -16,12 +16,6 @@ class CardEffectRegistryTest {
     }
 
     @Test
-    fun `returns BlankEffect for BLANK card`(){
-        val effect = CardEffectRegistry.getEffect(CardType.BLANK)
-        assertTrue(effect is BlankEffect)
-    }
-
-    @Test
     fun `returns ExplodingKittenEffect for EXPLODING_KITTEN card`(){
         val effect = CardEffectRegistry.getEffect(CardType.EXPLODING_KITTEN)
         assertTrue(effect is ExplodingKittenEffect)
