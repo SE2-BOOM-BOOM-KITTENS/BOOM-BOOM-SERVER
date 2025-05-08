@@ -1,20 +1,13 @@
-package com.aau.se2.boomboomkittens.game.cards.effects.registry
+package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry
 
-import com.aau.se2.boomboomkittens.game.cards.effects.CatCardEffect
+import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.cards.effects.DefuseEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.ExplodingKittenEffect
-import com.aau.se2.boomboomkittens.game.model.CardType
-import com.aau.se2.boomboomkittens.game.logic.effects.*
 
 object CardEffectRegistry {
     private val effects = mapOf(
         CardType.DEFUSE to DefuseEffect(),
-        CardType.EXPLODING_KITTEN  to ExplodingKittenEffect(),
-        CardType.CAT_TACO to CatCardEffect(),
-        CardType.CAT_BEARD to CatCardEffect(),
-        CardType.CAT_CATERMELON to CatCardEffect(),
-        CardType.CAT_HAIRY_POTATO to CatCardEffect(),
-        CardType.CAT_RAINBOW_RALPHING to CatCardEffect(),
+        CardType.EXPLODING_KITTEN to ExplodingKittenEffect()
     )
 
     fun getEffect (cardType: CardType): CardEffect {
