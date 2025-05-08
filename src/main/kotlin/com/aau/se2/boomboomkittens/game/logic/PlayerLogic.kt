@@ -1,10 +1,8 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
-import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.player.Player
-import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import com.aau.se2.boomboomkittens.game.player.PlayerNode
-import java.util.UUID
+import java.util.*
 
 class PlayerLogic {
     private val playerMap = mutableMapOf<UUID, PlayerNode>()
@@ -66,36 +64,7 @@ class PlayerLogic {
         return currentPlayer?.player
     }
 
-    fun isCurrentPlayer(playerId: UUID): Boolean {
-        val currentPlayerId = currentPlayer?.player?.playerId
-        return currentPlayerId == playerId
-    }
-
     fun getCurrentPlayerNode(): PlayerNode? {
         return currentPlayer
-    }
-
-    fun nextTurn(){
-        currentPlayer = currentPlayer?.next
-    }
-
-    fun addCardToPlayer(playerId: UUID, card: Card){
-        val player = playerMap[playerId]?.player
-        requireNotNull(player){
-            throw IllegalArgumentException("Player with id $playerId not found")
-        }
-        player.playerHand.addCard(card)
-    }
-
-    fun removeCardFromPlayer(playerId: UUID, card: Card){
-        val player = playerMap[playerId]?.player
-        requireNotNull(player){
-            throw IllegalArgumentException("Player with id $playerId not found")
-        }
-        player.playerHand.removeCard(card)
-    }
-
-    fun getPlayerHand(playerId: UUID): PlayerHand {
-        return playerMap[playerId]?.player?.playerHand ?: throw IllegalStateException("Player with id $playerId not found")
     }
 }

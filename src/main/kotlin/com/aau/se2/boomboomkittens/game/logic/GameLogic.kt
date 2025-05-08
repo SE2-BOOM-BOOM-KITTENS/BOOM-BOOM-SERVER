@@ -1,17 +1,18 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
-import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.player.Player
+import com.aau.se2.boomboomkittens.game.player.PlayerHand
+import com.aau.se2.boomboomkittens.game.player.PlayerNode
 import java.util.UUID
 
-class GameLogic constructor(
+class GameLogic(
     var lobbyId: UUID,
     val players: MutableList<Player> = mutableListOf(),
 ){
     var playerLogic: PlayerLogic = PlayerLogic()
-    var drawPile: CardPile = buildInitialPile(players.size)
     var discardPile: CardPile = CardPile()
+    private val playerMap = mutableMapOf<UUID, PlayerNode>()
 
 
     init {
@@ -20,28 +21,8 @@ class GameLogic constructor(
         }
     }
 
-    fun drawCard(playerId: UUID){
-        check(!(drawPile.isEmpty())){
-            throw IllegalStateException("Cannot draw from empty pile")
-        }
-        val card = drawPile.draw()
-        playerLogic.addCardToPlayer(playerId, card)
-    }
-
     fun removePlayer(playerId: UUID){
         playerLogic.removePlayerById(playerId)
-    }
-
-    fun addCardToPlayer(playerId: UUID, card: Card) {
-        playerLogic.addCardToPlayer(playerId, card)
-    }
-
-    fun removeCardFromPlayer(playerId: UUID, card: Card) {
-        playerLogic.removeCardFromPlayer(playerId, card)
-    }
-
-    fun putCardToDiscardPile(card: Card){
-        this.discardPile.insertAt(0,card)
     }
 
     fun getWinner(): Player? {
@@ -52,8 +33,7 @@ class GameLogic constructor(
         return null
     }
 
-    fun buildInitialPile(playerCount: Int): CardPile {
-        //TODO Insert specific cards based on player count
-        return CardPile()
+    fun getPlayerHand(playerId: UUID): PlayerHand {
+        return playerMap[playerId]?.player?.playerHand ?: throw IllegalStateException("Player with id $playerId not found")
     }
 }
