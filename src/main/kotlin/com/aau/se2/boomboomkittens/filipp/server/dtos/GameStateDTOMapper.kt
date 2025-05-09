@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.dtos
 
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.cards.Card
@@ -7,31 +8,31 @@ import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 
 class GameStateDTOMapper {
-    fun gameStateToDTO(gameLogic: GameLogic): GameStateDTO {
+    fun gameStateToDTO(gameLogic: GameLogic, cardLogic: CardLogic): GameStateDTO {
         val playerList = gameLogic.playerLogic.getPlayerList()
-
         val playerDTOs = mutableListOf<PlayerDTO>()
+
         for(player in playerList){
-            val playerHand = gameLogic.playerLogic.getPlayerHand(player.playerId)
+            val playerHand = gameLogic.getPlayerHand(player.playerId)
             playerDTOs.add(playerToDTO(player, playerHand))
         }
 
         val currentPlayer = gameLogic.playerLogic.getCurrentPlayer()
-        val currentPlayerHand = gameLogic.playerLogic.getPlayerHand(currentPlayer!!.playerId)
+        val currentPlayerHand = gameLogic.getPlayerHand(currentPlayer!!.playerId)
         val currentPlayerDTO = playerToDTO(currentPlayer,currentPlayerHand)
 
         val nextPlayer = gameLogic.playerLogic.getCurrentPlayerNode()!!.next!!.player
-        val nextPlayerHand = gameLogic.playerLogic.getPlayerHand(nextPlayer.playerId)
+        val nextPlayerHand = gameLogic.getPlayerHand(nextPlayer.playerId)
         val nextPlayerDTO = playerToDTO(nextPlayer,nextPlayerHand)
 
         val winner = gameLogic.getWinner()
         var winnerDTO: PlayerDTO? = null
         if(winner != null) {
-            val winnerHand = gameLogic.playerLogic.getPlayerHand(winner.playerId)
+            val winnerHand = gameLogic.getPlayerHand(winner.playerId)
             winnerDTO = playerToDTO(gameLogic.getWinner(), winnerHand)
         }
 
-        val drawPile = cardPileToDTO(gameLogic.drawPile,true)
+        val drawPile = cardPileToDTO(cardLogic.drawPile,true)
         val discardPile = cardPileToDTO(gameLogic.discardPile,false)
 
 

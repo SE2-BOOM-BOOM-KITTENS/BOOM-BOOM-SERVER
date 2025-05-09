@@ -1,14 +1,15 @@
 package com.aau.se2.boomboomkittens.game.model
 
-import com.aau.se2.boomboomkittens.game.model.Player
+import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.util.*
 
 class PlayerTest {
 
     @Test
     fun `player starts alive and has defuse`(){
-        val player = Player (id = 1.toString(), name = "Player1", defuseCount = 1, isAlive = true)
+        val player = Player (playerId = UUID.fromString("1"), name = "Player1", defuseCount = 1, isAlive = true)
 
         val hasCard = player.hasDefuseCard()
 
@@ -19,7 +20,7 @@ class PlayerTest {
 
     @Test
     fun `useDefuseCard decreases count`(){
-        val player = Player (id = 2.toString(), name = "Player2", defuseCount = 2, isAlive = true)
+        val player = Player (playerId = UUID.fromString("2"), name = "Player2", defuseCount = 2, isAlive = true)
 
         val used = player.useDefuseCard()
 
@@ -29,7 +30,7 @@ class PlayerTest {
 
     @Test
     fun `useDefuseCard fails when none available`(){
-        val player = Player (id = 3.toString(), name = "Player3", defuseCount = 0, isAlive = true)
+        val player = Player (playerId = UUID.fromString("3"), name = "Player3", defuseCount = 0, isAlive = true)
 
         val used = player.useDefuseCard()
 
@@ -40,7 +41,7 @@ class PlayerTest {
 
     @Test
     fun `hasDefuseCard fails when none available`(){
-        val player = Player (id = 4.toString(), name = "Player4", defuseCount = 0, isAlive = true)
+        val player = Player (playerId = UUID.fromString("4"), name = "Player4", defuseCount = 0, isAlive = true)
 
         val hasCard = player.hasDefuseCard()
 
@@ -50,7 +51,7 @@ class PlayerTest {
 
     @Test
     fun `addDefuseCard increases count`(){
-        val player = Player (id = 5.toString(), name = "Player5", defuseCount = 0, isAlive = true)
+        val player = Player (playerId = UUID.fromString("5"), name = "Player5", defuseCount = 0, isAlive = true)
 
         player.addDefuseCard()
 

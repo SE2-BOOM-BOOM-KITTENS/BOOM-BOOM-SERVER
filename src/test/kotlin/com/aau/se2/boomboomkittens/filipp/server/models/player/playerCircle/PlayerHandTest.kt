@@ -1,6 +1,8 @@
 package com.aau.se2.boomboomkittens.filipp.server.models.player.playerCircle
 
-import com.aau.se2.boomboomkittens.filipp.server.models.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.CardType
+import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -18,8 +20,8 @@ class PlayerHandTest {
     fun setUp() {
         val playerId = UUID.randomUUID()
         playerHand = PlayerHand(playerId)
-        card1 = Card("Card 1")
-        card2 = Card("Card 2")
+        card1 = Card(CardType.BLANK)
+        card2 = Card(CardType.BLANK)
     }
 
     @Test
