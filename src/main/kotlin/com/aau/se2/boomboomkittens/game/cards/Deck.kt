@@ -1,1 +1,1 @@
-package com.aau.se2.boomboomkittens.game.cards
+package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards
