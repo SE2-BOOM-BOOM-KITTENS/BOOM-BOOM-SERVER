@@ -1,26 +1,26 @@
 package com.aau.se2.boomboomkittens.game.cards.effects
 
-import com.aau.se2.boomboomkittens.game.model.Card
-import com.aau.se2.boomboomkittens.game.model.CardType
-import com.aau.se2.boomboomkittens.game.model.Player
-import com.aau.se2.boomboomkittens.game.logic.GameManager
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
+import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.CardType
+import com.aau.se2.boomboomkittens.game.player.Player
 
 object CatComboEffectHandler {
 
-    fun handleComboRequest(player: Player, cards: List<Card>, allPlayers: List<Player>, gameManager: GameManager) {
-        if (cards.isEmpty()) return
+    fun handleComboRequest(player: Player, cards: List<Card>, game: GameLogic) {
+        val allPlayers = game.playerLogic.getPlayerList().filter { it.isAlive && it.playerId != player.playerId}
 
-        when {
+            when {
             cards.size == 2 && cardsHaveSameType(cards) -> {
-                gameManager.requestRandomSteal(player)
+                game.requestRandomSteal(player, allPlayers)
             }
 
             cards.size == 3 && cardsHaveSameType(cards) -> {
-                gameManager.requestSpecificSteal(player)
+                game.requestSpecificSteal(player, allPlayers)
             }
 
             cards.size == 5 && cardsHaveDifferentTypes(cards) -> {
-                gameManager.requestDiscardSelection(player, gameManager.discardPile)
+                game.requestDiscardSelection(player)
             }
 
             else -> {
@@ -29,39 +29,28 @@ object CatComboEffectHandler {
         }
 
         // Karten aus Spielerhand entfernen und in den Ablagestapel legen
-        player.hand.removeAll(cards)
-        gameManager.discardPile.addAll(cards)
+        player.playerHand.cards.removeAll(cards)
+        game.discardPile.getPileList().addAll(cards)
     }
 
-    fun resolveStealRandom(player: Player, target: Player) {
-        val stolen = target.hand.randomCard()
-        if (stolen != null) {
-            target.hand.remove(stolen)
-            player.hand.add(stolen)
-            println("${player.name} randomly stole a card from ${target.name}")
-        } else {
-            println("${target.name} has no cards to steal.")
-        }
+    fun resolveRandomSteal(player: Player, target: Player) {
+        val stolen = target.playerHand.getRandomCard() ?: return
+        target.playerHand.removeCard(stolen)
+        player.playerHand.addCard(stolen)
+        println("${player.name} randomly stole a card from ${target.name}")
     }
 
-    fun resolveStealSpecific(player: Player, target: Player, cardType: CardType) {
-        val card = target.hand.getCards().find { it.type == cardType }
-        if (card != null) {
-            target.hand.remove(card)
-            player.hand.add(card)
-            println("${player.name} stole $cardType from ${target.name}")
-        } else {
-            println("${target.name} doesn't have a $cardType card.")
-        }
+    fun resolveSpecificSteal(player: Player, target: Player, type: CardType) {
+        val card = target.playerHand.cards.find { it.type == type } ?: return
+        target.playerHand.removeCard(card)
+        player.playerHand.addCard(card)
+        println("${player.name} stole a card from ${target.name}")
     }
 
-    fun resolveDiscardSelection(player: Player, selectedCard: Card, gameManager: GameManager) {
-        if (gameManager.discardPile.contains(selectedCard)) {
-            gameManager.discardPile.remove(selectedCard)
-            player.hand.add(selectedCard)
-            println("${player.name} retrieved ${selectedCard.type} from the discard pile.")
-        } else {
-            println("Selected card not found in discard pile.")
+    fun resolveDiscardSelection(player: Player, selectedCard: Card, game: GameLogic) {
+        if (game.discardPile.getPileList().remove(selectedCard)) {
+            player.playerHand.addCard(selectedCard)
+            println("${player.name} retrieved a card from the discard pile.")
         }
     }
 
@@ -70,4 +59,19 @@ object CatComboEffectHandler {
 
     private fun cardsHaveDifferentTypes(cards: List<Card>) =
         cards.map { it.type }.toSet().size == cards.size
+
+    fun GameLogic.requestRandomSteal(player: Player, opponents: List<Player>) {
+        println("Requesting ${player.name} to choose a player to steal from (random)")
+        // TODO: WebSocket/Event-Auslösung zur UI mit Spielernamen
+    }
+
+    fun GameLogic.requestSpecificSteal(player: Player, opponents: List<Player>) {
+        println("Requesting ${player.name} to choose a player and card type to steal")
+        // TODO: WebSocket/Event-Auslösung zur UI mit Gegnern + auswählbaren Kartentypen
+    }
+
+    fun GameLogic.requestDiscardSelection(player: Player) {
+        println("Requesting ${player.name} to choose a card from the discard pile")
+        // TODO: WebSocket/Event-Auslösung zur UI mit Liste aus discardPile.getPileList()
+    }
 }

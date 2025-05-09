@@ -30,10 +30,10 @@ class GameLogicDTOMapperTest {
 
         gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player1,player2))
 
-        cardLogic.drawPile.insertAt(0, Card(CardType.BLANK))
+        cardLogic.drawPile.insertAt(0, Card(CardType.EXPLODING_KITTEN))
 
-        cardLogic.addCardToPlayer(player1.playerId, Card(CardType.BLANK))
-        cardLogic.addCardToPlayer(player2.playerId, Card(CardType.BLANK))
+        cardLogic.addCardToPlayer(player1.playerId, Card(CardType.DEFUSE))
+        cardLogic.addCardToPlayer(player2.playerId, Card(CardType.DEFUSE))
     }
 
     @Test
