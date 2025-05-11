@@ -9,7 +9,8 @@ object CardEffectRegistry {
     private val effects = mapOf(
         CardType.BLANK to BlankEffect(),
         CardType.DEFUSE to DefuseEffect(),
-        CardType.EXPLODING_KITTEN to ExplodingKittenEffect()
+        CardType.EXPLODING_KITTEN to ExplodingKittenEffect(),
+        CardType.SHUFFLE to ShuffleEffect()
     )
 
     fun getEffect (cardType: CardType): CardEffect {

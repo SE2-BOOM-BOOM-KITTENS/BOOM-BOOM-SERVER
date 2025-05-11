@@ -16,6 +16,7 @@ open class GameLogic(
     var discardPile: CardPile = CardPile()
     private val playerMap = mutableMapOf<UUID, PlayerNode>()
     private val drawPile: LinkedList<Card> = LinkedList()
+    private val cardPile = CardPile()
 
 
     init {
@@ -54,4 +55,13 @@ open class GameLogic(
         }
         println("${player.name} rearranged the top ${newOrder.size} cards.")
     }
+
+    fun shuffleDeck(){
+        cardPile.shuffle()
+    }
+
+    fun notifyDeckShuffled(player: Player){
+        //eventDispatcher.sendToAllPlayers("DeckShuffled", currentCardPileState())
+    }
+
 }
