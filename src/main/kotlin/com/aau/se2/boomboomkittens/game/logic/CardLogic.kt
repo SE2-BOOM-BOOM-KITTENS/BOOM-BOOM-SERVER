@@ -3,24 +3,27 @@ package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.player.Player
-import com.aau.se2.boomboomkittens.game.player.PlayerNode
 import java.util.*
 
-class CardLogic {
-    private val playerMap = mutableMapOf<UUID, PlayerNode>()
-    val players: MutableList<Player> = mutableListOf()
-    var drawPile: CardPile = buildInitialPile(players.size)
+class CardLogic(playerSize: Int) {
+    private val playerMap = mutableMapOf<UUID, Player>()
+
+    var drawPile: CardPile = buildInitialPile(playerSize)
 
     fun addCardToPlayer(playerId: UUID, card: Card){
-        val player = playerMap[playerId]?.player
+        val player = playerMap[playerId]
         requireNotNull(player){
             throw IllegalArgumentException("Player with id $playerId not found")
         }
         player.playerHand.addCard(card)
     }
 
+    fun addPlayer(player: Player){
+        playerMap[player.playerId] = player
+    }
+
     fun removeCardFromPlayer(playerId: UUID, card: Card){
-        val player = playerMap[playerId]?.player
+        val player = playerMap[playerId]
         requireNotNull(player){
             throw IllegalArgumentException("Player with id $playerId not found")
         }
