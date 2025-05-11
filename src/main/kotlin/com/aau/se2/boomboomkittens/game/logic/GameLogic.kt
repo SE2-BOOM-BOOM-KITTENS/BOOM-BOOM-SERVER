@@ -1,21 +1,21 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
-import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffectRegistry
 import com.aau.se2.boomboomkittens.game.cards.CardPile
+import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import com.aau.se2.boomboomkittens.game.player.PlayerNode
-import java.util.LinkedList
 import java.util.UUID
 
 open class GameLogic(
     var lobbyId: UUID,
     val players: MutableList<Player> = mutableListOf(),
 ){
-    var playerLogic: PlayerLogic = PlayerLogic()
-    var cardLogic: CardLogic = CardLogic()
-    var discardPile: CardPile = CardPile()
+    private val playerLogic: PlayerLogic = PlayerLogic()
+    private val discardPile: CardPile = CardPile()
     private val playerMap = mutableMapOf<UUID, PlayerNode>()
+    private val cardRegistry = CardEffectRegistry
 
 
     init {
@@ -36,7 +36,35 @@ open class GameLogic(
         return null
     }
 
+    fun nextTurn(){
+        playerLogic.moveToNextPlayer()
+    }
+
+    fun addPlayer(playerId: UUID, playerName:String){
+        val newPlayer = Player(playerId, playerName)
+        playerLogic.addPlayerByID(newPlayer)
+    }
+
     fun getPlayerHand(playerId: UUID): PlayerHand {
         return playerMap[playerId]?.player?.playerHand ?: throw IllegalStateException("Player with id $playerId not found")
+    }
+
+    fun getPlayerLogic(): PlayerLogic {
+        return this.playerLogic
+    }
+
+    fun getDiscardPile(): CardPile {
+        return discardPile
+    }
+
+    fun playCard(playerId: UUID, cardType: CardType){
+        val player = playerLogic.getPlayerByID(playerId)
+        if(player!!.playerHand.containsCardType(cardType)){
+            val card = cardRegistry.getEffect(cardType)
+            card.apply(player,this)
+        } else{
+            throw IllegalStateException("Player doesn't have card type $cardType")
+        }
+
     }
 }

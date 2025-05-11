@@ -1,11 +1,13 @@
 package com.aau.se2.boomboomkittens.game.logic
 
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffectRegistry
+import com.aau.se2.boomboomkittens.game.cards.CardType
+import com.aau.se2.boomboomkittens.game.cards.effects.BlankEffect
+import com.aau.se2.boomboomkittens.game.cards.effects.DefuseEffect
+import com.aau.se2.boomboomkittens.game.cards.effects.ExplodingKittenEffect
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import com.aau.se2.boomboomkittens.game.logic.CardEffectRegistry
-import com.aau.se2.boomboomkittens.game.model.CardType
-import com.aau.se2.boomboomkittens.game.logic.effects.*
 
 class CardEffectRegistryTest {
 

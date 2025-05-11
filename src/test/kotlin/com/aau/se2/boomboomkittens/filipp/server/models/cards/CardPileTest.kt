@@ -1,5 +1,8 @@
 package com.aau.se2.boomboomkittens.filipp.server.models.cards
 
+import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.CardPile
+import com.aau.se2.boomboomkittens.game.cards.CardType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -16,8 +19,8 @@ class CardPileTest {
 
     @Test
     fun drawTest(){
-        val card1 = Card("Card 1")
-        val card2 = Card("Card 2")
+        val card1 = Card(CardType.BLANK)
+        val card2 = Card(CardType.BLANK)
         cardPile.insertAt(0,card1)
         cardPile.insertAt(1,card2)
 
@@ -28,8 +31,8 @@ class CardPileTest {
 
     @Test
     fun drawAtTest(){
-        val card1 = Card("Card 1")
-        val card2 = Card("Card 2")
+        val card1 = Card(CardType.BLANK)
+        val card2 = Card(CardType.BLANK)
         cardPile.insertAt(0,card1)
         cardPile.insertAt(1,card2)
 
@@ -40,9 +43,9 @@ class CardPileTest {
 
     @Test
     fun insertAtTest(){
-        val card1 = Card("Card 1")
-        val card2 = Card("Card 2")
-        val card3 = Card("Card 3")
+        val card1 = Card(CardType.BLANK)
+        val card2 = Card(CardType.BLANK)
+        val card3 = Card(CardType.BLANK)
 
         cardPile.insertAt(0, card1)
         cardPile.insertAt(1, card2)
