@@ -2,6 +2,7 @@ package com.aau.se2.boomboomkittens.filipp.server.controllers.rest
 
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.filipp.server.services.LobbyService
+import com.aau.se2.boomboomkittens.game.player.Player
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

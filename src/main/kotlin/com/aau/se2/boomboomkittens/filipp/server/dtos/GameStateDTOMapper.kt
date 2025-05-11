@@ -9,29 +9,30 @@ import com.aau.se2.boomboomkittens.game.player.PlayerHand
 class GameStateDTOMapper {
     fun gameStateToDTO(gameLogic: GameLogic): GameStateDTO {
         val playerList = gameLogic.playerLogic.getPlayerList()
+        val cardLogic = gameLogic.cardLogic
 
         val playerDTOs = mutableListOf<PlayerDTO>()
         for(player in playerList){
-            val playerHand = gameLogic.playerLogic.getPlayerHand(player.playerId)
-            playerDTOs.add(playerToDTO(player, playerHand))
+            val playerHand = player.playerHand
+            playerDTOs.add(playerToDTO(player))
         }
 
         val currentPlayer = gameLogic.playerLogic.getCurrentPlayer()
-        val currentPlayerHand = gameLogic.playerLogic.getPlayerHand(currentPlayer!!.playerId)
-        val currentPlayerDTO = playerToDTO(currentPlayer,currentPlayerHand)
+        val currentPlayerHand = currentPlayer?.playerHand
+        val currentPlayerDTO = playerToDTO(currentPlayer)
 
         val nextPlayer = gameLogic.playerLogic.getCurrentPlayerNode()!!.next!!.player
-        val nextPlayerHand = gameLogic.playerLogic.getPlayerHand(nextPlayer.playerId)
-        val nextPlayerDTO = playerToDTO(nextPlayer,nextPlayerHand)
+        val nextPlayerHand = nextPlayer.playerHand
+        val nextPlayerDTO = playerToDTO(nextPlayer)
 
         val winner = gameLogic.getWinner()
         var winnerDTO: PlayerDTO? = null
         if(winner != null) {
-            val winnerHand = gameLogic.playerLogic.getPlayerHand(winner.playerId)
-            winnerDTO = playerToDTO(gameLogic.getWinner(), winnerHand)
+            val winnerHand = winner.playerHand
+            winnerDTO = playerToDTO(gameLogic.getWinner())
         }
 
-        val drawPile = cardPileToDTO(gameLogic.drawPile,true)
+        val drawPile = cardPileToDTO(cardLogic.drawPile,true)
         val discardPile = cardPileToDTO(gameLogic.discardPile,false)
 
 
@@ -46,10 +47,10 @@ class GameStateDTOMapper {
             discardPile = discardPile,)
     }
 
-    private fun playerToDTO(player: Player?, playerHand: PlayerHand): PlayerDTO {
+    private fun playerToDTO(player: Player?): PlayerDTO {
         val id = player!!.playerId
         val name = player.name
-        val cardCount = playerHand.getCardAmount()
+        val cardCount = player.playerHand.getCardAmount()
         return PlayerDTO(id,name,cardCount)
     }
 

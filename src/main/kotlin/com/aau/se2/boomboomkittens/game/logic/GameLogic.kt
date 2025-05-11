@@ -13,9 +13,9 @@ open class GameLogic(
     val players: MutableList<Player> = mutableListOf(),
 ){
     var playerLogic: PlayerLogic = PlayerLogic()
+    var cardLogic: CardLogic = CardLogic()
     var discardPile: CardPile = CardPile()
     private val playerMap = mutableMapOf<UUID, PlayerNode>()
-    private val drawPile: LinkedList<Card> = LinkedList()
 
 
     init {
@@ -38,20 +38,5 @@ open class GameLogic(
 
     fun getPlayerHand(playerId: UUID): PlayerHand {
         return playerMap[playerId]?.player?.playerHand ?: throw IllegalStateException("Player with id $playerId not found")
-    }
-
-    open fun peekTopCards(count: Int): List<Card> {
-        return drawPile.take(count)
-    }
-    open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
-        if (newOrder.size > drawPile.size) {
-            throw IllegalArgumentException("New order has more cards than the draw pile.")
-        }
-        repeat(newOrder.size) { drawPile.removeFirst() }
-
-        for (i in newOrder.size - 1 downTo 0) {
-            drawPile.addFirst(newOrder[i])
-        }
-        println("${player.name} rearranged the top ${newOrder.size} cards.")
     }
 }
