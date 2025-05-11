@@ -1,7 +1,6 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
@@ -16,7 +15,7 @@ import java.util.UUID
 class GameLogicService {
     private val lobby = Lobby(creator = Player(name="Steve"), maxPlayers = 4)
     private val gameLogic = GameLogic(lobby.id)
-    private val cardLogic = CardLogic()
+    private val cardLogic = gameLogic.getCardLogic()
     private val networkPacketMapper = NetworkPacketMapper()
     private lateinit var messagingTemplate: SimpMessagingTemplate
 
