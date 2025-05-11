@@ -1,4 +1,4 @@
-package com.aau.se2.boomboomkittens.filipp.server.dtos
+package com.aau.se2.boomboomkittens.filipp.server.networkPackage
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.game.cards.CardPile
@@ -7,39 +7,40 @@ import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 
-class GameStateDTOMapper {
-    fun gameStateToDTO(gameLogic: GameLogic, cardLogic: CardLogic): GameStateDTO {
-        val playerList = gameLogic.playerLogic.getPlayerList()
-        val playerDTOs = mutableListOf<PlayerDTO>()
+class NetworkPacketMapper {
+    fun gameStateToDTO(gameLogic: GameLogic, cardLogic: CardLogic): GameStateNetworkPacket {
+        val playerLogic = gameLogic.getPlayerLogic()
+        val playerList = playerLogic.getPlayerList()
+        val playerNetworkPackets = mutableListOf<PlayerNetworkPacket>()
 
         for(player in playerList){
             val playerHand = gameLogic.getPlayerHand(player.playerId)
-            playerDTOs.add(playerToDTO(player, playerHand))
+            playerNetworkPackets.add(playerToDTO(player, playerHand))
         }
 
-        val currentPlayer = gameLogic.playerLogic.getCurrentPlayer()
+        val currentPlayer = playerLogic.getCurrentPlayer()
         val currentPlayerHand = gameLogic.getPlayerHand(currentPlayer!!.playerId)
         val currentPlayerDTO = playerToDTO(currentPlayer,currentPlayerHand)
 
-        val nextPlayer = gameLogic.playerLogic.getCurrentPlayerNode()!!.next!!.player
+        val nextPlayer = playerLogic.getCurrentPlayerNode()!!.next!!.player
         val nextPlayerHand = gameLogic.getPlayerHand(nextPlayer.playerId)
         val nextPlayerDTO = playerToDTO(nextPlayer,nextPlayerHand)
 
         val winner = gameLogic.getWinner()
-        var winnerDTO: PlayerDTO? = null
+        var winnerDTO: PlayerNetworkPacket? = null
         if(winner != null) {
             val winnerHand = gameLogic.getPlayerHand(winner.playerId)
             winnerDTO = playerToDTO(gameLogic.getWinner(), winnerHand)
         }
 
         val drawPile = cardPileToDTO(cardLogic.drawPile,true)
-        val discardPile = cardPileToDTO(gameLogic.discardPile,false)
+        val discardPile = cardPileToDTO(gameLogic.getDiscardPile(),false)
 
 
-        return GameStateDTO(
+        return GameStateNetworkPacket(
             lobbyId = gameLogic.lobbyId,
-            playerCount = gameLogic.playerLogic.getPlayerCount(),
-            players = playerDTOs,
+            playerCount = playerLogic.getPlayerCount(),
+            players = playerNetworkPackets,
             currentPlayer = currentPlayerDTO,
             nextPlayer = nextPlayerDTO,
             winner = winnerDTO,
@@ -47,16 +48,16 @@ class GameStateDTOMapper {
             discardPile = discardPile,)
     }
 
-    private fun playerToDTO(player: Player?, playerHand: PlayerHand): PlayerDTO {
+    private fun playerToDTO(player: Player?, playerHand: PlayerHand): PlayerNetworkPacket {
         val id = player!!.playerId
         val name = player.name
         val cardCount = playerHand.getCardAmount()
-        return PlayerDTO(id,name,cardCount)
+        return PlayerNetworkPacket(id,name,cardCount)
     }
 
     private fun cardPileToDTO(cardPile: CardPile, isDrawPile: Boolean): CardPileDTO {
         val cardCount = cardPile.size
-        var cards : MutableList<CardDTO>? = null
+        var cards : MutableList<CardNetworkPacket>? = null
         if(!isDrawPile){
             val list : List<Card> = cardPile.getPileList()
             cards = mutableListOf()
@@ -67,19 +68,19 @@ class GameStateDTOMapper {
         return CardPileDTO(cardCount,cards)
     }
 
-    private fun cardToDTO(card: Card): CardDTO {
+    private fun cardToDTO(card: Card): CardNetworkPacket {
         val name = card.name
-        return CardDTO(name)
+        return CardNetworkPacket(name)
     }
 
-    private fun playerHandToDTO(playerHand: PlayerHand): PlayerHandDTO {
+    private fun playerHandToDTO(playerHand: PlayerHand): PlayerHandNetworkPacket {
         val playerId = playerHand.playerId
 
         val cards = playerHand.cards
-        val cardsDTO : MutableList<CardDTO> = mutableListOf()
+        val cardsDTO : MutableList<CardNetworkPacket> = mutableListOf()
         for(card in cards){
             cardsDTO.add(cardToDTO(card))
         }
-        return PlayerHandDTO(playerId,cardsDTO)
+        return PlayerHandNetworkPacket(playerId,cardsDTO)
     }
 }

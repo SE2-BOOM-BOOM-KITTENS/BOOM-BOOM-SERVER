@@ -1,5 +1,5 @@
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
-import com.aau.se2.boomboomkittens.filipp.server.dtos.GameStateDTOMapper
+import com.aau.se2.boomboomkittens.filipp.server.networkPackage.NetworkPacketMapper
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -15,13 +15,13 @@ class GameLogicDTOMapperTest {
 
     private lateinit var gameLogic: GameLogic
     private lateinit var cardLogic: CardLogic
-    private lateinit var mapper: GameStateDTOMapper
+    private lateinit var mapper: NetworkPacketMapper
     private lateinit var player1: Player
     private lateinit var player2: Player
 
     @BeforeEach
     fun setUp() {
-        mapper = GameStateDTOMapper()
+        mapper = NetworkPacketMapper()
 
         player1 = Player(UUID.randomUUID(), "player1")
         player2 = Player(UUID.randomUUID(), "player2")
