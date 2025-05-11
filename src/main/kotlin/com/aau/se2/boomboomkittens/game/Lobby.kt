@@ -5,5 +5,5 @@ import java.util.UUID
 
 data class Lobby(val id:UUID = UUID.randomUUID(),
                  val creator: Player,
-                 val players:MutableList<Player>,
+                 val players:MutableList<Player> = mutableListOf(),
                  val maxPlayers:Int)

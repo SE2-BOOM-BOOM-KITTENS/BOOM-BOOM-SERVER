@@ -16,7 +16,6 @@ import org.junit.jupiter.api.assertThrows
 import java.util.UUID
 
 class GameLogicTest {
-
     private lateinit var gameLogic: GameLogic
     private lateinit var cardLogic: CardLogic
     private lateinit var player1: Player
@@ -24,9 +23,10 @@ class GameLogicTest {
 
     @BeforeEach
     fun setUp() {
-        player1 = Player(UUID.randomUUID().toString(), "player1")
-        player2 = Player(UUID.randomUUID().toString(), "player2")
+        player1 = Player(UUID.randomUUID(), "player1")
+        player2 = Player(UUID.randomUUID(), "player2")
         gameLogic = GameLogic(UUID.randomUUID(),mutableListOf(player1, player2) )
+        cardLogic = CardLogic()
     }
 
     @Test
