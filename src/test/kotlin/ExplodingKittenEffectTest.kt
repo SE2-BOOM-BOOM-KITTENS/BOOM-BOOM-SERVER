@@ -10,19 +10,21 @@ import java.util.*
 class ExplodingKittenEffectTest {
 
     @Test
-    fun `exploding kitten kills player without defuse`(){
-        val player = Player (id = "1", name = "Player1", defuseCount = 0, isAlive = true)
-        val effect = ExplodingKittenEffect()
+    fun `exploding kitten kills player without defuse`() {
+        val player = Player(playerId = UUID.randomUUID(), name = "Player1", defuseCount = 0, isAlive = true)
         val gameLogic = GameLogic(UUID.randomUUID())
+        gameLogic.playerLogic.addPlayerByID(player)
 
+        val effect = ExplodingKittenEffect()
         effect.apply(player, gameLogic)
 
         assertFalse(player.isAlive)
     }
 
+
     @Test
     fun `exploding kitten defused when player has defuse card`(){
-        val player = Player (id = "2", name = "Player2", defuseCount = 1, isAlive = true)
+        val player = Player (playerId = UUID.randomUUID(), name = "Player2", defuseCount = 1, isAlive = true)
         val effect = ExplodingKittenEffect()
         val gameLogic = GameLogic(UUID.randomUUID())
 

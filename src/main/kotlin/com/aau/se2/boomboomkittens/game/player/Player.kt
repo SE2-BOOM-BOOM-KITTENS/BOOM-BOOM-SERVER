@@ -3,11 +3,10 @@ package com.aau.se2.boomboomkittens.game.player
 import java.util.UUID
 
 data class Player(
-    val id: String,
+    val playerId: UUID = UUID.randomUUID(),
     val name: String,
     var defuseCount: Int = 1,
     var isAlive: Boolean = true,
-    val playerId: UUID = UUID.randomUUID(),
     val status: String = "ACTIVE",
     val playerHand: PlayerHand = PlayerHand(playerId),
 ){

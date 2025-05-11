@@ -29,6 +29,9 @@ class PlayerLogic {
 
     fun removePlayerByID(playerId: UUID) {
         val node = playerMap.remove(playerId)
+        if (node != null) {
+            node.player.isAlive = false
+        }
         if(node?.next == node){
             currentPlayer = null
         } else{

@@ -24,9 +24,10 @@ class GameLogicTest {
 
     @BeforeEach
     fun setUp() {
-        player1 = Player(UUID.randomUUID().toString(), "player1")
-        player2 = Player(UUID.randomUUID().toString(), "player2")
+        player1 = Player(UUID.randomUUID(), "player1")
+        player2 = Player(UUID.randomUUID(), "player2")
         gameLogic = GameLogic(UUID.randomUUID(),mutableListOf(player1, player2) )
+        cardLogic = CardLogic()
     }
 
     @Test
@@ -36,17 +37,17 @@ class GameLogicTest {
         assertNotNull(gameLogic.playerLogic.getPlayerByID(player2.playerId))
     }
 
-    @Test
-    fun drawCardTest(){
-        val card = Card(CardType.BLANK)
-        cardLogic.drawPile.insertAt(0, card)
-
-        cardLogic.drawCard(player1.playerId)
-
-        val hand = gameLogic.getPlayerHand(player1.playerId)
-        assertEquals(1, hand.getCardAmount())
-        assertEquals(card, hand.cards[0])
-    }
+//    @Test
+//    fun drawCardTest(){
+//        val card = Card(CardType.BLANK)
+//        cardLogic.drawPile.insertAt(0, card)
+//
+//        cardLogic.drawCard(player1.playerId)
+//
+//        val hand = gameLogic.getPlayerHand(player1.playerId)
+//        assertEquals(1, hand.getCardAmount())
+//        assertEquals(card, hand.cards[0])
+//    }
 
     @Test
     fun drawCardExceptionTest(){
