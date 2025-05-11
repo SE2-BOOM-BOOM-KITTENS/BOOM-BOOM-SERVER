@@ -13,6 +13,7 @@ open class GameLogic(
     val players: MutableList<Player> = mutableListOf(),
 ){
     private val playerLogic: PlayerLogic = PlayerLogic()
+    private val cardLogic: CardLogic = CardLogic()
     private val discardPile: CardPile = CardPile()
     private val playerMap = mutableMapOf<UUID, PlayerNode>()
     private val cardRegistry = CardEffectRegistry
@@ -51,6 +52,10 @@ open class GameLogic(
 
     fun getPlayerLogic(): PlayerLogic {
         return this.playerLogic
+    }
+
+    fun getCardLogic(): CardLogic {
+        return this.cardLogic
     }
 
     fun getDiscardPile(): CardPile {
