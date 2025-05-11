@@ -31,7 +31,6 @@ class CatComboEffectHandlerTest {
     fun `test two same Cat cards triggers random steal`() {
         val player1 = Player(UUID.randomUUID(), "Alice")
         val player2 = Player(UUID.randomUUID(), "Bob")
-        val game = GameLogic(UUID.randomUUID(), mutableListOf(player1, player2))
         val card1 = Card(CardType.CAT_TACO)
         val card2 = Card(CardType.CAT_TACO)
         val stolenCard = Card(CardType.DEFUSE)
