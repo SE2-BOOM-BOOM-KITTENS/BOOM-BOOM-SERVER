@@ -1,5 +1,5 @@
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
-import com.aau.se2.boomboomkittens.filipp.server.networkPackage.NetworkPacketMapper
+import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertNull
 import java.util.UUID
 
-class GameLogicDTOMapperTest {
+class GameLogicNetworkPacketMapperTest {
 
     private lateinit var gameLogic: GameLogic
     private lateinit var cardLogic: CardLogic
@@ -36,8 +36,8 @@ class GameLogicDTOMapperTest {
     }
 
     @Test
-    fun gameStateToDTOTest(){
-        val dto = mapper.gameStateToDTO(gameLogic, cardLogic)
+    fun gameStateToNetworkPacketTest(){
+        val dto = mapper.gameStateToNetworkPacket(gameLogic, cardLogic)
 
         assertEquals(gameLogic.lobbyId, dto.lobbyId)
         assertEquals(2, dto.playerCount)
@@ -53,8 +53,8 @@ class GameLogicDTOMapperTest {
     }
 
     @Test
-    fun gameStateToDTOWinnerNullTest(){
-        val dto = mapper.gameStateToDTO(gameLogic, cardLogic)
+    fun gameStateToNetworkPacketWinnerNullTest(){
+        val dto = mapper.gameStateToNetworkPacket(gameLogic, cardLogic)
         assertNull(dto.winner)
     }
 

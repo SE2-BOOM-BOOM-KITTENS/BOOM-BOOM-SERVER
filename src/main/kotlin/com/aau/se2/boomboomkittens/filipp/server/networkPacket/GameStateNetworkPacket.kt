@@ -1,4 +1,4 @@
-package com.aau.se2.boomboomkittens.filipp.server.networkPackage
+package com.aau.se2.boomboomkittens.filipp.server.networkPacket
 
 import java.util.UUID
 
@@ -9,6 +9,6 @@ data class GameStateNetworkPacket(
     val currentPlayer: PlayerNetworkPacket,
     val nextPlayer: PlayerNetworkPacket,
     val winner: PlayerNetworkPacket?,
-    val drawPile: CardPileDTO,
-    val discardPile: CardPileDTO
+    val drawPile: CardPileNetworkPacket,
+    val discardPile: CardPileNetworkPacket
     )

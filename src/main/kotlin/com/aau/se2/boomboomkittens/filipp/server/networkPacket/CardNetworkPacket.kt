@@ -1,4 +1,4 @@
-package com.aau.se2.boomboomkittens.filipp.server.networkPackage
+package com.aau.se2.boomboomkittens.filipp.server.networkPacket
 
 import com.aau.se2.boomboomkittens.game.cards.CardType
 
