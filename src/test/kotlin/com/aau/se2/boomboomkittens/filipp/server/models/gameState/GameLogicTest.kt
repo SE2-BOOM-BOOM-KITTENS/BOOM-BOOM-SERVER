@@ -31,9 +31,9 @@ class GameLogicTest {
 
     @Test
     fun initTest(){
-        assertEquals(2, gameLogic.playerLogic.getPlayerCount())
-        assertNotNull(gameLogic.playerLogic.getPlayerByID(player1.playerId))
-        assertNotNull(gameLogic.playerLogic.getPlayerByID(player2.playerId))
+        assertEquals(2, gameLogic.getPlayerLogic().getPlayerCount())
+        assertNotNull(gameLogic.getPlayerLogic().getPlayerByID(player1.playerId))
+        assertNotNull(gameLogic.getPlayerLogic().getPlayerByID(player2.playerId))
     }
 
     @Test
@@ -61,12 +61,12 @@ class GameLogicTest {
 
     @Test
     fun removePlayerTest(){
-        assertEquals(2, gameLogic.playerLogic.getPlayerCount())
+        assertEquals(2, gameLogic.getPlayerLogic().getPlayerCount())
 
         gameLogic.removePlayer(player1.playerId)
 
-        assertEquals(1, gameLogic.playerLogic.getPlayerCount())
-        assertNull(gameLogic.playerLogic.getPlayerByID(player1.playerId))
+        assertEquals(1, gameLogic.getPlayerLogic().getPlayerCount())
+        assertNull(gameLogic.getPlayerLogic().getPlayerByID(player1.playerId))
     }
 
     @Test
@@ -103,7 +103,7 @@ class GameLogicTest {
 
     @Test
     fun getWinnerTest(){
-        gameLogic.playerLogic.removePlayerByID(player2.playerId)
+        gameLogic.getPlayerLogic().removePlayerByID(player2.playerId)
         val winner = gameLogic.getWinner()
         assertEquals(player1.playerId, winner?.playerId)
     }
