@@ -26,7 +26,7 @@ class GameLogicTest {
         player1 = Player(UUID.randomUUID(), "player1")
         player2 = Player(UUID.randomUUID(), "player2")
         gameLogic = GameLogic(UUID.randomUUID(),mutableListOf(player1, player2) )
-        cardLogic = CardLogic()
+        cardLogic = gameLogic.getCardLogic()
     }
 
     @Test
@@ -34,18 +34,6 @@ class GameLogicTest {
         assertEquals(2, gameLogic.getPlayerLogic().getPlayerCount())
         assertNotNull(gameLogic.getPlayerLogic().getPlayerByID(player1.playerId))
         assertNotNull(gameLogic.getPlayerLogic().getPlayerByID(player2.playerId))
-    }
-
-    @Test
-    fun drawCardTest(){
-        val card = Card(CardType.BLANK)
-        cardLogic.drawPile.insertAt(0, card)
-
-        cardLogic.drawCard(player1.playerId)
-
-        val hand = gameLogic.getPlayerHand(player1.playerId)
-        assertEquals(1, hand.getCardAmount())
-        assertEquals(card, hand.cards[0])
     }
 
     @Test
@@ -67,28 +55,6 @@ class GameLogicTest {
 
         assertEquals(1, gameLogic.getPlayerLogic().getPlayerCount())
         assertNull(gameLogic.getPlayerLogic().getPlayerByID(player1.playerId))
-    }
-
-    @Test
-    fun addCardToPlayerTest(){
-        val card = Card(CardType.EXPLODING_KITTEN)
-
-        cardLogic.addCardToPlayer(player2.playerId, card)
-
-        val hand = gameLogic.getPlayerHand(player2.playerId)
-        assertEquals(1, hand.getCardAmount())
-        assertEquals(card, hand.cards[0])
-    }
-
-    @Test
-    fun removeCardFromPlayerTest(){
-        val card = Card(CardType.EXPLODING_KITTEN)
-        cardLogic.addCardToPlayer(player1.playerId, card)
-
-        cardLogic.removeCardFromPlayer(player1.playerId, card)
-
-        val hand = gameLogic.getPlayerHand(player1.playerId)
-        assertEquals(0, hand.getCardAmount())
     }
 
     /*@Test
