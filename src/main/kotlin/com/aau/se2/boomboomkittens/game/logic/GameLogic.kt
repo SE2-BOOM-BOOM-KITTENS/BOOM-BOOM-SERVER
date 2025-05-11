@@ -4,8 +4,6 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effect
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
-import com.aau.se2.boomboomkittens.game.player.PlayerHand
-import com.aau.se2.boomboomkittens.game.player.PlayerNode
 import java.util.UUID
 
 open class GameLogic(
@@ -13,15 +11,15 @@ open class GameLogic(
     val players: MutableList<Player> = mutableListOf(),
 ){
     private val playerLogic: PlayerLogic = PlayerLogic()
-    private val cardLogic: CardLogic = CardLogic()
+    private val cardLogic: CardLogic = CardLogic(players.size)
     private val discardPile: CardPile = CardPile()
-    private val playerMap = mutableMapOf<UUID, PlayerNode>()
     private val cardRegistry = CardEffectRegistry
 
 
     init {
         for(player in players){
             playerLogic.addPlayerByID(player)
+            cardLogic.addPlayer(player)
         }
     }
 
@@ -44,10 +42,6 @@ open class GameLogic(
     fun addPlayer(playerId: UUID, playerName:String){
         val newPlayer = Player(playerId, playerName)
         playerLogic.addPlayerByID(newPlayer)
-    }
-
-    fun getPlayerHand(playerId: UUID): PlayerHand {
-        return playerMap[playerId]?.player?.playerHand ?: throw IllegalStateException("Player with id $playerId not found")
     }
 
     fun getPlayerLogic(): PlayerLogic {
