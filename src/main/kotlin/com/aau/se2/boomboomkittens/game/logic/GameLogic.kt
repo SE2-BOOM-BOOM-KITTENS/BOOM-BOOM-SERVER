@@ -15,6 +15,7 @@ class GameLogic(
     private val playerLogic: PlayerLogic = PlayerLogic()
     private val discardPile: CardPile = CardPile()
     private val playerMap = mutableMapOf<UUID, PlayerNode>()
+    private val cardRegistry = CardEffectRegistry
 
 
     init {
@@ -35,7 +36,35 @@ class GameLogic(
         return null
     }
 
+    fun nextTurn(){
+        playerLogic.moveToNextPlayer()
+    }
+
+    fun addPlayer(playerId: UUID, playerName:String){
+        val newPlayer = Player(playerId, playerName)
+        playerLogic.addPlayerByID(newPlayer)
+    }
+
     fun getPlayerHand(playerId: UUID): PlayerHand {
         return playerMap[playerId]?.player?.playerHand ?: throw IllegalStateException("Player with id $playerId not found")
+    }
+
+    fun getPlayerLogic(): PlayerLogic {
+        return this.playerLogic
+    }
+
+    fun getDiscardPile(): CardPile {
+        return discardPile
+    }
+
+    fun playCard(playerId: UUID, cardType: CardType){
+        val player = playerLogic.getPlayerByID(playerId)
+        if(player!!.playerHand.containsCardType(cardType)){
+            val card = cardRegistry.getEffect(cardType)
+            card.apply(player,this)
+        } else{
+            throw IllegalStateException("Player doesn't have card type $cardType")
+        }
+
     }
 }
