@@ -3,10 +3,12 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effect
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.CardType
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.LinkedList
+import java.util.UUID
 
 class SeeTheFutureEffectTest {
 
@@ -15,17 +17,17 @@ class SeeTheFutureEffectTest {
 
     @BeforeEach
     fun setup() {
-        gameLogic = GameLogic(lobbyId = TODO())
+        gameLogic = GameLogic(lobbyId = UUID.randomUUID())
         player = Player(
-            name = "TestPlayer", id = TODO())
+            name = "TestPlayer")
 
         // Erstelle ein paar Testkarten
         val testCards = listOf(
-            Card(type = TODO()),
-            Card(type = TODO()),
-            Card(type = TODO()),
-            Card(type = TODO()),
-            Card(type = TODO())
+            Card(type = CardType.BLANK),
+            Card(type = CardType.BLANK),
+            Card(type = CardType.BLANK),
+            Card(type = CardType.BLANK),
+            Card(type = CardType.BLANK)
         )
 
         // drawPile setzen
@@ -40,7 +42,7 @@ class SeeTheFutureEffectTest {
         val seeTheFutureEffect = SeeTheFutureEffect()
         seeTheFutureEffect.apply(player, gameLogic)
 
-        val topCards = gameLogic.peekTopCards(3)
+        val topCards = gameLogic.getCardLogic().peekTopCards(3)
 
         assertEquals(3, topCards.size)
         assertEquals("Card1", topCards[0].name)
