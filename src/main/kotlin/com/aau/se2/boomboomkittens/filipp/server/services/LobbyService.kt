@@ -1,10 +1,11 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
 import com.aau.se2.boomboomkittens.game.Lobby
-import com.jetbrains.exported.JBRApi
+import com.aau.se2.boomboomkittens.game.player.Player
+import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
 
-@JBRApi.Service
+@Service
 class LobbyService(
 ) {
     private val lobbies = ConcurrentHashMap<String, Lobby>()

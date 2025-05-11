@@ -1,34 +1,36 @@
-package com.aau.se2.boomboomkittens.game.logic
-
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.AlterTheFutureEffect
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffectRegistry
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.CardType
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.LinkedList
 import java.util.UUID
 
-class AlterTheFutureEffectTest(lobbyId: UUID) {
+
+class AlterTheFutureEffectTest {
 
     private lateinit var gameLogic: GameLogic
     private lateinit var player: Player
+    private lateinit var cardRegistry: CardEffectRegistry
 
     @BeforeEach
     fun setup() {
         gameLogic = GameLogic(
-            lobbyId = TODO())
+            lobbyId = UUID.randomUUID(),)
         player = Player(
-            name = "TestPlayer", id = TODO())
+            name = "TestPlayer")
 
         // Erstelle ein paar Testkarten
         val testCards = listOf(
-            Card(type = TODO()),
-            Card(type = TODO()),
-            Card(type = TODO()),
-            Card(type = TODO()),
-            Card(type = TODO())
+            Card(type = CardType.BLANK),
+            Card(type = CardType.BLANK),
+            Card(type = CardType.BLANK),
+            Card(type = CardType.BLANK),
+            Card(type = CardType.BLANK)
         )
 
         // drawPile setzen
