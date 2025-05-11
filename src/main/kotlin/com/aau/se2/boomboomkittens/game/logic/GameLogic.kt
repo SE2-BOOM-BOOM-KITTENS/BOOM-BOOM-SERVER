@@ -1,95 +1,57 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffectRegistry
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
-import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
+import com.aau.se2.boomboomkittens.game.player.PlayerNode
+import java.util.LinkedList
 import java.util.UUID
 
 open class GameLogic(
     var lobbyId: UUID,
     val players: MutableList<Player> = mutableListOf(),
 ){
-    private val _playerLogic: PlayerLogic = PlayerLogic()
-    private val _cardLogic: CardLogic = CardLogic(players.size)
-    private val _discardPile: CardPile = CardPile()
-    private val _cardRegistry = CardEffectRegistry
-    private val drawPile = PlayerHand(UUID(0, 0))
-
-
-    val playerLogic: PlayerLogic
-        get() = _playerLogic
-    val cardLogic: CardLogic
-        get() = _cardLogic
-    val discardPile: CardPile
-        get() = _discardPile
-    val cardRegistry: CardEffectRegistry
-        get() = _cardRegistry
+    var playerLogic: PlayerLogic = PlayerLogic()
+    var discardPile: CardPile = CardPile()
+    private val playerMap = mutableMapOf<UUID, PlayerNode>()
+    private val drawPile: LinkedList<Card> = LinkedList()
 
 
     init {
         for(player in players){
-            _playerLogic.addPlayerByID(player)
-            _cardLogic.addPlayer(player)
+            playerLogic.addPlayerByID(player)
         }
     }
 
     fun removePlayer(playerId: UUID){
-        _playerLogic.removePlayerByID(playerId)
+        playerLogic.removePlayerByID(playerId)
     }
 
     fun getWinner(): Player? {
-        if(_playerLogic.getPlayerCount() == 1){
-            val winner = _playerLogic.getCurrentPlayer()
+        if(playerLogic.getPlayerCount() == 1){
+            val winner = playerLogic.getCurrentPlayer()
             return winner
         }
         return null
     }
 
-    fun nextTurn(){
-        _playerLogic.moveToNextPlayer()
+    fun getPlayerHand(playerId: UUID): PlayerHand {
+        return playerMap[playerId]?.player?.playerHand ?: throw IllegalStateException("Player with id $playerId not found")
     }
 
-    fun addPlayer(playerId: UUID, playerName:String){
-        val newPlayer = Player(playerId, playerName)
-        _playerLogic.addPlayerByID(newPlayer)
-        _cardLogic.addPlayer(newPlayer)
-    }
-
-    fun getPlayerById(playerId: UUID): Player? {
-        return _playerLogic.getPlayerByID(playerId)
-    }
-
-    fun getPlayerHand(playerId: UUID): PlayerHand? {
-        return _cardLogic.getPlayerHand(playerId)
-    }
-
-    fun playCard(playerId: UUID, cardType: CardType){
-        val player = _playerLogic.getPlayerByID(playerId)
-        if(player!!.playerHand.containsCardType(cardType)){
-            val card = _cardRegistry.getEffect(cardType)
-            card.apply(player,this)
-        } else{
-            throw IllegalStateException("Player doesn't have card type $cardType")
-        }
-
-    }
     open fun peekTopCards(count: Int): List<Card> {
-        return drawPile.cards.take(count)
+        return drawPile.take(count)
     }
     open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
-        if (newOrder.size > drawPile.cards.size) {
+        if (newOrder.size > drawPile.size) {
             throw IllegalArgumentException("New order has more cards than the draw pile.")
         }
+        repeat(newOrder.size) { drawPile.removeFirst() }
 
-        repeat(newOrder.size) { drawPile.cards.removeFirst() }
-
-        for (i in newOrder.indices.reversed()) {
-            drawPile.cards.add(0, newOrder[i])
+        for (i in newOrder.size - 1 downTo 0) {
+            drawPile.addFirst(newOrder[i])
         }
-
         println("${player.name} rearranged the top ${newOrder.size} cards.")
     }
 }
