@@ -14,22 +14,22 @@ class NetworkPacketMapper {
         val playerNetworkPackets = mutableListOf<PlayerNetworkPacket>()
 
         for(player in playerList){
-            val playerHand = gameLogic.getPlayerHand(player.playerId)
+            val playerHand = player.playerHand
             playerNetworkPackets.add(playerToDTO(player, playerHand))
         }
 
         val currentPlayer = playerLogic.getCurrentPlayer()
-        val currentPlayerHand = gameLogic.getPlayerHand(currentPlayer!!.playerId)
+        val currentPlayerHand = currentPlayer!!.playerHand
         val currentPlayerDTO = playerToDTO(currentPlayer,currentPlayerHand)
 
         val nextPlayer = playerLogic.getCurrentPlayerNode()!!.next!!.player
-        val nextPlayerHand = gameLogic.getPlayerHand(nextPlayer.playerId)
+        val nextPlayerHand = nextPlayer.playerHand
         val nextPlayerDTO = playerToDTO(nextPlayer,nextPlayerHand)
 
         val winner = gameLogic.getWinner()
         var winnerDTO: PlayerNetworkPacket? = null
         if(winner != null) {
-            val winnerHand = gameLogic.getPlayerHand(winner.playerId)
+            val winnerHand = winner.playerHand
             winnerDTO = playerToDTO(gameLogic.getWinner(), winnerHand)
         }
 
