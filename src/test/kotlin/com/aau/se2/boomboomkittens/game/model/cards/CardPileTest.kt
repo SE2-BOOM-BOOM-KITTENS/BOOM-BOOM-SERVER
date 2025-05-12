@@ -1,4 +1,4 @@
-package com.aau.se2.boomboomkittens.filipp.server.models.cards
+package com.aau.se2.boomboomkittens.game.model.cards
 
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile

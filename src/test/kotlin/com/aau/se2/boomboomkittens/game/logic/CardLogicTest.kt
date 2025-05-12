@@ -16,32 +16,51 @@ class CardLogicTest {
 
     private lateinit var cardLogic: CardLogic
     private lateinit var player: Player
+    private lateinit var falsePlayer: Player
     private lateinit var playerId: UUID
+    private lateinit var falseId: UUID
     private val dummyCard = Card(CardType.BLANK)
 
     @BeforeEach
     fun setup() {
         playerId = UUID.randomUUID()
         player = Player(playerId, "TestPlayer")
+
+        falseId = UUID.randomUUID()
+        falsePlayer = Player(falseId, "FalsePlayer")
         cardLogic = CardLogic(1)
         cardLogic.addPlayer(player)
     }
 
     @Test
-    fun `addCardToPlayer adds card to player's hand`() {
+    fun addCardToPlayerTest() {
         cardLogic.addCardToPlayer(playerId, dummyCard)
         assertTrue(player.playerHand.containsCard(dummyCard))
     }
 
     @Test
-    fun `removeCardFromPlayer removes card from player's hand`() {
+    fun addCardToPlayerTestNull() {
+        assertThrows(IllegalArgumentException::class.java) {
+            cardLogic.addCardToPlayer(falseId, dummyCard)
+        }
+    }
+
+    @Test
+    fun removeCardFromPlayerTest() {
         player.playerHand.addCard(dummyCard)
         cardLogic.removeCardFromPlayer(playerId, dummyCard)
         assertFalse(player.playerHand.containsCard(dummyCard))
     }
 
     @Test
-    fun `drawCard adds card from pile to player`() {
+    fun removeCardFromPlayerTestNull() {
+        assertThrows(IllegalArgumentException::class.java) {
+            cardLogic.removeCardFromPlayer(falseId, dummyCard)
+        }
+    }
+
+    @Test
+    fun drawCardTest() {
         val topCard = Card(CardType.BLANK)
         cardLogic.drawPile.insertAt(0, topCard)
         cardLogic.drawCard(playerId)
@@ -49,7 +68,7 @@ class CardLogicTest {
     }
 
     @Test
-    fun `drawCard throws if draw pile is empty`() {
+    fun drawCardExceptionTest() {
         cardLogic.drawPile = CardPile()
         assertThrows(IllegalStateException::class.java) {
             cardLogic.drawCard(playerId)
