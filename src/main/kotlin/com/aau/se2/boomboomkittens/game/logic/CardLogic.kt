@@ -43,19 +43,22 @@ class CardLogic(playerSize: Int) {
         return CardPile()
     }
 
-    open fun peekTopCards(count: Int): List<Card> {
-        return drawPile.take(count)
-    }
-    open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
-        require(newOrder.size <= drawPile.size) {
-            throw IllegalArgumentException("New order has more cards than the draw pile.")
-        }
-        repeat(newOrder.size) { drawPile.removeFirst() }
-
-        for (i in newOrder.size - 1 downTo 0) {
-            drawPile.insertAt(0,newOrder[i])
-        }
-        println("${player.name} rearranged the top ${newOrder.size} cards.")
-    }
+    /**
+     * Commented out for rework
+     */
+//    open fun peekTopCards(count: Int): List<Card> {
+//        return drawPile.take(count)
+//    }
+//    open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
+//        require(newOrder.size <= drawPile.size) {
+//            throw IllegalArgumentException("New order has more cards than the draw pile.")
+//        }
+//        repeat(newOrder.size) { drawPile.removeFirst() }
+//
+//        for (i in newOrder.size - 1 downTo 0) {
+//            drawPile.insertAt(0,newOrder[i])
+//        }
+//        println("${player.name} rearranged the top ${newOrder.size} cards.")
+//    }
 
 }

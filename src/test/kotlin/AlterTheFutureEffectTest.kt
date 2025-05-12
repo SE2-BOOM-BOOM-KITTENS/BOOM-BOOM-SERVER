@@ -1,4 +1,3 @@
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.AlterTheFutureEffect
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffectRegistry
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
