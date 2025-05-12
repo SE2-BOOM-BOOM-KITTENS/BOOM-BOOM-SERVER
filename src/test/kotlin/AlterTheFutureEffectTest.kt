@@ -24,13 +24,13 @@ class AlterTheFutureEffectTest {
         )
         player = Player(
             name = "TestPlayer",
-            id = UUID.randomUUID()
+            id = UUID.randomUUID().toString()
         )
 
         val testCards = listOf(
-            Card(type = CardType.ATTACK),
-            Card(type = CardType.SKIP),
-            Card(type = CardType.TACOCAT),
+            Card(type = CardType.ALTERTHEFUTURE),
+            Card(type = CardType.SEETHEFUTURE),
+            Card(type = CardType.BLANK),
             Card(type = CardType.DEFUSE),
             Card(type = CardType.EXPLODING_KITTEN)
         )
