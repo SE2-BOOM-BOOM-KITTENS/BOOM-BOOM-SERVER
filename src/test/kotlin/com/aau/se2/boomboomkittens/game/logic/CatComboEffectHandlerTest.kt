@@ -67,7 +67,7 @@ class CatComboEffectHandlerTest {
         }
         val originalDiscardSize = game.discardPile.getPileList().size
 
-        CatComboEffectHandler.handleComboRequest(player1, player1.playerHand.cards.toList(), game)
+        CatComboEffectHandler.handleCombo(player1, player1.playerHand.cards.toList(), game)
 
         // Erwartung: keine Aktion, Karten aber abgelegt
         assertEquals(originalDiscardSize + 4, game.discardPile.getPileList().size)
