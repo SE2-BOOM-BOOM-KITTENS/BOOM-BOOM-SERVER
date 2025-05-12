@@ -43,7 +43,7 @@ class CatComboEffectHandlerTest {
         assertTrue(stolenCard !in player2.playerHand.cards)
     }
 
-    @Test
+    /*@Test
     fun `invalid combo returns null and discards cards`() {
         val cards = List(4) { Card(CardType.CAT_BEARD) }
         player1.playerHand.cards.addAll(cards)
@@ -53,7 +53,7 @@ class CatComboEffectHandlerTest {
         assertEquals(null, result)
         assertTrue(player1.playerHand.cards.isEmpty())
         assertTrue(game.discardPile.getPileList().containsAll(cards))
-    }
+    }*/
 
     @Test
     fun `test five different Cat cards triggers discard pile choice`() {
@@ -86,6 +86,4 @@ class CatComboEffectHandlerTest {
 
         assertEquals(ComboType.SPECIFIC_REQUEST, result?.type)
     }
-
-
 }

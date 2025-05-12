@@ -60,7 +60,7 @@ object CatComboEffectHandler {
     }
 
     private fun isCatCard(card: Card): Boolean {
-        return card.name.startsWith("CAT_")
+        return card.type.name.startsWith("CAT_")
     }
 
     private fun isTwoSame(cards: List<Card>) =
