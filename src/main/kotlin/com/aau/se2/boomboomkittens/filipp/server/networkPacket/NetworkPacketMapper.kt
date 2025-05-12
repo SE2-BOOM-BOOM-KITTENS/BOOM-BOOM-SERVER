@@ -9,32 +9,32 @@ import com.aau.se2.boomboomkittens.game.player.PlayerHand
 
 class NetworkPacketMapper {
     fun gameStateToNetworkPacket(gameLogic: GameLogic, cardLogic: CardLogic): GameStateNetworkPacket {
-        val playerLogic = gameLogic.getPlayerLogic()
+        val playerLogic = gameLogic.playerLogic
         val playerList = playerLogic.getPlayerList()
         val playerNetworkPackets = mutableListOf<PlayerNetworkPacket>()
 
         for(player in playerList){
-            val playerHand = gameLogic.getPlayerHand(player.playerId)
+            val playerHand = player.playerHand
             playerNetworkPackets.add(playerToDTO(player, playerHand))
         }
 
         val currentPlayer = playerLogic.getCurrentPlayer()
-        val currentPlayerHand = gameLogic.getPlayerHand(currentPlayer!!.playerId)
+        val currentPlayerHand = currentPlayer!!.playerHand
         val currentPlayerDTO = playerToDTO(currentPlayer,currentPlayerHand)
 
         val nextPlayer = playerLogic.getCurrentPlayerNode()!!.next!!.player
-        val nextPlayerHand = gameLogic.getPlayerHand(nextPlayer.playerId)
+        val nextPlayerHand = nextPlayer.playerHand
         val nextPlayerDTO = playerToDTO(nextPlayer,nextPlayerHand)
 
         val winner = gameLogic.getWinner()
         var winnerDTO: PlayerNetworkPacket? = null
         if(winner != null) {
-            val winnerHand = gameLogic.getPlayerHand(winner.playerId)
+            val winnerHand = winner.playerHand
             winnerDTO = playerToDTO(gameLogic.getWinner(), winnerHand)
         }
 
         val drawPile = cardPileToDTO(cardLogic.drawPile,true)
-        val discardPile = cardPileToDTO(gameLogic.getDiscardPile(),false)
+        val discardPile = cardPileToDTO(gameLogic.discardPile,false)
 
 
         return GameStateNetworkPacket(
@@ -72,16 +72,5 @@ class NetworkPacketMapper {
         val name = card.name
         val type = card.type
         return CardNetworkPacket(name,type)
-    }
-
-    private fun playerHandToNetworkPacket(playerHand: PlayerHand): PlayerHandNetworkPacket {
-        val playerId = playerHand.playerId
-
-        val cards = playerHand.cards
-        val cardsDTO : MutableList<CardNetworkPacket> = mutableListOf()
-        for(card in cards){
-            cardsDTO.add(cardToNetworkPacket(card))
-        }
-        return PlayerHandNetworkPacket(playerId,cardsDTO)
     }
 }

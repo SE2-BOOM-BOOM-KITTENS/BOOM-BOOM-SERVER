@@ -27,7 +27,7 @@ class GameLogicNetworkPacketMapperTest {
         player2 = Player(UUID.randomUUID(), "player2")
 
         gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player1,player2))
-        cardLogic = CardLogic()
+        cardLogic = gameLogic.cardLogic
 
         cardLogic.drawPile.insertAt(0, Card(CardType.BLANK))
 

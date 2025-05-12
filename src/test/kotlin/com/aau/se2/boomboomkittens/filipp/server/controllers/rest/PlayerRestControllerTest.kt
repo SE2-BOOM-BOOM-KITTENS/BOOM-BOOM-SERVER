@@ -36,7 +36,7 @@ class PlayerRestControllerTest {
 
     @Test
     fun getPlayerByIdTest(){
-        given(playerService.getPlayer(player.toString())).willReturn(player)
+        given(playerService.getPlayer(player.playerId.toString())).willReturn(player)
 
         mockMvc.get("/players"){
             header("id",id)
