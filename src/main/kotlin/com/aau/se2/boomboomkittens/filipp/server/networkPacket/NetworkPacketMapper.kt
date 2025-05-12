@@ -9,7 +9,7 @@ import com.aau.se2.boomboomkittens.game.player.PlayerHand
 
 class NetworkPacketMapper {
     fun gameStateToNetworkPacket(gameLogic: GameLogic, cardLogic: CardLogic): GameStateNetworkPacket {
-        val playerLogic = gameLogic.getPlayerLogic()
+        val playerLogic = gameLogic.playerLogic
         val playerList = playerLogic.getPlayerList()
         val playerNetworkPackets = mutableListOf<PlayerNetworkPacket>()
 
@@ -34,7 +34,7 @@ class NetworkPacketMapper {
         }
 
         val drawPile = cardPileToDTO(cardLogic.drawPile,true)
-        val discardPile = cardPileToDTO(gameLogic.getDiscardPile(),false)
+        val discardPile = cardPileToDTO(gameLogic.discardPile,false)
 
 
         return GameStateNetworkPacket(
@@ -72,16 +72,5 @@ class NetworkPacketMapper {
         val name = card.name
         val type = card.type
         return CardNetworkPacket(name,type)
-    }
-
-    private fun playerHandToNetworkPacket(playerHand: PlayerHand): PlayerHandNetworkPacket {
-        val playerId = playerHand.playerId
-
-        val cards = playerHand.cards
-        val cardsDTO : MutableList<CardNetworkPacket> = mutableListOf()
-        for(card in cards){
-            cardsDTO.add(cardToNetworkPacket(card))
-        }
-        return PlayerHandNetworkPacket(playerId,cardsDTO)
     }
 }

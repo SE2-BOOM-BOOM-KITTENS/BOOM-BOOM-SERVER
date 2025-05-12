@@ -15,7 +15,7 @@ import java.util.UUID
 class GameLogicService {
     private val lobby = Lobby(creator = Player(name="Steve"), maxPlayers = 4)
     private val gameLogic = GameLogic(lobby.id)
-    private val cardLogic = gameLogic.getCardLogic()
+    private val cardLogic = gameLogic.cardLogic
     private val networkPacketMapper = NetworkPacketMapper()
     private lateinit var messagingTemplate: SimpMessagingTemplate
 
