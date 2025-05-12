@@ -23,8 +23,9 @@ open class WebSocketConfig : WebSocketMessageBrokerConfigurer {
     @Override
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry.addEndpoint("/game")
-            .addInterceptors(PlayerHandshakeInterceptor())
-            .setHandshakeHandler(PlayerHandshakeHandler())
+//            .addInterceptors(PlayerHandshakeInterceptor())
+//            .setHandshakeHandler(PlayerHandshakeHandler())
+            .setAllowedOrigins("*")
         registry.addEndpoint("/game/").withSockJS()
     }
 }
