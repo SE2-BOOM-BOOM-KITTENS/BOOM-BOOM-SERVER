@@ -15,16 +15,16 @@ open class WebSocketConfig : WebSocketMessageBrokerConfigurer {
 
     @Override
     override fun configureMessageBroker(config: MessageBrokerRegistry) {
-        config.enableSimpleBroker("/topic")
+        config.enableSimpleBroker("/topic", "/queue")
         config.setApplicationDestinationPrefixes("/app")
         config.setUserDestinationPrefix("/user")
     }
 
     @Override
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/game")
+        registry.addEndpoint("/game").setAllowedOrigins("*")
             .addInterceptors(PlayerHandshakeInterceptor())
             .setHandshakeHandler(PlayerHandshakeHandler())
-        registry.addEndpoint("/game/").withSockJS()
+        registry.addEndpoint("/game").withSockJS()
     }
 }
