@@ -47,7 +47,7 @@ class CardLogic(playerSize: Int) {
         return drawPile.take(count)
     }
     open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
-        if (newOrder.size > drawPile.size) {
+        require(newOrder.size <= drawPile.size) {
             throw IllegalArgumentException("New order has more cards than the draw pile.")
         }
         repeat(newOrder.size) { drawPile.removeFirst() }
