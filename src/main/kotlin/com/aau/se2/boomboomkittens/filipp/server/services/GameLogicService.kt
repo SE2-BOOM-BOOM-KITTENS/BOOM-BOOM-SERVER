@@ -12,12 +12,13 @@ import java.util.UUID
 
 
 @Service
-class GameLogicService {
+class GameLogicService(
+    val messagingTemplate: SimpMessagingTemplate
+) {
     private val lobby = Lobby(creator = Player(name="Steve"), maxPlayers = 4)
     private val gameLogic = GameLogic(lobby.id)
     private val cardLogic = gameLogic.cardLogic
     private val networkPacketMapper = NetworkPacketMapper()
-    private lateinit var messagingTemplate: SimpMessagingTemplate
 
 
     fun pass(playerId: UUID) {
@@ -52,7 +53,7 @@ class GameLogicService {
         if(playerId != null){
             messagingTemplate.convertAndSendToUser(playerId.toString(),"/queue/private", payload)
         } else{
-            messagingTemplate.convertAndSend("/topic/lobby/${lobby.id}",payload)
+            messagingTemplate.convertAndSend("/topic/lobby/1234",payload)
         }
     }
 
@@ -67,7 +68,13 @@ class GameLogicService {
 
     fun sendUserError(playerId: UUID, errorMessage: String){
         val serverMessage = ServerMessage("ERROR", errorMessage,null)
+        sendGameUpdate(payload = serverMessage)
         sendGameUpdate(playerId,serverMessage)
+    }
+
+    fun sendDebugBroadcast(){
+        val serverMessage = ServerMessage("DEBUG","BROADCASTING TEST",null)
+        messagingTemplate.convertAndSend("/topic/test",serverMessage)
     }
 
 }
