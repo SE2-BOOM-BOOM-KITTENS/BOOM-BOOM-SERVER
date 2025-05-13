@@ -10,6 +10,7 @@ object CardEffectRegistry {
         CardType.BLANK to BlankEffect(),
         CardType.DEFUSE to DefuseEffect(),
         CardType.EXPLODING_KITTEN to ExplodingKittenEffect()
+        CardType.S
     )
 
     fun getEffect (cardType: CardType): CardEffect {

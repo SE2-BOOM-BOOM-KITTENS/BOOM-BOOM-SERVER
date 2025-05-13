@@ -1,9 +1,11 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffectRegistry
+import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
+import java.util.LinkedList
 import java.util.UUID
 
 open class GameLogic(
@@ -14,6 +16,7 @@ open class GameLogic(
     private val _cardLogic: CardLogic = CardLogic(players.size)
     private val _discardPile: CardPile = CardPile()
     private val _cardRegistry = CardEffectRegistry
+    private val drawPile: LinkedList<Card> = LinkedList()
 
     val playerLogic: PlayerLogic
         get() = _playerLogic
@@ -62,5 +65,19 @@ open class GameLogic(
             throw IllegalStateException("Player doesn't have card type $cardType")
         }
 
+    }
+    open fun peekTopCards(count: Int): List<Card> {
+        return drawPile.take(count)
+    }
+    open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
+        if (newOrder.size > drawPile.size) {
+            throw IllegalArgumentException("New order has more cards than the draw pile.")
+        }
+        repeat(newOrder.size) { drawPile.removeFirst() }
+
+        for (i in newOrder.size - 1 downTo 0) {
+            drawPile.addFirst(newOrder[i])
+        }
+        println("${player.name} rearranged the top ${newOrder.size} cards.")
     }
 }
