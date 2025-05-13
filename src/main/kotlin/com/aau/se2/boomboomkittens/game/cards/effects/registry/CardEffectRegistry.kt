@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry
 
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.ShuffleEffect
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.cards.effects.BlankEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.DefuseEffect
