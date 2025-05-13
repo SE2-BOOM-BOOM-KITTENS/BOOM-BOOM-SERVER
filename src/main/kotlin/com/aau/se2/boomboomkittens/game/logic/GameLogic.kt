@@ -55,6 +55,15 @@ open class GameLogic(
     fun addPlayer(playerId: UUID, playerName:String){
         val newPlayer = Player(playerId, playerName)
         _playerLogic.addPlayerByID(newPlayer)
+        _cardLogic.addPlayer(newPlayer)
+    }
+
+    fun getPlayerById(playerId: UUID): Player? {
+        return _playerLogic.getPlayerByID(playerId)
+    }
+
+    fun getPlayerHand(playerId: UUID): PlayerHand? {
+        return _cardLogic.getPlayerHand(playerId)
     }
 
     fun playCard(playerId: UUID, cardType: CardType){
