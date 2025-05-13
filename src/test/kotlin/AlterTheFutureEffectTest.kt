@@ -4,7 +4,7 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLo
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.AlterTheFutureEffect
+import com.aau.se2.boomboomkittens.game.cards.effects.AlterTheFutureEffect
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
