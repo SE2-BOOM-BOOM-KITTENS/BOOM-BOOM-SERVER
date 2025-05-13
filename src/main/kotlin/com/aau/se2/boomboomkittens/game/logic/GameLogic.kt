@@ -11,19 +11,6 @@ open class GameLogic(
     var lobbyId: UUID,
     val players: MutableList<Player> = mutableListOf(),
 ){
-    private val _playerLogic: PlayerLogic = PlayerLogic()
-    private val _cardLogic: CardLogic = CardLogic(players.size)
-    private val _discardPile: CardPile = CardPile()
-    private val _cardRegistry = CardEffectRegistry
-
-    val playerLogic: PlayerLogic
-        get() = _playerLogic
-    val cardLogic: CardLogic
-        get() = _cardLogic
-    val discardPile: CardPile
-        get() = _discardPile
-    val cardRegistry: CardEffectRegistry
-        get() = _cardRegistry
 
 
     init {
@@ -73,4 +60,13 @@ open class GameLogic(
         }
 
     }
+
+    fun shuffleDeck(){
+        cardPile.shuffle()
+    }
+
+    fun notifyDeckShuffled(player: Player){
+        //eventDispatcher.sendToAllPlayers("DeckShuffled", currentCardPileState())
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry
 
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.ShuffleEffect
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.cards.effects.BlankEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.DefuseEffect
@@ -9,7 +10,8 @@ object CardEffectRegistry {
     private val effects = mapOf(
         CardType.BLANK to BlankEffect(),
         CardType.DEFUSE to DefuseEffect(),
-        CardType.EXPLODING_KITTEN to ExplodingKittenEffect()
+        CardType.EXPLODING_KITTEN to ExplodingKittenEffect(),
+        CardType.SHUFFLE to ShuffleEffect()
     )
 
     fun getEffect (cardType: CardType): CardEffect {
