@@ -44,7 +44,7 @@ class CardLogic {
             repeat(count) { pile.add(Card(type)) }
         }
 
-        /*// Regelgemäße Karten
+        /*// Regelgemäße Karten, noch nicht alle implementiert
         add(CardType.FAVOR, 2, 4)
         add(CardType.NOPE, 4, 6)
         add(CardType.ATTACK, 4, 7)
