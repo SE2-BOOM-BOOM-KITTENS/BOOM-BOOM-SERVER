@@ -49,7 +49,7 @@ class CardLogic(playerSize: Int) {
     }
 
     fun giveInitialHand(player: Player){
-        player.playerHand.addCard(Card(CardType.BLANK))
+        player.playerHand.addCard(Card(CardType.TEST))
         player.playerHand.addCard(Card(CardType.DEFUSE))
     }
 
