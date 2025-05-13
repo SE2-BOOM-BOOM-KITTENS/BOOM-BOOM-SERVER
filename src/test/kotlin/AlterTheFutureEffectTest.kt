@@ -1,40 +1,37 @@
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffectRegistry
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
+package com.aau.se2.boomboomkittens.game.logic
+
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.AlterTheFutureEffect
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.cards.Card
-import com.aau.se2.boomboomkittens.game.cards.CardType
-import com.aau.se2.boomboomkittens.game.cards.effects.AlterTheFutureEffect
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.LinkedList
 import java.util.UUID
 
-
-class AlterTheFutureEffectTest {
+class AlterTheFutureEffectTest(lobbyId: UUID) {
 
     private lateinit var gameLogic: GameLogic
     private lateinit var player: Player
-    private val lobbyId = UUID.randomUUID()
 
     @BeforeEach
     fun setup() {
         gameLogic = GameLogic(
-            lobbyId = lobbyId
-        )
+            lobbyId = TODO())
         player = Player(
-            name = "TestPlayer",
-        )
+            name = "TestPlayer", id = TODO())
 
+        // Erstelle ein paar Testkarten
         val testCards = listOf(
-            Card(type = CardType.ALTERTHEFUTURE),
-            Card(type = CardType.SEETHEFUTURE),
-            Card(type = CardType.BLANK),
-            Card(type = CardType.DEFUSE),
-            Card(type = CardType.EXPLODING_KITTEN)
+            Card(type = TODO()),
+            Card(type = TODO()),
+            Card(type = TODO()),
+            Card(type = TODO()),
+            Card(type = TODO())
         )
 
+        // drawPile setzen
         val drawPileField = GameLogic::class.java.getDeclaredField("drawPile")
         drawPileField.isAccessible = true
         val drawPile = LinkedList<Card>(testCards)
@@ -45,19 +42,24 @@ class AlterTheFutureEffectTest {
     fun `test AlterTheFutureEffect rearranges top 3 cards`() {
         val alterTheFutureEffect = AlterTheFutureEffect()
 
-        val customGameLogic = object : GameLogic(lobbyId = lobbyId) {
+        // Erstelle neue Anordnung
+        val newOrder = listOf(
+            Card(type = TODO()),
+            Card(type = TODO()),
+            Card(type = TODO())
+        )
+
+        // Überschreibe GameLogic-Funktion, um Test zu kontrollieren
+        val customGameLogic = object : GameLogic(lobbyId = TODO()) {
             override fun peekTopCards(count: Int): List<Card> {
-                return listOf(
-                    Card(type = CardType.EXPLODING_KITTEN),   // Card1
-                    Card(type = CardType.DEFUSE),    // Card2
-                    Card(type = CardType.SEETHEFUTURE)     // Card3
-                )
+                return listOf(Card(type = TODO()), Card(type = TODO()), Card(type = TODO()))
             }
 
             override fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
-                assertEquals("Exploding Kitten", newOrder[0].name)
-                assertEquals("See the Future", newOrder[1].name)
-                assertEquals("Defuse", newOrder[2].name)
+                // Hier wird getestet ob neue Reihenfolge korrekt
+                assertEquals("Card3", newOrder[0].name)
+                assertEquals("Card1", newOrder[1].name)
+                assertEquals("Card2", newOrder[2].name)
             }
         }
 

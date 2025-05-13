@@ -4,9 +4,13 @@ data class Card(
     val type: CardType
 ) {
     val name: String
-        get() {
-            TODO()
-        }
-}
+        get() = when (type) {
+            CardType.SEETHEFUTURE -> "See The Future"
+            CardType.ALTERTHEFUTURE -> "Alter The Future"
+            CardType.DEFUSE -> "Defuse"
+            CardType.EXPLODING_KITTEN -> "Exploding Kitten"
+            CardType.TEST -> "Test"
+            CardType.BLANK -> "Blank"
+}}
 
 
