@@ -50,13 +50,13 @@ class AlterTheFutureEffectTest {
                 return listOf(
                     Card(type = CardType.EXPLODING_KITTEN),   // Card1
                     Card(type = CardType.DEFUSE),    // Card2
-                    Card(type = CardType.EXPLODING_KITTEN)     // Card3
+                    Card(type = CardType.SEETHEFUTURE)     // Card3
                 )
             }
 
             override fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
-                assertEquals("Attack", newOrder[0].name)
-                assertEquals("Shuffle", newOrder[1].name)
+                assertEquals("Exploding Kitten", newOrder[0].name)
+                assertEquals("See the Future", newOrder[1].name)
                 assertEquals("Defuse", newOrder[2].name)
             }
         }
