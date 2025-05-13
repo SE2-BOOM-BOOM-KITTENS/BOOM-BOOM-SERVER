@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.controllers.rest
 
+
 import com.aau.se2.boomboomkittens.filipp.server.services.PlayerService
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -30,18 +31,12 @@ class PlayerRestControllerTest {
     val id = UUID.randomUUID()
     val player = Player(id, "Dummy")
 
-
     @MockBean
     lateinit var playerService: PlayerService
 
     @Test
     fun getPlayerByIdTest(){
-        val id = UUID.randomUUID()
-        val player = Player(id,"Dummy")
-
-
         given(playerService.getPlayer(player.playerId.toString())).willReturn(player)
-        given(playerService.getPlayer(player.toString())).willReturn(player)
 
         mockMvc.get("/players"){
             header("id",id)
@@ -54,7 +49,6 @@ class PlayerRestControllerTest {
 
     @Test
     fun registerPlayerTest(){
-        val player = Player(UUID.randomUUID(), "Dummy")
         val playerJson = objectMapper.writeValueAsString(player)
 
 

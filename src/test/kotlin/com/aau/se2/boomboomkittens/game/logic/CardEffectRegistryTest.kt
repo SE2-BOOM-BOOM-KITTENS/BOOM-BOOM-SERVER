@@ -2,6 +2,7 @@ package com.aau.se2.boomboomkittens.game.logic
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffectRegistry
 import com.aau.se2.boomboomkittens.game.cards.CardType
+import com.aau.se2.boomboomkittens.game.cards.effects.BlankEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.DefuseEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.ExplodingKittenEffect
 import org.junit.jupiter.api.Assertions.*
@@ -14,6 +15,12 @@ class CardEffectRegistryTest {
     fun `returns DefuseEffect for DEFUSE card`(){
         val effect = CardEffectRegistry.getEffect(CardType.DEFUSE)
         assertTrue(effect is DefuseEffect)
+    }
+
+    @Test
+    fun `returns BlankEffect for BLANK card`(){
+        val effect = CardEffectRegistry.getEffect(CardType.BLANK)
+        assertTrue(effect is BlankEffect)
     }
 
     @Test

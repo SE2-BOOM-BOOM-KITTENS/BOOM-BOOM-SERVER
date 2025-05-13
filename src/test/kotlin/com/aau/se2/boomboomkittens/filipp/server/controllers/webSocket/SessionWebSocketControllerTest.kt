@@ -23,7 +23,7 @@ class SessionWebSocketControllerTest {
     @LocalServerPort
     private val port = 0
 
-    private val WEBSOCKET_URI = "ws://localhost:%d/game"
+    private val WEBSOCKET_URI = "ws://localhost:%d/game?name=test"
     private val WEBSOCKET_TOPIC = "/topic/session"
 
     private val messages:BlockingQueue<String> = LinkedBlockingDeque()

@@ -10,7 +10,7 @@ class PlayerService {
     private val players = ConcurrentHashMap<String, Player>()
 
     fun createPlayer(name:String): Player {
-        val player = Player(playerId = UUID.randomUUID(),name = name)
+        val player = Player(playerId = UUID.randomUUID(), name = name)
         players[player.playerId.toString()] = player
         return player
     }

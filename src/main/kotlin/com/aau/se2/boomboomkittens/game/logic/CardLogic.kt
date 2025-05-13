@@ -4,24 +4,27 @@ import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
-import com.aau.se2.boomboomkittens.game.player.PlayerNode
 import java.util.*
 
-class CardLogic {
-    private val playerMap = mutableMapOf<UUID, PlayerNode>()
-    val players: MutableList<Player> = mutableListOf()
-    var drawPile: CardPile = buildInitialPile(players.size)
+class CardLogic(playerSize: Int) {
+    private val playerMap = mutableMapOf<UUID, Player>()
+
+    var drawPile: CardPile = buildInitialPile(playerSize)
 
     fun addCardToPlayer(playerId: UUID, card: Card){
-        val player = playerMap[playerId]?.player
+        val player = playerMap[playerId]
         requireNotNull(player){
             throw IllegalArgumentException("Player with id $playerId not found")
         }
         player.playerHand.addCard(card)
     }
 
+    fun addPlayer(player: Player){
+        playerMap[player.playerId] = player
+    }
+
     fun removeCardFromPlayer(playerId: UUID, card: Card){
-        val player = playerMap[playerId]?.player
+        val player = playerMap[playerId]
         requireNotNull(player){
             throw IllegalArgumentException("Player with id $playerId not found")
         }
@@ -80,5 +83,23 @@ class CardLogic {
         pile.shuffle()
         return pile
     }
+
+    /**
+     * Commented out for rework
+     */
+//    open fun peekTopCards(count: Int): List<Card> {
+//        return drawPile.take(count)
+//    }
+//    open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
+//        require(newOrder.size <= drawPile.size) {
+//            throw IllegalArgumentException("New order has more cards than the draw pile.")
+//        }
+//        repeat(newOrder.size) { drawPile.removeFirst() }
+//
+//        for (i in newOrder.size - 1 downTo 0) {
+//            drawPile.insertAt(0,newOrder[i])
+//        }
+//        println("${player.name} rearranged the top ${newOrder.size} cards.")
+//    }
 
 }

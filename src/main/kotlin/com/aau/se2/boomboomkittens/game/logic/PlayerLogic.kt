@@ -67,6 +67,10 @@ class PlayerLogic {
         return currentPlayer?.player
     }
 
+    fun moveToNextPlayer(){
+        currentPlayer = currentPlayer?.next
+    }
+
     fun getCurrentPlayerNode(): PlayerNode? {
         return currentPlayer
     }

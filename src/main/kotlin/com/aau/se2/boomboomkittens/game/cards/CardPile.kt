@@ -26,6 +26,15 @@ class CardPile {
         return pile
     }
 
+    fun take(n: Int):List<Card>{
+        val cards: List<Card> = pile.take(n)
+        return cards
+    }
+
+    fun removeFirst(): Card{
+        return pile.removeFirst()
+    }
+
     fun shuffle(){
         pile.shuffle()
     }
