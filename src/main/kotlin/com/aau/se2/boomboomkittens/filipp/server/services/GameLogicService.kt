@@ -6,6 +6,7 @@ import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.player.Player
+import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -15,10 +16,11 @@ import java.util.UUID
 class GameLogicService(
     val messagingTemplate: SimpMessagingTemplate
 ) {
-    private val lobby = Lobby(creator = Player(name="Steve"), maxPlayers = 4)
+    private val lobby = Lobby(creator = Player(name="Steve"), maxPlayers = 2)
     private val gameLogic = GameLogic(lobby.id)
     private val cardLogic = gameLogic.cardLogic
     private val networkPacketMapper = NetworkPacketMapper()
+
 
 
     fun pass(playerId: UUID) {
@@ -49,6 +51,18 @@ class GameLogicService(
         sendGameUpdate(payload = serverMessage)
     }
 
+    fun getInitState(playerId: UUID){
+        val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
+        val serverMessage = ServerMessage("GAME_STATE", "Starting State",gameState)
+        sendGameUpdate(payload = serverMessage)
+    }
+
+    fun getPlayerHand(playerId: UUID){
+        val playerHand = gameLogic.getPlayerHand(playerId)
+        val serverMessage = ServerMessage("HAND","You have received your card hand",playerHand)
+        sendGameUpdate(playerId= playerId, payload = serverMessage)
+    }
+
     fun sendGameUpdate(playerId: UUID? = null, payload: Any){
         if(playerId != null){
             messagingTemplate.convertAndSendToUser(playerId.toString(),"/queue/private", payload)
@@ -57,8 +71,32 @@ class GameLogicService(
         }
     }
 
-    fun addPlayer(playerId: UUID, playerName:String){
+    fun joinGame(playerId: UUID, playerName:String){
         gameLogic.addPlayer(playerId, playerName)
+
+        val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
+        val player = gameLogic.getPlayerById(playerId)
+        var playerHand = gameLogic.getPlayerHand(playerId)
+        if(playerHand != null){
+        val playerPacket = networkPacketMapper.playerToNetworkPacket(player,playerHand)
+        } else{
+            playerHand = PlayerHand(playerId, mutableListOf())
+            val playerPacket = networkPacketMapper.playerToNetworkPacket(player,playerHand)
+        }
+        val serverMessage = ServerMessage("GAME_STATE","Player $playerId has joined",gameState)
+        sendGameUpdate(payload = serverMessage)
+    }
+
+    fun explodePlayer(playerId: UUID){
+        gameLogic.removePlayer(playerId)
+
+        val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
+        val serverMessage = ServerMessage("GAME_STATE", "Player $playerId has exploded",gameState)
+        val privateServerMessage = ServerMessage("EXPLODE", "You have exploded",null)
+
+        sendGameUpdate(payload = serverMessage)
+        sendGameUpdate(playerId, payload = privateServerMessage)
+
     }
 
     private fun endTurn(playerId: UUID){
