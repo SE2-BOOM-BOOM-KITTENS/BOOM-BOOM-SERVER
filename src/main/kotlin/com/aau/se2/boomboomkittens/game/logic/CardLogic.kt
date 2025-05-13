@@ -63,12 +63,12 @@ class CardLogic(playerSize: Int) {
 
         // Regelgemäße Karten, noch nicht alle implementiert
         //add(CardType.FAVOR, 2, 4)
-        add(CardType.NOPE, 4, 6)
+        //add(CardType.NOPE, 4, 6)
         //add(CardType.ATTACK, 4, 7)
         //add(CardType.SKIP, 4, 6)
-        add(CardType.SEE_THE_FUTURE, 3, 3)
-        add(CardType.ALTER_THE_FUTURE, 2, 4)
-        add(CardType.SHUFFLE, 2, 4)
+        //add(CardType.SEE_THE_FUTURE, 3, 3)
+        //add(CardType.ALTER_THE_FUTURE, 2, 4)
+        //add(CardType.SHUFFLE, 2, 4)
         //add(CardType.DRAW_FROM_BOTTOM, 3, 4)
         //add(CardType.FERAL_CAT, 2, 4)
 
