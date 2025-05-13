@@ -10,6 +10,7 @@ class ExplodingKittenEffect : CardEffect {
             player.useDefuseCard()
             println ("${player.name} defused an Exploding Kitten!")
         } else {
+            player.isAlive = false
             gameLogic.removePlayer(player.playerId)
         }
     }

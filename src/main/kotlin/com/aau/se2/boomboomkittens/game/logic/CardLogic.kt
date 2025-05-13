@@ -2,25 +2,38 @@ package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
+import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
-import com.aau.se2.boomboomkittens.game.player.PlayerNode
+import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
 
-class CardLogic {
-    private val playerMap = mutableMapOf<UUID, PlayerNode>()
-    val players: MutableList<Player> = mutableListOf()
-    var drawPile: CardPile = buildInitialPile(players.size)
+class CardLogic(playerSize: Int) {
+    private val playerMap = mutableMapOf<UUID, Player>()
+
+    var drawPile: CardPile = buildInitialPile(playerSize)
 
     fun addCardToPlayer(playerId: UUID, card: Card){
-        val player = playerMap[playerId]?.player
+        val player = playerMap[playerId]
         requireNotNull(player){
             throw IllegalArgumentException("Player with id $playerId not found")
         }
         player.playerHand.addCard(card)
     }
 
+    fun addPlayer(player: Player){
+        playerMap[player.playerId] = player
+        giveInitialHand(player)
+    }
+
+    fun getPlayerHand(playerId: UUID): PlayerHand? {
+        requireNotNull(playerMap[playerId]){
+            throw IllegalArgumentException("Player with id $playerId not found")
+        }
+        return playerMap[playerId]?.playerHand
+    }
+
     fun removeCardFromPlayer(playerId: UUID, card: Card){
-        val player = playerMap[playerId]?.player
+        val player = playerMap[playerId]
         requireNotNull(player){
             throw IllegalArgumentException("Player with id $playerId not found")
         }
@@ -35,9 +48,49 @@ class CardLogic {
         addCardToPlayer(playerId, card)
     }
 
+    fun giveInitialHand(player: Player){
+        player.playerHand.addCard(Card(CardType.BLANK))
+        player.playerHand.addCard(Card(CardType.DEFUSE))
+    }
+
     fun buildInitialPile(playerCount: Int): CardPile {
         //TODO Insert specific cards based on player count
-        return CardPile()
+
+        val cardPile = CardPile()
+        val blank = Card(CardType.BLANK)
+        val defuse = Card(CardType.DEFUSE)
+        val explodingKitten = Card(CardType.EXPLODING_KITTEN)
+        var i = 0
+        while (i < 100) {
+            cardPile.insertAt(i, blank)
+            i++
+            cardPile.insertAt(i, defuse)
+            i++
+            cardPile.insertAt(i, explodingKitten)
+            i++
+        }
+
+        cardPile.shuffle()
+
+        return cardPile
     }
+
+    /**
+     * Commented out for rework
+     */
+//    open fun peekTopCards(count: Int): List<Card> {
+//        return drawPile.take(count)
+//    }
+//    open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
+//        require(newOrder.size <= drawPile.size) {
+//            throw IllegalArgumentException("New order has more cards than the draw pile.")
+//        }
+//        repeat(newOrder.size) { drawPile.removeFirst() }
+//
+//        for (i in newOrder.size - 1 downTo 0) {
+//            drawPile.insertAt(0,newOrder[i])
+//        }
+//        println("${player.name} rearranged the top ${newOrder.size} cards.")
+//    }
 
 }
