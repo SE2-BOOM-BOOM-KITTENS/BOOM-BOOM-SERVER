@@ -12,43 +12,39 @@ class SeeTheFutureEffectTest {
 
     private lateinit var gameLogic: GameLogic
     private lateinit var player: Player
+    private val lobbyId = UUID.randomUUID()
 
+    @BeforeEach
+    fun setup() {
+        gameLogic = GameLogic(lobbyId = lobbyId)
+        player = Player(
+            name = "TestPlayer"
+        )
 
-    /**
-     * NICE WORK BRO BUT THIS DOESN'T WORK
-     */
-//    @BeforeEach
-//    fun setup() {
-//        gameLogic = GameLogic(lobbyId = UUID.randomUUID())
-//        player = Player(
-//            name = "TestPlayer")
-//
-//        // Erstelle ein paar Testkarten
-//        val testCards = listOf(
-//            Card(type = CardType.BLANK),
-//            Card(type = CardType.BLANK),
-//            Card(type = CardType.BLANK),
-//            Card(type = CardType.BLANK),
-//            Card(type = CardType.BLANK)
-//        )
-//
-//        // drawPile setzen
-//        val drawPileField = GameLogic::class.java.getDeclaredField("drawPile")
-//        drawPileField.isAccessible = true
-//        val drawPile = LinkedList<Card>(testCards)
-//        drawPileField.set(gameLogic, drawPile)
-//    }
+        val testCards = listOf(
+            Card(type = CardType.BLANK),         // Card1
+            Card(type = CardType.SEETHEFUTURE),            // Card2
+            Card(type = CardType.DEFUSE),          // Card3
+            Card(type = CardType.ALTERTHEFUTURE),         // Card4
+            Card(type = CardType.EXPLODING_KITTEN) // Card5
+        )
 
-//    @Test
-//    fun `test SeeTheFutureEffect shows top 3 cards`() {
-//        val seeTheFutureEffect = SeeTheFutureEffect()
-//        seeTheFutureEffect.apply(player, gameLogic)
-//
-//        val topCards = gameLogic.getCardLogic().peekTopCards(3)
-//
-//        assertEquals(3, topCards.size)
-//        assertEquals("Card1", topCards[0].name)
-//        assertEquals("Card2", topCards[1].name)
-//        assertEquals("Card3", topCards[2].name)
-//    }
+        val drawPileField = GameLogic::class.java.getDeclaredField("drawPile")
+        drawPileField.isAccessible = true
+        val drawPile = LinkedList<Card>(testCards)
+        drawPileField.set(gameLogic, drawPile)
+    }
+
+    @Test
+    fun `test SeeTheFutureEffect shows top 3 cards`() {
+        val seeTheFutureEffect = SeeTheFutureEffect()
+        seeTheFutureEffect.apply(player, gameLogic)
+
+        val topCards = gameLogic.peekTopCards(3)
+
+        assertEquals(3, topCards.size)
+        assertEquals("Blank", topCards[0].name)
+        assertEquals("See the Future", topCards[1].name)
+        assertEquals("Defuse", topCards[2].name)
+    }
 }
