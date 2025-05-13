@@ -34,8 +34,16 @@ class GameLogicController(
             "PASS" -> gameLogicService.pass(playerID)
             "PLAY_CARDS" ->  gameLogicService.playCards(playerID, cardsPlayed)
             "EXIT" -> gameLogicService.exitPlayer(playerID)
+            "INIT" -> gameLogicService.getInitState(playerID)
+            "EXPLODE" -> gameLogicService.explodePlayer(playerID)
             else -> gameLogicService.sendUserError(playerID,"Invalid action")
         }
+    }
+
+    @MessageMapping("/getHand")
+    fun getHand(principal: Principal) {
+        val playerID = UUID.fromString(principal.name)
+        gameLogicService.getPlayerHand(playerID)
     }
 
     @MessageMapping("/test")
@@ -56,7 +64,7 @@ class GameLogicController(
         }else{
             playerName = ""
         }
-        gameLogicService.addPlayer(playerId, playerName)
+        gameLogicService.joinGame(playerId, playerName)
     }
 
 }

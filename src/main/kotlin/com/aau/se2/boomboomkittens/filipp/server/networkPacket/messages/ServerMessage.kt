@@ -5,5 +5,5 @@ import com.aau.se2.boomboomkittens.filipp.server.networkPacket.GameStateNetworkP
 data class ServerMessage(
     val type: String,
     val message: String,
-    val gameState: GameStateNetworkPacket?
+    val gameState: Any?
 )
