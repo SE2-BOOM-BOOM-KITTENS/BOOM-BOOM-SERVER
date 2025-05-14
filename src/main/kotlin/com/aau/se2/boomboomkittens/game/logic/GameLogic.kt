@@ -15,6 +15,7 @@ open class GameLogic(
     private val _cardLogic: CardLogic = CardLogic(players.size)
     private val _discardPile: CardPile = CardPile()
     private val _cardRegistry = CardEffectRegistry
+    private val cardPile = CardPile()
 
     val playerLogic: PlayerLogic
         get() = _playerLogic
@@ -77,4 +78,13 @@ open class GameLogic(
 
         effect.apply(player, this)
     }
+
+    fun shuffleDeck(){
+        cardPile.shuffle()
+    }
+
+    fun notifyDeckShuffled(player: Player){
+        // eventDispatcher.sendToAllPlayers("DeckShuffled", currentCardPileState())
+    }
+
 }
