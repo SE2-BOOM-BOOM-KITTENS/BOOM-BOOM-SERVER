@@ -176,7 +176,7 @@ class GameLogicTest {
     fun `peekTopCards returns correct number of cards`() {
         gameLogic.drawPile.add(Card(CardType.BLANK))
         gameLogic.drawPile.add(Card(CardType.DEFUSE))
-        gameLogic.drawPile.add(Card(CardType.SHUFFLE))
+        gameLogic.drawPile.add(Card(CardType.EXPLODING_KITTEN))
         val top = gameLogic.peekTopCards(2)
         assertEquals(2, top.size)
         assertEquals(CardType.BLANK, top[0].type)
@@ -184,7 +184,7 @@ class GameLogicTest {
 
     @Test
     fun `allowPlayerToRearrangeTopCards rearranges cards correctly`() {
-        val card1 = Card(CardType.SHUFFLE)
+        val card1 = Card(CardType.EXPLODING_KITTEN)
         val card2 = Card(CardType.DEFUSE)
         val card3 = Card(CardType.BLANK)
 
@@ -196,12 +196,12 @@ class GameLogicTest {
         val top = gameLogic.peekTopCards(3)
         assertEquals(CardType.BLANK, top[0].type)
         assertEquals(CardType.DEFUSE, top[1].type)
-        assertEquals(CardType.SHUFFLE, top[2].type)
+        assertEquals(CardType.EXPLODING_KITTEN, top[2].type)
     }
 
     @Test
     fun `allowPlayerToRearrangeTopCards throws if newOrder too large`() {
-        gameLogic.drawPile.add(Card(CardType.SHUFFLE))
+        gameLogic.drawPile.add(Card(CardType.EXPLODING_KITTEN))
         val tooMuch = listOf(Card(CardType.BLANK), Card(CardType.DEFUSE))
         assertThrows<IllegalArgumentException> {
             gameLogic.allowPlayerToRearrangeTopCards(player1, tooMuch)
