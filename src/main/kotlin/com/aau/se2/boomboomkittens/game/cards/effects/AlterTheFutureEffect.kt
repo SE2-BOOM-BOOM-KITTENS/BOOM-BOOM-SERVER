@@ -8,6 +8,6 @@ class AlterTheFutureEffect : CardEffect {
     override fun apply(player: Player, gameLogic: GameLogic) {
         val topCards = gameLogic.peekTopCards(3)
         val rearranged = topCards.reversed() // Beispiel: umgekehrte Reihenfolge
-        gameLogic.allowPlayerToRearrangeTopCards(player, rearranged)
+        gameLogic.run { allowPlayerToRearrangeTopCards(player, rearranged) }
     }
 }

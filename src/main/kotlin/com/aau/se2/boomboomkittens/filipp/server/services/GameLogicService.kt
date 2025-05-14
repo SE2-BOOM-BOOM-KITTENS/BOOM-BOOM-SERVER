@@ -71,12 +71,12 @@ class GameLogicService(
         }
     }
 
-    /*fun joinGame(playerId: UUID, playerName:String){
+    fun joinGame(playerId: UUID, playerName:String){
         gameLogic.addPlayer(playerId, playerName)
 
         val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
         val player = gameLogic.getPlayerById(playerId)
-        var playerHand = gameLogic.getPlayerHand(playerId)
+        var playerHand = getPlayerHand(playerId)
         if(playerHand != null){
         val playerPacket = networkPacketMapper.playerToNetworkPacket(player,playerHand)
         } else{
@@ -85,7 +85,7 @@ class GameLogicService(
         }
         val serverMessage = ServerMessage("GAME_STATE","Player $playerId has joined",gameState)
         sendGameUpdate(payload = serverMessage)
-    } */
+    }
 
     fun explodePlayer(playerId: UUID){
         gameLogic.removePlayer(playerId)
