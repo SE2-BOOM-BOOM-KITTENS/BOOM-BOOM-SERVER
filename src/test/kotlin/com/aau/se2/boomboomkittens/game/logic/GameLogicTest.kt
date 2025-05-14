@@ -139,9 +139,9 @@ class GameLogicTest {
         gameLogic.allowPlayerToRearrangeTopCards(player1, newOrder)
 
         val result = gameLogic.peekTopCards(3)
-        assertEquals(CardType.BLANK, result[0].type)
+        assertEquals(CardType.SHUFFLE, result[0].type)
         assertEquals(CardType.DEFUSE, result[1].type)
-        assertEquals(CardType.SHUFFLE, result[2].type)
+        assertEquals(CardType.BLANK, result[2].type)
     }
 
     @Test
