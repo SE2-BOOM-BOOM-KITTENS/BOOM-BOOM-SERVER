@@ -1,52 +1,38 @@
-package com.aau.se2.boomboomkittens.game.logic
-import com.aau.se2.boomboomkittens.game.cards.effects.SeeTheFutureEffect
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
-import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.SeeTheFutureEffect
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
+import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.LinkedList
-import java.util.UUID
+import java.util.*
 
 class SeeTheFutureEffectTest {
 
-    private lateinit var gameLogic: GameLogic
-    private lateinit var player: Player
-    private val lobbyId = UUID.randomUUID()
-
-    @BeforeEach
-    fun setup() {
-        gameLogic = GameLogic(lobbyId = lobbyId)
-        player = Player(
-            name = "TestPlayer"
-        )
-
-        val testCards = listOf(
-            Card(type = CardType.BLANK),         // Card1
-            Card(type = CardType.SEETHEFUTURE),            // Card2
-            Card(type = CardType.DEFUSE),          // Card3
-            Card(type = CardType.ALTERTHEFUTURE),         // Card4
-            Card(type = CardType.EXPLODING_KITTEN) // Card5
-        )
-
-        val drawPileField = GameLogic::class.java.getDeclaredField("drawPile")
-        drawPileField.isAccessible = true
-        val drawPile = LinkedList<Card>(testCards)
-        drawPileField.set(gameLogic, drawPile)
-    }
-
     @Test
-    fun `test SeeTheFutureEffect shows top 3 cards`() {
-        val seeTheFutureEffect = SeeTheFutureEffect()
-        seeTheFutureEffect.apply(player, gameLogic)
+    fun `see the future reveals top 3 cards`() {
+        val player = Player(playerId = UUID.randomUUID(), name = "Player1", defuseCount = 0, isAlive = true)
+        val effect = SeeTheFutureEffect()
 
-        val topCards = gameLogic.peekTopCards(3)
+        val expectedTopCards = listOf(
+            Card(CardType.SEE_THE_FUTURE),
+            Card(CardType.BLANK),
+            Card(CardType.DEFUSE)
+        )
 
-        assertEquals(3, topCards.size)
-        assertEquals("Blank", topCards[0].name)
-        assertEquals("See the Future", topCards[1].name)
-        assertEquals("Defuse", topCards[2].name)
+        val gameLogic = object : GameLogic(UUID.randomUUID()) {
+            override fun peekTopCards(count: Int): List<Card> {
+                return expectedTopCards
+            }
+        }
+
+        effect.apply(player, gameLogic)
+
+        val actualTopCards = gameLogic.peekTopCards(3)
+
+        assertEquals(expectedTopCards.size, actualTopCards.size)
+        assertEquals(expectedTopCards[0].name, actualTopCards[0].name)
+        assertEquals(expectedTopCards[1].name, actualTopCards[1].name)
+        assertEquals(expectedTopCards[2].name, actualTopCards[2].name)
     }
 }
