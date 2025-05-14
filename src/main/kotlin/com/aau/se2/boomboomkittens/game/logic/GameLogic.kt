@@ -22,8 +22,6 @@ open class GameLogic(
         get() = _cardLogic
     val discardPile: CardPile
         get() = _discardPile
-    val cardRegistry: CardEffectRegistry
-        get() = _cardRegistry
 
 
     init {
@@ -72,7 +70,6 @@ open class GameLogic(
         }
 
         val effect = _cardRegistry.getEffect(cardType)
-            ?: throw IllegalArgumentException("No effect registered for card type $cardType")
 
         effect.apply(player, this)
     }
