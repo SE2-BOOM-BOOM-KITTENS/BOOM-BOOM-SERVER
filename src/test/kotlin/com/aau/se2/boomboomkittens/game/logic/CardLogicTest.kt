@@ -45,12 +45,12 @@ class CardLogicTest {
         }
     }
 
-    /*@Test
+    @Test
     fun removeCardFromPlayerTest() {
         player.playerHand.addCard(dummyCard)
         cardLogic.removeCardFromPlayer(playerId, dummyCard)
         assertFalse(player.playerHand.containsCard(dummyCard))
-    }*/
+    }
 
     @Test
     fun removeCardFromPlayerTestNull() {

@@ -1,6 +1,6 @@
 package com.aau.se2.boomboomkittens.game.cards.effects
 
-/*import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.ShuffleEffect
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.ShuffleEffect
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.*
@@ -33,4 +33,4 @@ class ShuffleEffectTest{
         verify(gameLogic, times(1)).notifyDeckShuffled(player)
     }
 
-}*/
+}

@@ -78,9 +78,7 @@ class GameLogicService(
         val player = gameLogic.getPlayerById(playerId)
         var playerHand = getPlayerHand(playerId)
         if(playerHand != null){
-        val playerPacket = networkPacketMapper.playerToNetworkPacket(player,playerHand)
         } else{
-            playerHand = PlayerHand(playerId, mutableListOf())
             val playerPacket = networkPacketMapper.playerToNetworkPacket(player,playerHand)
         }
         val serverMessage = ServerMessage("GAME_STATE","Player $playerId has joined",gameState)

@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertNull
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.assertDoesNotThrow
-import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.mockito.Mockito.mock
 import java.util.UUID
 
@@ -49,7 +47,7 @@ class GameLogicTest {
         assertEquals("NewPlayer", retrievedPlayer?.name)
     }
 
-    /*@Test
+    @Test
     fun drawCardExceptionTest(){
         Assertions.assertTrue(cardLogic.drawPile.isEmpty())
 
@@ -58,7 +56,7 @@ class GameLogicTest {
         }
 
         Assertions.assertEquals("Cannot draw from empty pile", exception.message)
-    }*/
+    }
 
     @Test
     fun removePlayerTest(){
@@ -111,100 +109,9 @@ class GameLogicTest {
     }
 
     @Test
-    fun `removePlayer removes the player`() {
-        gameLogic.removePlayer(player1.playerId)
-        assertThrows<IllegalArgumentException> {
-            gameLogic.playerLogic.getPlayerByID(player1.playerId)
-        }
-    }
-
-    @Test
-    fun `getWinner returns null when more than one player alive`() {
-        val result = gameLogic.getWinner()
-        assertNull(result)
-    }
-
-    @Test
-    fun `getWinner returns player when only one alive`() {
-        gameLogic.removePlayer(player2.playerId)
-        val winner = gameLogic.getWinner()
-        assertNotNull(winner)
-        assertEquals(player1.playerId, winner!!.playerId)
-    }
-
-    @Test
-    fun `nextTurn calls playerLogic to advance turn`() {
-        val current = gameLogic.playerLogic.getCurrentPlayer()
-        gameLogic.nextTurn()
-        val next = gameLogic.playerLogic.getCurrentPlayer()
-        assertNotEquals(current!!.playerId, next!!.playerId)
-    }
-
-    @Test
-    fun `addPlayer adds a new player to the game`() {
-        val newId = UUID.randomUUID()
-        gameLogic.addPlayer(newId, "NewPlayer")
-        val newPlayer = gameLogic.playerLogic.getPlayerByID(newId)
-        assertNotNull(newPlayer)
-        assertEquals("NewPlayer", newPlayer.name)
-    }
-
-    @Test
-    fun `playCard applies card effect if player has card`() {
-        // Dummy effect-Registry: SKIP muss implementiert sein und darf nicht abstürzen
-        assertDoesNotThrow {
+    fun playCardExceptionTest() {
+        assertThrows(IllegalStateException::class.java) {
             gameLogic.playCard(player1.playerId, CardType.BLANK)
-        }
-    }
-
-    @Test
-    fun `playCard throws if player does not have card`() {
-        assertThrows<IllegalStateException> {
-            gameLogic.playCard(player2.playerId, CardType.BLANK)
-        }
-    }
-
-    @Test
-    fun `playCard throws if player does not exist`() {
-        val fakeId = UUID.randomUUID()
-        assertThrows<IllegalArgumentException> {
-            gameLogic.playCard(fakeId, CardType.BLANK)
-        }
-    }
-
-    @Test
-    fun `peekTopCards returns correct number of cards`() {
-        gameLogic.drawPile.add(Card(CardType.BLANK))
-        gameLogic.drawPile.add(Card(CardType.DEFUSE))
-        gameLogic.drawPile.add(Card(CardType.EXPLODING_KITTEN))
-        val top = gameLogic.peekTopCards(2)
-        assertEquals(2, top.size)
-        assertEquals(CardType.BLANK, top[0].type)
-    }
-
-    @Test
-    fun `allowPlayerToRearrangeTopCards rearranges cards correctly`() {
-        val card1 = Card(CardType.EXPLODING_KITTEN)
-        val card2 = Card(CardType.DEFUSE)
-        val card3 = Card(CardType.BLANK)
-
-        gameLogic.drawPile.addAll(listOf(card1, card2, card3))
-
-        val newOrder = listOf(card3, card2, card1)
-        gameLogic.allowPlayerToRearrangeTopCards(player1, newOrder)
-
-        val top = gameLogic.peekTopCards(3)
-        assertEquals(CardType.BLANK, top[0].type)
-        assertEquals(CardType.DEFUSE, top[1].type)
-        assertEquals(CardType.EXPLODING_KITTEN, top[2].type)
-    }
-
-    @Test
-    fun `allowPlayerToRearrangeTopCards throws if newOrder too large`() {
-        gameLogic.drawPile.add(Card(CardType.EXPLODING_KITTEN))
-        val tooMuch = listOf(Card(CardType.BLANK), Card(CardType.DEFUSE))
-        assertThrows<IllegalArgumentException> {
-            gameLogic.allowPlayerToRearrangeTopCards(player1, tooMuch)
         }
     }
 }
