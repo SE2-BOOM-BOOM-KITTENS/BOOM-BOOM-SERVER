@@ -10,7 +10,7 @@ object CardEffectRegistry {
     private val effects = mapOf(
         CardType.BLANK to BlankEffect(),
         CardType.DEFUSE to DefuseEffect(),
-        CardType.NOPE to NopeEffect(),
+        //CardType.NOPE to NopeEffect(),
         CardType.EXPLODING_KITTEN to ExplodingKittenEffect(),
         //CardType.SHUFFLE to ShuffleEffect()
     )

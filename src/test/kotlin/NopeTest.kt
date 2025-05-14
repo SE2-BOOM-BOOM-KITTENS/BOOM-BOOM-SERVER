@@ -1,6 +1,6 @@
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.PlayerLogic
-import com.aau.se2.boomboomkittens.game.cards.effects.NopeEffect
+//import com.aau.se2.boomboomkittens.game.cards.effects.NopeEffect
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
