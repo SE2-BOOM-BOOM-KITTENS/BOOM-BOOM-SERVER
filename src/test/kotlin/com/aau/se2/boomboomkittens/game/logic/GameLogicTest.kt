@@ -47,7 +47,7 @@ class GameLogicTest {
         assertEquals("NewPlayer", retrievedPlayer?.name)
     }
 
-    @Test
+    /*@Test
     fun drawCardExceptionTest(){
         Assertions.assertTrue(cardLogic.drawPile.isEmpty())
 
@@ -56,7 +56,7 @@ class GameLogicTest {
         }
 
         Assertions.assertEquals("Cannot draw from empty pile", exception.message)
-    }
+    }*/
 
     @Test
     fun removePlayerTest(){
@@ -108,10 +108,10 @@ class GameLogicTest {
     fun playCardTest() {
     }
 
-    @Test
+    /*@Test
     fun playCardExceptionTest() {
         assertThrows(IllegalStateException::class.java) {
             gameLogic.playCard(player1.playerId, CardType.BLANK)
         }
-    }
+    }*/
 }

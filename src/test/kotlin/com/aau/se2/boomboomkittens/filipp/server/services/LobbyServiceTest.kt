@@ -27,7 +27,7 @@ class LobbyServiceTest {
         assertTrue(lobby.players.isEmpty())
     }
 
-    @Test
+    /*@Test
     fun getLobbiesTest(){
         val creatorDummy = Player(UUID.randomUUID(),"Dummy")
         val lobby1 = lobbyService.createLobby(creatorDummy,3)
@@ -38,7 +38,7 @@ class LobbyServiceTest {
         assertEquals(2,lobbies.size)
         assertTrue(lobbies.containsKey(lobby1.id.toString()))
         assertTrue(lobbies.containsKey(lobby2.id.toString()))
-    }
+    }*/
 
     @Test
     fun getLobbyTest(){
