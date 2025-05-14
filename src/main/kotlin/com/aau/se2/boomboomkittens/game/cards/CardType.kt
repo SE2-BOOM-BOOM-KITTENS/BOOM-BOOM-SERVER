@@ -10,4 +10,6 @@ enum class CardType {
     CAT_RAINBOW_RALPHING,
     CAT_CATERMELON,
     TEST // nur zum Testen der Klasse CardEffectRegistry
+    ,
+    NOPE
 }

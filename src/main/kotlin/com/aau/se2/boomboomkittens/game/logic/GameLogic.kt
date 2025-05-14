@@ -46,6 +46,11 @@ open class GameLogic(
         _playerLogic.moveToNextPlayer()
     }
 
+    fun skipPlayer(){
+        nextTurn()
+        nextTurn()
+    }
+
     fun addPlayer(playerId: UUID, playerName:String){
         val newPlayer = Player(playerId, playerName)
         _playerLogic.addPlayerByID(newPlayer)
