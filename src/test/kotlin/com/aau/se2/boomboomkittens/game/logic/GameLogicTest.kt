@@ -32,7 +32,7 @@ class GameLogicTest {
 
     @Test
     fun initTest(){
-        Assertions.assertEquals(2, gameLogic.playerLogic.getPlayerCount())
+        assertEquals(2, gameLogic.playerLogic.getPlayerCount())
         assertNotNull(gameLogic.playerLogic.getPlayerByID(player1.playerId))
         assertNotNull(gameLogic.playerLogic.getPlayerByID(player2.playerId))
     }
@@ -55,16 +55,16 @@ class GameLogicTest {
             cardLogic.drawCard(player1.playerId)
         }
 
-        Assertions.assertEquals("Cannot draw from empty pile", exception.message)
+        assertEquals("Cannot draw from empty pile", exception.message)
     }
 
     @Test
     fun removePlayerTest(){
-        Assertions.assertEquals(2, gameLogic.playerLogic.getPlayerCount())
+        assertEquals(2, gameLogic.playerLogic.getPlayerCount())
 
         gameLogic.removePlayer(player1.playerId)
 
-        Assertions.assertEquals(1, gameLogic.playerLogic.getPlayerCount())
+        assertEquals(1, gameLogic.playerLogic.getPlayerCount())
         assertNull(gameLogic.playerLogic.getPlayerByID(player1.playerId))
     }
 
@@ -96,7 +96,7 @@ class GameLogicTest {
     fun getWinnerTest(){
         gameLogic.playerLogic.removePlayerByID(player2.playerId)
         val winner = gameLogic.getWinner()
-        Assertions.assertEquals(player1.playerId, winner?.playerId)
+        assertEquals(player1.playerId, winner?.playerId)
     }
 
     @Test

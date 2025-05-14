@@ -5,4 +5,6 @@ enum class CardType {
     DEFUSE,
     BLANK,
     TEST // nur zum Testen der Klasse CardEffectRegistry
+    ,
+    NOPE
 }
