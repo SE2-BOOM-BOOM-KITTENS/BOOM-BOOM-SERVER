@@ -4,7 +4,7 @@ import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.cards.effects.BlankEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.DefuseEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.ExplodingKittenEffect
-import com.aau.se2.boomboomkittens.game.cards.effects.NopeEffect
+//import com.aau.se2.boomboomkittens.game.cards.effects.NopeEffect
 
 object CardEffectRegistry {
     private val effects = mapOf(
