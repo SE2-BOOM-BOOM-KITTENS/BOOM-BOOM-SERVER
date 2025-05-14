@@ -23,7 +23,6 @@ open class GameLogic(
     val discardPile: CardPile
         get() = _discardPile
 
-
     init {
         for(player in players){
             _playerLogic.addPlayerByID(player)
