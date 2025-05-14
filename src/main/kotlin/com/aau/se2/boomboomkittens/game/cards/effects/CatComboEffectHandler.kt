@@ -54,7 +54,6 @@ object CatComboEffectHandler {
                     cardName = topCard.name
                 )
             }
-
             else -> null
         }
     }
