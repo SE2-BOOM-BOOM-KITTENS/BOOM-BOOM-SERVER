@@ -1,11 +1,12 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffectRegistry
+import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
-import java.util.UUID
+import java.util.*
 
 open class GameLogic(
     var lobbyId: UUID,
@@ -15,14 +16,13 @@ open class GameLogic(
     private val _cardLogic: CardLogic = CardLogic(players.size)
     private val _discardPile: CardPile = CardPile()
     private val _cardRegistry = CardEffectRegistry
-    private val cardPile = CardPile()
 
-    val playerLogic: PlayerLogic
-        get() = _playerLogic
-    val cardLogic: CardLogic
-        get() = _cardLogic
-    val discardPile: CardPile
-        get() = _discardPile
+    val playerLogic: PlayerLogic get() = _playerLogic
+    val cardLogic: CardLogic get() = _cardLogic
+    val discardPile: CardPile get() = _discardPile
+    val cardRegistry: CardEffectRegistry get() = _cardRegistry
+
+    val drawPile: LinkedList<Card> = LinkedList()
 
     init {
         for(player in players){
@@ -80,11 +80,30 @@ open class GameLogic(
     }
 
     fun shuffleDeck(){
-        cardPile.shuffle()
+        discardPile.shuffle()
     }
 
     fun notifyDeckShuffled(player: Player){
         // eventDispatcher.sendToAllPlayers("DeckShuffled", currentCardPileState())
+    }
+    open fun peekTopCards(count: Int): List<Card> {
+        return drawPile.take(count)
+    }
+
+    open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
+        if (newOrder.size > drawPile.size) {
+            throw IllegalArgumentException("New order has more cards than the draw pile.")
+        }
+
+        repeat(newOrder.size) {
+            drawPile.removeFirst()
+        }
+
+        for (i in newOrder.size - 1 downTo 0) {
+            drawPile.add(newOrder[i])
+        }
+
+        println("${player.name} rearranged the top ${newOrder.size} cards.")
     }
 
 }

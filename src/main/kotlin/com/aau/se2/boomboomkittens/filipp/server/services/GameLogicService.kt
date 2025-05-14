@@ -58,7 +58,7 @@ class GameLogicService(
     }
 
     fun getPlayerHand(playerId: UUID){
-        val playerHand = gameLogic.getPlayerHand(playerId)
+        val playerHand = getPlayerHand(playerId)
         val serverMessage = ServerMessage("HAND","You have received your card hand",playerHand)
         sendGameUpdate(playerId= playerId, payload = serverMessage)
     }
@@ -76,11 +76,9 @@ class GameLogicService(
 
         val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
         val player = gameLogic.getPlayerById(playerId)
-        var playerHand = gameLogic.getPlayerHand(playerId)
+        var playerHand = getPlayerHand(playerId)
         if(playerHand != null){
-        val playerPacket = networkPacketMapper.playerToNetworkPacket(player,playerHand)
         } else{
-            playerHand = PlayerHand(playerId, mutableListOf())
             val playerPacket = networkPacketMapper.playerToNetworkPacket(player,playerHand)
         }
         val serverMessage = ServerMessage("GAME_STATE","Player $playerId has joined",gameState)

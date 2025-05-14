@@ -5,7 +5,7 @@ package com.aau.se2.boomboomkittens.game.logic
 //import org.junit.jupiter.api.Assertions.*
 //import org.junit.jupiter.api.Test
 
-class DefuseEffectTest {
+/*class DefuseEffectTest {
 
 //    @Test
 //    fun `defuse effect decreases count`(){
@@ -18,4 +18,4 @@ class DefuseEffectTest {
 //        assertEquals(0, player.defuseCount)
 //    }
 
-}
+}*/
