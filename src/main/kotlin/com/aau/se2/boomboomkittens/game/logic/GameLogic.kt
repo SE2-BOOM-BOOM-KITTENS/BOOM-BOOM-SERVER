@@ -76,7 +76,7 @@ open class GameLogic(
         repeat(newOrder.size) { drawPile.removeFirst() }
 
         for (i in newOrder.size - 1 downTo 0) {
-            drawPile.addFirst(newOrder[i])
+            drawPile.add(newOrder[i])
         }
         println("${player.name} rearranged the top ${newOrder.size} cards.")
     }

@@ -5,7 +5,7 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLo
 import com.aau.se2.boomboomkittens.game.player.Player
 
 
-class ShuffleEffect : CardEffect {
+/*class ShuffleEffect : CardEffect {
 
     override fun apply (player: Player, gameLogic: GameLogic){
         gameLogic.shuffleDeck()
@@ -13,4 +13,4 @@ class ShuffleEffect : CardEffect {
         println("${player.name} shuffled the card pile!")
     }
 
-}
+}*/

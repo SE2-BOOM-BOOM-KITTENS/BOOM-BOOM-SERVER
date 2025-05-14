@@ -64,7 +64,7 @@ class GameLogicController(
         }else{
             playerName = ""
         }
-        gameLogicService.joinGame(playerId, playerName)
+        //gameLogicService.joinGame(playerId, playerName)
     }
 
 }
