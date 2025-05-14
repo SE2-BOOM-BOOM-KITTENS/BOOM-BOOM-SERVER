@@ -8,5 +8,4 @@ enum class CardType {
     TEST,// nur zum Testen der Klasse CardEffectRegistry
     SEE_THE_FUTURE,
     ALTER_THE_FUTURE
-
 }

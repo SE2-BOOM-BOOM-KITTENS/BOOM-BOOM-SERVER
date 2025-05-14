@@ -12,7 +12,7 @@ open class GameLogic(
     var lobbyId: UUID,
     val players: MutableList<Player> = mutableListOf(),
 ){
-    private val _playerLogic: PlayerLogic = PlayerLogic()
+  private val _playerLogic: PlayerLogic = PlayerLogic()
     private val _cardLogic: CardLogic = CardLogic(players.size)
     private val _discardPile: CardPile = CardPile()
     private val _cardRegistry = CardEffectRegistry
@@ -25,10 +25,8 @@ open class GameLogic(
         get() = _discardPile
     val cardRegistry: CardEffectRegistry
         get() = _cardRegistry
-    val drawPile: LinkedList<Card> = LinkedList()
-
-
-    init {
+    val drawPile: LinkedList<Card> = LinkedList()  
+  init {
         for(player in players){
             _playerLogic.addPlayerByID(player)
             _cardLogic.addPlayer(player)
