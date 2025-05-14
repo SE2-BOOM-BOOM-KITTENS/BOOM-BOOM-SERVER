@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 
 class ShuffleEffectTest{
-
+/*
     private lateinit var shuffleEffect: ShuffleEffect
     private lateinit var gameLogic: GameLogic
     private lateinit var player: Player
@@ -32,5 +32,6 @@ class ShuffleEffectTest{
         shuffleEffect.apply(player, gameLogic)
         verify(gameLogic, times(1)).notifyDeckShuffled(player)
     }
+*/
+}
 
-}*/

@@ -13,18 +13,22 @@ import java.util.UUID
 open class GameLogic(
     var lobbyId: UUID,
     val players: MutableList<Player> = mutableListOf(),
-) {
+
+){
+
     private val _playerLogic: PlayerLogic = PlayerLogic()
     private val _cardLogic: CardLogic = CardLogic(players.size)
     private val _discardPile: CardPile = CardPile()
     private val _cardRegistry = CardEffectRegistry
+    private val cardPile = CardPile()
 
-    val playerLogic: PlayerLogic get() = _playerLogic
-    val cardLogic: CardLogic get() = _cardLogic
-    val discardPile: CardPile get() = _discardPile
-    val cardRegistry: CardEffectRegistry get() = _cardRegistry
+    val playerLogic: PlayerLogic
+        get() = _playerLogic
+    val cardLogic: CardLogic
+        get() = _cardLogic
+    val discardPile: CardPile
+        get() = _discardPile
 
-    val drawPile: LinkedList<Card> = LinkedList()
 
     init {
         for (player in players) {
@@ -47,7 +51,12 @@ open class GameLogic(
         _playerLogic.moveToNextPlayer()
     }
 
-    fun addPlayer(playerId: UUID, playerName: String) {
+    fun skipPlayer(){
+        nextTurn()
+        nextTurn()
+    }
+
+    fun addPlayer(playerId: UUID, playerName:String){
         val newPlayer = Player(playerId, playerName)
         _playerLogic.addPlayerByID(newPlayer)
     }
@@ -68,19 +77,27 @@ open class GameLogic(
         return drawPile.take(count)
     }
 
-    open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
-        if (newOrder.size > drawPile.size) {
-            throw IllegalArgumentException("New order has more cards than the draw pile.")
+
+    fun playCard(playerId: UUID, cardType: CardType) {
+        val player = _playerLogic.getPlayerByID(playerId)
+            ?: throw IllegalArgumentException("Player not found")
+
+        if (!player.playerHand.containsCardType(cardType)) {
+            throw IllegalStateException("Player doesn't have card type $cardType")
         }
 
-        repeat(newOrder.size) {
-            drawPile.removeFirst()
-        }
+        val effect = _cardRegistry.getEffect(cardType)
+
+        effect.apply(player, this)
+    }
+
 
         for (i in newOrder.size - 1 downTo 0) {
             drawPile.add(newOrder[i])
         }
 
-        println("${player.name} rearranged the top ${newOrder.size} cards.")
+    fun notifyDeckShuffled(player: Player){
+        // eventDispatcher.sendToAllPlayers("DeckShuffled", currentCardPileState())
+
     }
 }

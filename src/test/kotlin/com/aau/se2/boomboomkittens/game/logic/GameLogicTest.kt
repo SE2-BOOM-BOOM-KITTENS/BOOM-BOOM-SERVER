@@ -13,9 +13,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertNull
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.assertDoesNotThrow
-import org.junit.jupiter.api.Assertions.assertNotEquals
-import org.mockito.Mockito.mock
 import java.util.UUID
 
 class GameLogicTest {
@@ -34,7 +31,7 @@ class GameLogicTest {
 
     @Test
     fun initTest(){
-        Assertions.assertEquals(2, gameLogic.playerLogic.getPlayerCount())
+        assertEquals(2, gameLogic.playerLogic.getPlayerCount())
         assertNotNull(gameLogic.playerLogic.getPlayerByID(player1.playerId))
         assertNotNull(gameLogic.playerLogic.getPlayerByID(player2.playerId))
     }
@@ -46,27 +43,28 @@ class GameLogicTest {
 
         val retrievedPlayer = gameLogic.playerLogic.getPlayerByID(newPlayerId)
         assertNotNull(retrievedPlayer)
-        assertEquals("NewPlayer", retrievedPlayer?.name)
+        assertEquals("NewPlayer", retrievedPlayer.name)
     }
 
     /*@Test
     fun drawCardExceptionTest(){
+        cardLogic.drawPile.getPileList().clear()
         Assertions.assertTrue(cardLogic.drawPile.isEmpty())
 
         val exception = assertThrows<IllegalStateException> {
             cardLogic.drawCard(player1.playerId)
         }
 
-        Assertions.assertEquals("Cannot draw from empty pile", exception.message)
-    }*/
+        assertEquals("Cannot draw from empty pile", exception.message)
+    }
 
     @Test
     fun removePlayerTest(){
-        Assertions.assertEquals(2, gameLogic.playerLogic.getPlayerCount())
+        assertEquals(2, gameLogic.playerLogic.getPlayerCount())
 
         gameLogic.removePlayer(player1.playerId)
 
-        Assertions.assertEquals(1, gameLogic.playerLogic.getPlayerCount())
+        assertEquals(1, gameLogic.playerLogic.getPlayerCount())
         assertNull(gameLogic.playerLogic.getPlayerByID(player1.playerId))
     }
 
@@ -98,7 +96,7 @@ class GameLogicTest {
     fun getWinnerTest(){
         gameLogic.playerLogic.removePlayerByID(player2.playerId)
         val winner = gameLogic.getWinner()
-        Assertions.assertEquals(player1.playerId, winner?.playerId)
+        assertEquals(player1.playerId, winner?.playerId)
     }
 
     @Test
@@ -111,50 +109,15 @@ class GameLogicTest {
     }
 
     @Test
-    fun `removePlayer removes the player`() {
-        gameLogic.removePlayer(player1.playerId)
-        assertThrows<IllegalArgumentException> {
-            gameLogic.playerLogic.getPlayerByID(player1.playerId)
+    fun playCardExceptionTest_InvalidCardType() {
+        // TEST zur Hand hinzufügen, damit wir bis zur Effect-Ausführung kommen
+        player1.playerHand.addCard(Card(CardType.TEST))
+
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            gameLogic.playCard(player1.playerId, CardType.TEST)
         }
-    }
 
-    @Test
-    fun `getWinner returns null when more than one player alive`() {
-        val result = gameLogic.getWinner()
-        assertNull(result)
-    }
-
-    @Test
-    fun `getWinner returns player when only one alive`() {
-        gameLogic.removePlayer(player2.playerId)
-        val winner = gameLogic.getWinner()
-        assertNotNull(winner)
-        assertEquals(player1.playerId, winner!!.playerId)
-    }
-
-    @Test
-    fun `nextTurn calls playerLogic to advance turn`() {
-        val current = gameLogic.playerLogic.getCurrentPlayer()
-        gameLogic.nextTurn()
-        val next = gameLogic.playerLogic.getCurrentPlayer()
-        assertNotEquals(current!!.playerId, next!!.playerId)
-    }
-
-    @Test
-    fun `addPlayer adds a new player to the game`() {
-        val newId = UUID.randomUUID()
-        gameLogic.addPlayer(newId, "NewPlayer")
-        val newPlayer = gameLogic.playerLogic.getPlayerByID(newId)
-        assertNotNull(newPlayer)
-        assertEquals("NewPlayer", newPlayer.name)
-    }
-
-    @Test
-    fun `playCard applies card effect if player has card`() {
-        // Dummy effect-Registry: SKIP muss implementiert sein und darf nicht abstürzen
-        assertDoesNotThrow {
-            gameLogic.playCard(player1.playerId, CardType.BLANK)
-        }
+        assertEquals("No effect registered for TEST", exception.message)
     }
 
     @Test

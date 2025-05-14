@@ -3,6 +3,7 @@ package com.aau.se2.boomboomkittens.filipp.server.services
 
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -16,6 +17,11 @@ class LobbyServiceTest {
     @Autowired
     lateinit var lobbyService: LobbyService
 
+    @BeforeEach
+    fun clearLobbies() {
+        // Sicherstellen, dass alle Lobbys entfernt werden
+        lobbyService.clearAllLobbies()
+    }
 
     @Test
     fun createLobbyTest(){
