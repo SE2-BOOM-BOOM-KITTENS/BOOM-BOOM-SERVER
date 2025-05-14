@@ -34,14 +34,12 @@ class CardLogic(playerSize: Int) {
 
     fun removeCardFromPlayer(playerId: UUID, card: Card){
         val player = playerMap[playerId]
-        requireNotNull(player){
-            throw IllegalArgumentException("Player with id $playerId not found")
-        }
+            ?: throw IllegalArgumentException("Player with id $playerId not found")
         player.playerHand.removeCard(card)
     }
 
     fun drawCard(playerId: UUID){
-        check(!(drawPile.isEmpty())){
+        if (drawPile.isEmpty()) {
             throw IllegalStateException("Cannot draw from empty pile")
         }
         val card = drawPile.draw()

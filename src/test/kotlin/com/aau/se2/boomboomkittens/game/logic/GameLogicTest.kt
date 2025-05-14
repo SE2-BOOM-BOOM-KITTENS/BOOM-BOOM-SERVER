@@ -49,6 +49,7 @@ class GameLogicTest {
 
     @Test
     fun drawCardExceptionTest(){
+        cardLogic.drawPile.getPileList().clear()
         Assertions.assertTrue(cardLogic.drawPile.isEmpty())
 
         val exception = assertThrows<IllegalStateException> {
@@ -109,9 +110,14 @@ class GameLogicTest {
     }
 
     @Test
-    fun playCardExceptionTest() {
-        assertThrows(IllegalStateException::class.java) {
-            gameLogic.playCard(player1.playerId, CardType.BLANK)
+    fun playCardExceptionTest_InvalidCardType() {
+        // TEST zur Hand hinzufügen, damit wir bis zur Effect-Ausführung kommen
+        player1.playerHand.addCard(Card(CardType.TEST))
+
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            gameLogic.playCard(player1.playerId, CardType.TEST)
         }
+
+        assertEquals("No effect registered for TEST", exception.message)
     }
 }

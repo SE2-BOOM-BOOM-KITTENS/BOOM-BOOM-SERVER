@@ -50,4 +50,7 @@ class LobbyService(
         }
     }
 
+    fun clearAllLobbies() {
+        lobbies.clear()
+    }
 }

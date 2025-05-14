@@ -63,14 +63,17 @@ open class GameLogic(
         return _cardLogic.getPlayerHand(playerId)
     }
 
-    fun playCard(playerId: UUID, cardType: CardType){
+    fun playCard(playerId: UUID, cardType: CardType) {
         val player = _playerLogic.getPlayerByID(playerId)
-        if(player!!.playerHand.containsCardType(cardType)){
-            val card = _cardRegistry.getEffect(cardType)
-            card.apply(player,this)
-        } else{
+            ?: throw IllegalArgumentException("Player not found")
+
+        if (!player.playerHand.containsCardType(cardType)) {
             throw IllegalStateException("Player doesn't have card type $cardType")
         }
 
+        val effect = _cardRegistry.getEffect(cardType)
+            ?: throw IllegalArgumentException("No effect registered for card type $cardType")
+
+        effect.apply(player, this)
     }
 }

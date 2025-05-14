@@ -47,9 +47,25 @@ class CardLogicTest {
 
     @Test
     fun removeCardFromPlayerTest() {
-        player.playerHand.addCard(dummyCard)
-        cardLogic.removeCardFromPlayer(playerId, dummyCard)
-        assertFalse(player.playerHand.containsCard(dummyCard))
+        val card = Card(CardType.BLANK)
+
+        // Echte Hand aus CardLogic holen
+        val hand = cardLogic.getPlayerHand(playerId) ?: error("Player hand not found")
+
+        // Handkarten vollständig leeren, damit Test isoliert ist
+        hand.cards.clear()
+
+        // Karte hinzufügen
+        hand.addCard(card)
+
+        // Vorher prüfen, dass sie da ist
+        assertTrue(hand.containsCardType(card.type), "Card should be present before removal")
+
+        // Karte entfernen
+        cardLogic.removeCardFromPlayer(playerId, card)
+
+        // Nachher prüfen, dass sie weg ist
+        assertFalse(hand.containsCardType(card.type), "Card should no longer be present after removal")
     }
 
     @Test
