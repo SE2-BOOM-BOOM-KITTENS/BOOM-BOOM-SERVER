@@ -16,5 +16,4 @@ object CardEffectRegistry {
         return effects [cardType]
             ?: throw IllegalArgumentException ("No effect registered for $cardType")
     }
-
 }
