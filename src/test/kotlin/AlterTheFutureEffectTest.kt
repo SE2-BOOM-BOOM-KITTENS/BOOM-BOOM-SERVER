@@ -34,7 +34,7 @@ class AlterTheFutureEffectTest {
 
         assertNotNull(rearrangedCards)
         assertEquals("ALTER_THE_FUTURE", rearrangedCards!![0].name)
-        assertEquals("Skip", rearrangedCards!![1].name)
-        assertEquals("Shuffle", rearrangedCards!![2].name)
+        assertEquals("BLANK", rearrangedCards!![1].name)
+        assertEquals("DEFUSE", rearrangedCards!![2].name)
     }
 }
