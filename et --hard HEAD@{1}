@@ -1,0 +1,43 @@
+[33m50a14ca[m[33m ([m[1;36mHEAD -> [m[1;32mcat-karten[m[33m)[m HEAD@{0}: pull: Merge made by the 'ort' strategy.
+[33m6d3ea76[m HEAD@{1}: commit: usages angepasst
+[33m32b13fd[m HEAD@{2}: pull: Merge made by the 'ort' strategy.
+[33m11a47ff[m HEAD@{3}: commit: Blank wieder hinzugefügt
+[33m049f500[m HEAD@{4}: commit (merge): Merge main into cat-karten: Konflikte manuell gelöst
+[33m168934c[m HEAD@{5}: checkout: moving from cat-karten to cat-karten
+[33m168934c[m HEAD@{6}: commit (merge): Merge conflicts
+[33mb8edecc[m HEAD@{7}: merge main: updating HEAD
+[33mb8edecc[m HEAD@{8}: reset: moving to HEAD
+[33mb8edecc[m HEAD@{9}: checkout: moving from main to cat-karten
+[33mf11d803[m[33m ([m[1;32mmain[m[33m)[m HEAD@{10}: checkout: moving from cat-karten to main
+[33mb8edecc[m HEAD@{11}: reset: moving to HEAD
+[33mb8edecc[m HEAD@{12}: checkout: moving from main to cat-karten
+[33mf11d803[m[33m ([m[1;32mmain[m[33m)[m HEAD@{13}: reset: moving to HEAD
+[33mf11d803[m[33m ([m[1;32mmain[m[33m)[m HEAD@{14}: checkout: moving from cat-karten to main
+[33mb8edecc[m HEAD@{15}: commit: Implementierung CardPile hinzugefügt, damit Tests laufen
+[33md5fb87d[m HEAD@{16}: commit: Implementierung CardPile hinzugefügt, damit Tests laufen
+[33me026075[m HEAD@{17}: commit: CatComboEffectHandlerTest angepasst
+[33m71f28f2[m HEAD@{18}: commit: CatComboMessage implementiert
+[33m9770a8d[m HEAD@{19}: commit: unused Zeile gelöscht
+[33m2746d6c[m HEAD@{20}: commit: Testimplementierung & Anpassung
+[33m2d95398[m HEAD@{21}: commit: Implementierung Cat-Karten
+[33m44985cb[m HEAD@{22}: commit (merge): merge mit main
+[33me4c7b1d[m HEAD@{23}: commit: Anpassung Struktur
+[33m6bccfd0[m HEAD@{24}: reset: moving to HEAD
+[33m6bccfd0[m HEAD@{25}: checkout: moving from main to cat-karten
+[33mf11d803[m[33m ([m[1;32mmain[m[33m)[m HEAD@{26}: pull: Merge made by the 'ort' strategy.
+[33mfba8b6c[m HEAD@{27}: checkout: moving from cat-karten to main
+[33m6bccfd0[m HEAD@{28}: checkout: moving from backup-before-merge to cat-karten
+[33m6bccfd0[m HEAD@{29}: reset: moving to HEAD
+[33m6bccfd0[m HEAD@{30}: checkout: moving from cat-karten to backup-before-merge
+[33m6bccfd0[m HEAD@{31}: commit: Implementierung Cat-Karten
+[33ma92a5e6[m HEAD@{32}: checkout: moving from main to cat-karten
+[33mfba8b6c[m HEAD@{33}: pull: Merge made by the 'ort' strategy.
+[33mae1421c[m HEAD@{34}: checkout: moving from cat-karten to main
+[33mae1421c[m HEAD@{35}: checkout: moving from main to cat-karten
+[33mae1421c[m HEAD@{36}: checkout: moving from structure to main
+[33m3471f8c[m[33m ([m[1;32mstructure[m[33m)[m HEAD@{37}: commit: Änderung Struktur Backend, abgebrochen
+[33m2409cc8[m HEAD@{38}: commit: Änderung Struktur Frontend
+[33mae1421c[m HEAD@{39}: checkout: moving from main to structure
+[33mae1421c[m HEAD@{40}: commit (merge): Auslagerung Klasse Deck
+[33mc553f5c[m HEAD@{41}: commit: Issue schließen
+[33m9dbbe6c[m HEAD@{42}: clone: from https://github.com/SE2-BOOM-BOOM-KITTENS/BOOM-BOOM-SERVER.git

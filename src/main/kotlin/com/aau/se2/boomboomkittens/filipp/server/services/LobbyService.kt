@@ -10,7 +10,6 @@ class LobbyService(
 ) {
     private val lobbies = ConcurrentHashMap<String, Lobby>()
 
-
     init {
         val steve = Player(name="Steve")
         createLobby(steve,2)
@@ -50,4 +49,7 @@ class LobbyService(
         }
     }
 
+    fun clearAllLobbies() {
+        lobbies.clear()
+    }
 }
