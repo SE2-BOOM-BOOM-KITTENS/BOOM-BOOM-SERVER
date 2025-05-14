@@ -10,10 +10,14 @@ class LobbyService(
 ) {
     private val lobbies = ConcurrentHashMap<String, Lobby>()
 
+    init {
+        val steve = Player(name="Steve")
+        createLobby(steve,2)
+    }
+
     fun createLobby(creator: Player, maxPlayers:Int): Lobby {
         val lobby = Lobby(creator=creator,players = mutableListOf(), maxPlayers = maxPlayers)
         lobbies[lobby.id.toString()] = lobby
-        //lobbyWebSocketController.broadcastLobbyUpdate()
         return lobby
     }
 
@@ -45,4 +49,7 @@ class LobbyService(
         }
     }
 
+    fun clearAllLobbies() {
+        lobbies.clear()
+    }
 }

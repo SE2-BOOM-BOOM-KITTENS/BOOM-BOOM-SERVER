@@ -4,6 +4,7 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effect
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
+import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.UUID
 
 open class GameLogic(
@@ -21,9 +22,6 @@ open class GameLogic(
         get() = _cardLogic
     val discardPile: CardPile
         get() = _discardPile
-    val cardRegistry: CardEffectRegistry
-        get() = _cardRegistry
-
 
     init {
         for(player in players){
@@ -56,16 +54,27 @@ open class GameLogic(
     fun addPlayer(playerId: UUID, playerName:String){
         val newPlayer = Player(playerId, playerName)
         _playerLogic.addPlayerByID(newPlayer)
+        _cardLogic.addPlayer(newPlayer)
     }
 
-    fun playCard(playerId: UUID, cardType: CardType){
+    fun getPlayerById(playerId: UUID): Player? {
+        return _playerLogic.getPlayerByID(playerId)
+    }
+
+    fun getPlayerHand(playerId: UUID): PlayerHand? {
+        return _cardLogic.getPlayerHand(playerId)
+    }
+
+    fun playCard(playerId: UUID, cardType: CardType) {
         val player = _playerLogic.getPlayerByID(playerId)
-        if(player!!.playerHand.containsCardType(cardType)){
-            val card = _cardRegistry.getEffect(cardType)
-            card.apply(player,this)
-        } else{
+            ?: throw IllegalArgumentException("Player not found")
+
+        if (!player.playerHand.containsCardType(cardType)) {
             throw IllegalStateException("Player doesn't have card type $cardType")
         }
 
+        val effect = _cardRegistry.getEffect(cardType)
+
+        effect.apply(player, this)
     }
 }

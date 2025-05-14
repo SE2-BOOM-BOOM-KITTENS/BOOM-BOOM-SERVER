@@ -6,6 +6,10 @@ class CardPile {
     val size: Int
     get() = pile.size
 
+    fun add(card: Card) {
+        pile.add(card)
+    }
+
     fun draw(): Card {
         return pile.removeFirst()
     }

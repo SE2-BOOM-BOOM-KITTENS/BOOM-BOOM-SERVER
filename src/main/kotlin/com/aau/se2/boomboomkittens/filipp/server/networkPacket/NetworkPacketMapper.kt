@@ -15,26 +15,26 @@ class NetworkPacketMapper {
 
         for(player in playerList){
             val playerHand = player.playerHand
-            playerNetworkPackets.add(playerToDTO(player, playerHand))
+            playerNetworkPackets.add(playerToNetworkPacket(player, playerHand))
         }
 
         val currentPlayer = playerLogic.getCurrentPlayer()
         val currentPlayerHand = currentPlayer!!.playerHand
-        val currentPlayerDTO = playerToDTO(currentPlayer,currentPlayerHand)
+        val currentPlayerDTO = playerToNetworkPacket(currentPlayer,currentPlayerHand)
 
         val nextPlayer = playerLogic.getCurrentPlayerNode()!!.next!!.player
         val nextPlayerHand = nextPlayer.playerHand
-        val nextPlayerDTO = playerToDTO(nextPlayer,nextPlayerHand)
+        val nextPlayerDTO = playerToNetworkPacket(nextPlayer,nextPlayerHand)
 
         val winner = gameLogic.getWinner()
         var winnerDTO: PlayerNetworkPacket? = null
         if(winner != null) {
             val winnerHand = winner.playerHand
-            winnerDTO = playerToDTO(gameLogic.getWinner(), winnerHand)
+            winnerDTO = playerToNetworkPacket(gameLogic.getWinner(), winnerHand)
         }
 
-        val drawPile = cardPileToDTO(cardLogic.drawPile,true)
-        val discardPile = cardPileToDTO(gameLogic.discardPile,false)
+        val drawPile = cardPileToNetworkPacket(cardLogic.drawPile,true)
+        val discardPile = cardPileToNetworkPacket(gameLogic.discardPile,false)
 
 
         return GameStateNetworkPacket(
@@ -48,14 +48,14 @@ class NetworkPacketMapper {
             discardPile = discardPile,)
     }
 
-    private fun playerToDTO(player: Player?, playerHand: PlayerHand): PlayerNetworkPacket {
+    fun playerToNetworkPacket(player: Player?, playerHand: PlayerHand): PlayerNetworkPacket {
         val id = player!!.playerId
         val name = player.name
         val cardCount = playerHand.getCardAmount()
         return PlayerNetworkPacket(id,name,cardCount)
     }
 
-    private fun cardPileToDTO(cardPile: CardPile, isDrawPile: Boolean): CardPileNetworkPacket {
+     fun cardPileToNetworkPacket(cardPile: CardPile, isDrawPile: Boolean): CardPileNetworkPacket {
         val cardCount = cardPile.size
         var cards : MutableList<CardNetworkPacket>? = null
         if(!isDrawPile){

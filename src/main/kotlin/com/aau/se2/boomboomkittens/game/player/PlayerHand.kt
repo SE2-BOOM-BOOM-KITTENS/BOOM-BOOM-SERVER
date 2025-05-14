@@ -14,7 +14,10 @@ class PlayerHand(
     }
 
     fun removeCard(card: Card){
-        cards.remove(card)
+        val toRemove = cards.firstOrNull { it.type == card.type }
+        if (toRemove != null) {
+            cards.remove(toRemove)
+        }
     }
 
     fun getRandomCard(): Card? {
@@ -25,16 +28,11 @@ class PlayerHand(
     }
 
     fun containsCard(card: Card): Boolean {
-        return cards.contains(card)
+        return cards.any { it.type == card.type }
     }
 
     fun containsCardType(cardType: CardType): Boolean {
-        for(card in cards){
-            if(card.type == cardType){
-                return true
-            }
-        }
-        return false
+        return cards.any { it.type == cardType }
     }
 
     fun getCardAmount(): Int{
