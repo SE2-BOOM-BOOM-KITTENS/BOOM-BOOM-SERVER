@@ -33,7 +33,7 @@ class AlterTheFutureEffectTest {
         effect.apply(player, gameLogic)
 
         assertNotNull(rearrangedCards)
-        assertEquals("Attack", rearrangedCards!![0].name)
+        assertEquals("Alter_the_Future", rearrangedCards!![0].name)
         assertEquals("Skip", rearrangedCards!![1].name)
         assertEquals("Shuffle", rearrangedCards!![2].name)
     }
