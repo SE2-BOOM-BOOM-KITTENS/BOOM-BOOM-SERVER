@@ -59,17 +59,18 @@ object CatComboEffectHandler {
     }
 
     private fun isCatCard(card: Card): Boolean {
-        return card.type.name.startsWith("CAT_")
+        val realType = card.aliasType ?: card.type
+        return realType.name.startsWith("CAT_")
     }
 
     private fun isTwoSame(cards: List<Card>) =
-        cards.size == 2 && cards.all { it.name == cards.first().name }
+        cards.size == 2 && cards.map { it.aliasType ?: it.type }.toSet().size == 1
 
     private fun isThreeSame(cards: List<Card>) =
-        cards.size == 3 && cards.all { it.name == cards.first().name }
+        cards.size == 3 && cards.map { it.aliasType ?: it.type }.toSet().size == 1
 
     private fun isFiveDifferent(cards: List<Card>) =
-        cards.size == 5 && cards.map { it.name }.distinct().size == 5
+        cards.size == 5 && cards.map { it.aliasType ?: it.type }.distinct().size == 5
 
     private fun discardPlayedCards(player: Player, cards: List<Card>, gameLogic: GameLogic) {
         for (card in cards) {
