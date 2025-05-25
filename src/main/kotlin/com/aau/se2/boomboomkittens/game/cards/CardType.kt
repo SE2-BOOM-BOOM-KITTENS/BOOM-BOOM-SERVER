@@ -12,7 +12,7 @@ enum class CardType {
     SHUFFLE,
     ALTER_THE_FUTURE,
     SEE_THE_FUTURE,
-    TEST // nur zum Testen der Klasse CardEffectRegistry
-    ,
-    NOPE
+    TEST, // nur zum Testen der Klasse CardEffectRegistry
+    NOPE,
+    FERAL_CAT,
 }
