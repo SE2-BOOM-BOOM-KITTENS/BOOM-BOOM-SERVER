@@ -1,8 +1,8 @@
 package com.aau.se2.boomboomkittens.game.cards.effects
 
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.CatComboMessage
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ComboType
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
-import com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.CatComboMessage
-import com.aau.se2.boomboomkittens.filipp.server.dtos.messages.ComboType
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.player.Player
 
