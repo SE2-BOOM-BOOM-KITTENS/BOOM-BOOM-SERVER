@@ -60,7 +60,7 @@ class GameLogicService(
     }
 
     fun getPlayerHand(playerId: UUID){
-        val playerHand = getPlayerHand(playerId)
+        val playerHand = gameLogic.getPlayerHand(playerId)
         val serverMessage = ServerMessage("HAND","You have received your card hand",playerHand)
         sendGameUpdate(playerId= playerId, payload = serverMessage)
     }
@@ -72,6 +72,8 @@ class GameLogicService(
             messagingTemplate.convertAndSend("/topic/lobby/1234",payload)
         }
     }
+
+    fun getGameLogic(): GameLogic = gameLogic
 
     fun joinGame(playerId: UUID, playerName:String){
         gameLogic.addPlayer(playerId, playerName)
