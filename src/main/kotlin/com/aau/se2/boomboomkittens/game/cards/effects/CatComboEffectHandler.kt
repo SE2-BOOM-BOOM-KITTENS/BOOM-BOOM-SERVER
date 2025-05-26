@@ -1,81 +1,76 @@
 package com.aau.se2.boomboomkittens.game.cards.effects
 
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.CatComboMessage
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ComboType
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
+import java.util.*
 
-object CatComboEffectHandler {
+class CatComboEffectHandler(private val gameLogic: GameLogic, private val sendToPlayer: (UUID, Any) -> Unit) {
 
-    fun handleCombo(player: Player, cards: List<Card>, game: GameLogic): CatComboMessage? {
-        if (cards.isEmpty() || cards.any { !isCatCard(it) }) return null
-
-        return when {
-            isTwoSame(cards) -> {
-                val opponents = game.playerLogic.getPlayerList()
-                    .filter { it.playerId != player.playerId && it.playerHand.cards.isNotEmpty() }
-
-                val target = opponents.randomOrNull() ?: return null
-                val stolen = target.playerHand.getRandomCard() ?: return null
-
-                target.playerHand.removeCard(stolen)
-                player.playerHand.addCard(stolen)
-
-                discardPlayedCards(player, cards, game)
-
-                CatComboMessage(
-                    type = ComboType.RANDOM_STEAL,
-                    fromPlayerId = player.playerId,
-                    toPlayerId = target.playerId,
-                    cardName = stolen.name
-                )
+    fun applyCombo(player: Player, cards: List<Card>, target: Player?) {
+        val resolvedTypes = cards.map {
+            if (it.type == CardType.FERAL_CAT) {
+                it.aliasType ?: throw IllegalArgumentException("Feral Cat benötigt aliasType für Kombination.")
+            } else {
+                it.type
             }
-
-            isThreeSame(cards) -> {
-                discardPlayedCards(player, cards, game)
-                CatComboMessage(
-                    type = ComboType.SPECIFIC_REQUEST,
-                    fromPlayerId = player.playerId
-                )
-            }
-
-            isFiveDifferent(cards) -> {
-                val discardPile = game.discardPile
-                val topCard = discardPile.getPileList().firstOrNull() ?: return null
-
-                discardPile.getPileList().remove(topCard)
-                player.playerHand.addCard(topCard)
-                discardPlayedCards(player, cards, game)
-
-                CatComboMessage(
-                    type = ComboType.DISCARD_RETRIEVE,
-                    fromPlayerId = player.playerId,
-                    cardName = topCard.name
-                )
-            }
-            else -> null
         }
+
+        when {
+            resolvedTypes.size == 2 && resolvedTypes.toSet().size == 1 -> {
+                requireNotNull(target) { "Zielspieler erforderlich für 2er-Cat-Kombo." }
+                stealRandomCard(player, target)
+                log("${player.name} stiehlt eine zufällige Karte von ${target.name}.")
+            }
+
+            resolvedTypes.size == 3 && resolvedTypes.toSet().size == 1 -> {
+                requireNotNull(target) { "Zielspieler erforderlich für 3er-Cat-Kombo." }
+                stealDefuseCard(player, target)
+                log("${player.name} versucht eine DEFUSE-Karte von ${target.name} zu stehlen.")
+            }
+
+            resolvedTypes.size == 5 && resolvedTypes.toSet().size == 5 -> {
+                val discardTypes = gameLogic.discardPile.getPileList().map { it.type }.distinct()
+                log("${player.name} sieht den Ablagestapel: $discardTypes")
+                val msg = ServerMessage(
+                    type = "CHOOSE_FROM_DISCARD",
+                    message = "Wähle eine Karte aus dem Ablagestapel",
+                    gameState = discardTypes
+                )
+                sendToPlayer(player.playerId, msg)
+
+            }
+
+            else -> {
+                log("Ungültige Cat-Kombination von ${player.name}.")
+            }
+        }
+
+
+        // Alle Karten zur Ablage hinzufügen
+        cards.forEach { gameLogic.discardPile.add(it) }
+        }
+
+        private fun stealRandomCard(from: Player, to: Player) {
+            val card = to.playerHand.getRandomCard()
+            if (card != null) {
+                to.playerHand.removeCard(card)
+                from.playerHand.addCard(card)
+            }
+        }
+
+        private fun stealDefuseCard(from: Player, to: Player) {
+            val defuseCard = to.playerHand.cards.firstOrNull { it.type == CardType.DEFUSE }
+            if (defuseCard != null) {
+                to.playerHand.removeCard(defuseCard)
+                from.playerHand.addCard(defuseCard)
+            }
     }
 
-    private fun isCatCard(card: Card): Boolean {
-        val realType = card.aliasType ?: card.type
-        return realType.name.startsWith("CAT_")
-    }
-
-    private fun isTwoSame(cards: List<Card>) =
-        cards.size == 2 && cards.map { it.aliasType ?: it.type }.toSet().size == 1
-
-    private fun isThreeSame(cards: List<Card>) =
-        cards.size == 3 && cards.map { it.aliasType ?: it.type }.toSet().size == 1
-
-    private fun isFiveDifferent(cards: List<Card>) =
-        cards.size == 5 && cards.map { it.aliasType ?: it.type }.distinct().size == 5
-
-    private fun discardPlayedCards(player: Player, cards: List<Card>, gameLogic: GameLogic) {
-        for (card in cards) {
-            player.playerHand.removeCard(card)
-            gameLogic.discardPile.insertAt(0, card)
-        }
+    private fun log(message: String) {
+        println("[CatComboEffectHandler] $message")
     }
 }
+

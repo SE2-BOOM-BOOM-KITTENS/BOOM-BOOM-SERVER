@@ -4,6 +4,7 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.net
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
+import com.aau.se2.boomboomkittens.game.cards.Card
 import org.apache.naming.ServiceRef
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
@@ -36,6 +37,19 @@ class GameLogicController(
             "EXIT" -> gameLogicService.exitPlayer(playerID)
             "INIT" -> gameLogicService.getInitState(playerID)
             "EXPLODE" -> gameLogicService.explodePlayer(playerID)
+            "CAT_COMBO" -> {
+                val targetId = playerMessage.targetId?.let { UUID.fromString(it) }
+                val cards = cardsPlayed.map { Card(it.type, it.name, it.aliasType) }
+                gameLogicService.playCatCombo(playerID, cards, targetId)
+            }
+            "CHOOSE_FROM_DISCARD" -> {
+                val chosenType = cardsPlayed.firstOrNull()?.type
+                if (chosenType != null) {
+                    gameLogicService.chooseFromDiscard(playerID, chosenType)
+                } else {
+                    gameLogicService.sendUserError(playerID, "Keine Karte ausgewählt.")
+                }
+            }
             else -> gameLogicService.sendUserError(playerID,"Invalid action")
         }
     }
@@ -66,5 +80,4 @@ class GameLogicController(
         }
         gameLogicService.joinGame(playerId, playerName)
     }
-
 }
