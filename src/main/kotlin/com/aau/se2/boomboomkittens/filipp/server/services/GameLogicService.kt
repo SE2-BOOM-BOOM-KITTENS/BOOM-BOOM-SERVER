@@ -9,7 +9,6 @@ import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.cards.effects.CatComboEffectHandler
 import com.aau.se2.boomboomkittens.game.player.Player
-import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import java.util.UUID

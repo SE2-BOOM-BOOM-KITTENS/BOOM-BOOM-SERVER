@@ -1,14 +1,10 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.PlayerMessage
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
 import com.aau.se2.boomboomkittens.game.cards.Card
-import org.apache.naming.ServiceRef
 import org.springframework.messaging.handler.annotation.MessageMapping
-import org.springframework.messaging.handler.annotation.SendTo
-import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 import java.security.Principal
