@@ -1,7 +1,6 @@
 package com.aau.se2.boomboomkittens.game.cards.effects
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
-import com.aau.se2.boomboomkittens.filipp.server.dtos.messages.ComboType
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
@@ -14,76 +13,72 @@ import java.util.UUID
 class CatComboEffectHandlerTest {
 
     private lateinit var game: GameLogic
-    private lateinit var player1: Player
-    private lateinit var player2: Player
+    private lateinit var player: Player
+    private lateinit var target: Player
+    private lateinit var handler: CatComboEffectHandler
 
     @BeforeEach
     fun setup() {
-        player1 = Player(playerId = UUID.randomUUID(), name = "Alice")
-        player2 = Player(playerId = UUID.randomUUID(), name = "Bob")
-        game = GameLogic(lobbyId = UUID.randomUUID(), players = mutableListOf(player1, player2))
-        game.discardPile.getPileList().clear()
-        player1.playerHand.cards.clear()
-        player2.playerHand.cards.clear()
+        player = Player(name = "Tester")
+        target = Player(name = "Opfer")
+        game = GameLogic(UUID.randomUUID(), mutableListOf(player, target))
+        player.playerHand.cards.clear()
+        target.playerHand.cards.clear()
+        handler = CatComboEffectHandler(game) { _, _ -> }
     }
 
     @Test
-    fun `handleCombo returns RANDOM_STEAL and performs action`() {
-        val card1 = Card(CardType.CAT_TACO)
-        val card2 = Card(CardType.CAT_TACO)
-        val stolenCard = Card(CardType.DEFUSE)
+    fun `2 gleiche Cat Karten stehlen zufaellige Karte`() {
+        target.playerHand.addCard(Card(CardType.BLANK))
+        val cards = listOf(Card(CardType.CAT_TACO), Card(CardType.CAT_TACO))
 
-        player1.playerHand.cards.addAll(listOf(card1, card2))
-        player2.playerHand.cards.add(stolenCard)
+        handler.applyCombo(player, cards, target)
 
-        val result = CatComboEffectHandler.handleCombo(player1, listOf(card1, card2), game)
-
-        assertEquals(ComboType.RANDOM_STEAL, result?.type)
-        assertTrue(stolenCard in player1.playerHand.cards)
-        assertTrue(stolenCard !in player2.playerHand.cards)
+        assertEquals(1, player.playerHand.getCardAmount())
+        assertEquals(0, target.playerHand.getCardAmount())
     }
 
-    /*@Test
-    fun `invalid combo returns null and discards cards`() {
-        val cards = List(4) { Card(CardType.CAT_BEARD) }
-        player1.playerHand.cards.addAll(cards)
+    @Test
+    fun `3 gleiche Cat Karten stehlen Defuse`() {
+        target.playerHand.addCard(Card(CardType.DEFUSE))
+        val cards = List(3) { Card(CardType.CAT_BEARD) }
 
-        val result = CatComboEffectHandler.handleCombo(player1, cards, game)
+        handler.applyCombo(player, cards, target)
 
-        assertEquals(null, result)
-        assertTrue(player1.playerHand.cards.isEmpty())
-        assertTrue(game.discardPile.getPileList().containsAll(cards))
-    }*/
+        assertTrue(player.playerHand.containsCardType(CardType.DEFUSE))
+    }
 
     @Test
-    fun `test five different Cat cards triggers discard pile choice`() {
-        val discardCard = Card(CardType.DEFUSE)
-        game.discardPile.getPileList().add(discardCard)
-
-        val comboCards = listOf(
-            Card(CardType.CAT_TACO),
-            Card(CardType.CAT_BEARD),
-            Card(CardType.CAT_HAIRY_POTATO),
-            Card(CardType.CAT_RAINBOW_RALPHING),
-            Card(CardType.CAT_CATERMELON)
+    fun `5 verschiedene Cat Karten triggern Ablagestapel Auswahl`() {
+        val discardTypes = listOf(
+            CardType.CAT_TACO,
+            CardType.CAT_BEARD,
+            CardType.CAT_HAIRY_POTATO,
+            CardType.CAT_RAINBOW_RALPHING,
+            CardType.CAT_CATERMELON
         )
-        player1.playerHand.cards.addAll(comboCards)
+        discardTypes.forEach { game.discardPile.add(Card(it)) }
+        val cards = discardTypes.map { Card(it) }
 
-        val result = CatComboEffectHandler.handleCombo(player1, comboCards, game)
+        var messageSent = false
+        handler = CatComboEffectHandler(game) { _, _ -> messageSent = true }
 
-        assertEquals(ComboType.DISCARD_RETRIEVE, result?.type)
-        assertTrue(discardCard in player1.playerHand.cards)
-        assertFalse(discardCard in game.discardPile.getPileList())
-        assertTrue(player1.playerHand.cards.none { it in comboCards })
+        handler.applyCombo(player, cards, null)
+
+        assertTrue(messageSent)
     }
 
     @Test
-    fun `three same Cat cards triggers SPECIFIC_REQUEST`() {
-        val comboCards = List(3) { Card(CardType.CAT_BEARD) }
-        player1.playerHand.cards.addAll(comboCards)
+    fun `Feral Cat mit aliasType funktioniert in Combo`() {
+        val cards = listOf(
+            Card(CardType.FERAL_CAT, aliasType = CardType.CAT_TACO),
+            Card(CardType.CAT_TACO)
+        )
+        target.playerHand.addCard(Card(CardType.BLANK))
 
-        val result = CatComboEffectHandler.handleCombo(player1, comboCards, game)
+        handler.applyCombo(player, cards, target)
 
-        assertEquals(ComboType.SPECIFIC_REQUEST, result?.type)
+        assertEquals(1, player.playerHand.getCardAmount())
+        assertEquals(0, target.playerHand.getCardAmount())
     }
 }
