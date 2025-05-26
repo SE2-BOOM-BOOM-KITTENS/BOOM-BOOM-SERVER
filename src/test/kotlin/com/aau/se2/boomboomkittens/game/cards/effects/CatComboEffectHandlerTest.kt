@@ -87,6 +87,44 @@ class CatComboEffectHandlerTest {
         }
     }
 
+    @Test
+    fun `2er Cat-Kombo ohne targetId wirft Exception`() {
+        val cards = listOf(Card(CardType.CAT_TACO), Card(CardType.CAT_TACO))
+        assertThrows<IllegalArgumentException> {
+            handler.applyCombo(player, cards, null)
+        }
+    }
+
+    @Test
+    fun `3er Cat-Kombo ohne targetId wirft Exception`() {
+        val cards = listOf(Card(CardType.CAT_BEARD), Card(CardType.CAT_BEARD), Card(CardType.CAT_BEARD))
+        assertThrows<IllegalArgumentException> {
+            handler.applyCombo(player, cards, null)
+        }
+    }
+
+    @Test
+    fun `2er Cat-Kombo mit leerer Zielhand stiehlt keine Karte`() {
+        target.playerHand.cards.clear() // Zielspieler hat keine Karte
+        val cards = listOf(Card(CardType.CAT_TACO), Card(CardType.CAT_TACO))
+
+        handler.applyCombo(player, cards, target)
+
+        assertEquals(0, player.playerHand.getCardAmount())
+    }
+
+    @Test
+    fun `3er Cat-Kombo ohne DEFUSE beim Ziel bringt nichts`() {
+        target.playerHand.cards.clear()
+        target.playerHand.addCard(Card(CardType.BLANK))
+
+        val cards = listOf(Card(CardType.CAT_BEARD), Card(CardType.CAT_BEARD), Card(CardType.CAT_BEARD))
+
+        handler.applyCombo(player, cards, target)
+
+        assertFalse(player.playerHand.containsCardType(CardType.DEFUSE))
+    }
+
 
     @Test
     fun `Feral Cat mit aliasType funktioniert in Combo`() {
