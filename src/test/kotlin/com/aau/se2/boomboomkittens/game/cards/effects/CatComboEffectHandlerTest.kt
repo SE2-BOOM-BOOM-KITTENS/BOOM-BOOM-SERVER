@@ -7,6 +7,7 @@ import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.util.UUID
 
 
@@ -69,6 +70,25 @@ class CatComboEffectHandlerTest {
     }
 
     @Test
+    fun `Ungueltige Cat-Kombination wird ignoriert`() {
+        val player = Player(name = "Tester")
+        val gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player))
+        val handler = CatComboEffectHandler(gameLogic) { _, _ -> }
+
+        val cards = listOf(
+            Card(CardType.CAT_TACO),
+            Card(CardType.CAT_BEARD),
+            Card(CardType.CAT_TACO),
+            Card(CardType.CAT_TACO)
+        )
+
+        assertDoesNotThrow {
+            handler.applyCombo(player, cards, null)
+        }
+    }
+
+
+    @Test
     fun `Feral Cat mit aliasType funktioniert in Combo`() {
         val cards = listOf(
             Card(CardType.FERAL_CAT, aliasType = CardType.CAT_TACO),
@@ -80,5 +100,32 @@ class CatComboEffectHandlerTest {
 
         assertEquals(1, player.playerHand.getCardAmount())
         assertEquals(0, target.playerHand.getCardAmount())
+    }
+
+    @Test
+    fun `FeralCatEffect gibt Hinweis bei direktem Ausspielen`() {
+        val player = Player(name = "Tester")
+        val gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player))
+        player.playerHand.addCard(Card(CardType.FERAL_CAT))
+
+        assertDoesNotThrow {
+            gameLogic.playCard(player.playerId, CardType.FERAL_CAT)
+        }
+    }
+
+    @Test
+    fun `FeralCat ohne aliasType wirft Exception`() {
+        val player = Player(name = "Tester")
+        val gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player))
+        val handler = CatComboEffectHandler(gameLogic) { _, _ -> }
+
+        val cards = listOf(
+            Card(CardType.FERAL_CAT), // kein aliasType
+            Card(CardType.CAT_TACO)
+        )
+
+        assertThrows<IllegalArgumentException> {
+            handler.applyCombo(player, cards, null)
+        }
     }
 }
