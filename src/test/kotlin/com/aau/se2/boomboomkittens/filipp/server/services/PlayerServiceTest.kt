@@ -46,6 +46,7 @@ class PlayerServiceTest {
         val fetchedPlayer = playerService.getPlayer(player.playerId.toString())
 
         assertNotNull(fetchedPlayer)
+        // fixme the assertNotNull already guards the next line by throwing an exception if its null
         if (fetchedPlayer != null) {
             assertEquals(player.playerId, fetchedPlayer.playerId)
         }

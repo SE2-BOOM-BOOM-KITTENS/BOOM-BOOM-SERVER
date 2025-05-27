@@ -11,6 +11,7 @@ import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertNull
 import java.util.UUID
 
+// fixme put in same package as CuT for maintainability
 class GameLogicNetworkPacketMapperTest {
 
     private lateinit var gameLogic: GameLogic

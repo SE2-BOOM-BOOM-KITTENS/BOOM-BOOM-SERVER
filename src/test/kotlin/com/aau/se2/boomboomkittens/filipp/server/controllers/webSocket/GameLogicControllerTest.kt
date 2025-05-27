@@ -51,6 +51,8 @@ class GameLogicControllerTest {
             "cardsPlayed" to emptyList<String>()
         )
         session.send("app/addPlayer",playerMessage)
+
+        // fixme missing assertion
     }
 
 }
