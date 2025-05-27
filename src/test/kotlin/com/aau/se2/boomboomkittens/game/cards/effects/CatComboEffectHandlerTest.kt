@@ -154,6 +154,85 @@ class CatComboEffectHandlerTest {
     }
 
     @Test
+    fun `resolvedTypes hat 1 Typ aber nicht genau 2 Karten`() {
+        val cards = listOf(
+            Card(CardType.CAT_TACO),
+            Card(CardType.CAT_TACO),
+            Card(CardType.CAT_TACO)
+        ) // size == 3, toSet().size == 1
+
+        assertDoesNotThrow {
+            handler.applyCombo(player, cards, target)
+        }
+
+        assertEquals(0, player.playerHand.getCardAmount())
+    }
+
+    @Test
+    fun `3er Kombo mit unterschiedlichen Typen wird ignoriert`() {
+        val cards = listOf(
+            Card(CardType.CAT_TACO),
+            Card(CardType.CAT_TACO),
+            Card(CardType.CAT_BEARD) // !=
+        )
+
+        assertDoesNotThrow {
+            handler.applyCombo(player, cards, target)
+        }
+
+        assertEquals(0, player.playerHand.getCardAmount())
+    }
+
+    @Test
+    fun `resolvedTypes hat gleichen Typ aber nicht genau 3 Karten`() {
+        val cards = listOf(
+            Card(CardType.CAT_BEARD),
+            Card(CardType.CAT_BEARD)
+        ) // size = 2
+
+        assertDoesNotThrow {
+            handler.applyCombo(player, cards, target)
+        }
+
+        assertEquals(0, player.playerHand.getCardAmount())
+    }
+
+    @Test
+    fun `5er Kombo mit doppeltem Typ wird ignoriert`() {
+        val cards = listOf(
+            Card(CardType.CAT_TACO),
+            Card(CardType.CAT_BEARD),
+            Card(CardType.CAT_TACO), // doppelt
+            Card(CardType.CAT_CATERMELON),
+            Card(CardType.CAT_HAIRY_POTATO)
+        )
+
+        var triggered = false
+        val handlerWithSend = CatComboEffectHandler(game) { _, _ -> triggered = true }
+
+        handlerWithSend.applyCombo(player, cards, null)
+
+        assertFalse(triggered)
+    }
+
+    @Test
+    fun `zu wenige Karten fuer 5er Kombo werden ignoriert`() {
+        val cards = listOf(
+            Card(CardType.CAT_TACO),
+            Card(CardType.CAT_BEARD),
+            Card(CardType.CAT_CATERMELON),
+            Card(CardType.CAT_HAIRY_POTATO)
+        ) // nur 4 Karten
+
+        var triggered = false
+        val handlerWithSend = CatComboEffectHandler(game) { _, _ -> triggered = true }
+
+        handlerWithSend.applyCombo(player, cards, null)
+
+        assertFalse(triggered)
+    }
+
+    @Test
     fun `Feral Cat mit aliasType funktioniert in Combo`() {
         val cards = listOf(
             Card(CardType.FERAL_CAT, aliasType = CardType.CAT_TACO),
