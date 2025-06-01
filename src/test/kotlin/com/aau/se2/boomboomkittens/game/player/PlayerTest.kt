@@ -1,6 +1,5 @@
-package com.aau.se2.boomboomkittens.game.model.player
+package com.aau.se2.boomboomkittens.game.player
 
-import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

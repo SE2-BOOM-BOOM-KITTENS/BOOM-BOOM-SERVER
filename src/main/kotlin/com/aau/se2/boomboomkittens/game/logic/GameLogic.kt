@@ -74,6 +74,7 @@ open class GameLogic(
             throw IllegalStateException("Player doesn't have card type $cardType")
         }
 
+        // fixme after removing the registry you can use the effect directly
         val effect = _cardRegistry.getEffect(cardType)
 
         effect.apply(player, this)

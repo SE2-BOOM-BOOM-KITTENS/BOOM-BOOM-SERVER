@@ -8,6 +8,9 @@ import com.aau.se2.boomboomkittens.game.cards.effects.DefuseEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.ExplodingKittenEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.NopeEffect
 
+// fixme remove this registry, as its an unnecessary manual matching
+//  either add a constructor parameter for the effect to the CardType enum
+//  or pass the CardEffect directly to the card, with potentially adding another getter to the effect for the enum's name
 object CardEffectRegistry {
     private val effects = mapOf(
         CardType.BLANK to BlankEffect(),

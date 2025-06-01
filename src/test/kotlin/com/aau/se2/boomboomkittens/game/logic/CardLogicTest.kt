@@ -58,6 +58,7 @@ class CardLogicTest {
         // Karte hinzufügen
         hand.addCard(card)
 
+        // fixme split test into add and remove card where the first tests is the precondition for the second
         // Vorher prüfen, dass sie da ist
         assertTrue(hand.containsCardType(card.type), "Card should be present before removal")
 
