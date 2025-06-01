@@ -46,6 +46,7 @@ class CardLogic(playerSize: Int) {
         addCardToPlayer(playerId, card)
     }
 
+    // fixme after removing the registry pass the effects here
     fun giveInitialHand(player: Player){
         player.playerHand.addCard(Card(CardType.BLANK))
         player.playerHand.addCard(Card(CardType.DEFUSE))
