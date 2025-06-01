@@ -1,5 +1,6 @@
+package com.aau.se2.boomboomkittens.filipp.server.networkPacket
+
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
-import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertNull
 import java.util.UUID
 
-// fixme put in same package as CuT for maintainability
 class GameLogicNetworkPacketMapperTest {
 
     private lateinit var gameLogic: GameLogic
