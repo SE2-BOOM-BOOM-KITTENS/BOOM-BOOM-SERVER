@@ -70,14 +70,10 @@ open class GameLogic(
         val player = _playerLogic.getPlayerByID(playerId)
             ?: throw IllegalArgumentException("Player not found")
 
-        if (!player.playerHand.containsCardType(cardType)) {
-            throw IllegalStateException("Player doesn't have card type $cardType")
-        }
+        val card = player.playerHand.cards.firstOrNull { it.type == cardType }
+            ?: throw IllegalStateException("Player doesn't have card type $cardType")
 
-        // fixme after removing the registry you can use the effect directly
-        val effect = _cardRegistry.getEffect(cardType)
-
-        effect.apply(player, this)
+        cardType.effect.apply(card, player, this)
     }
 
     fun shuffleDeck(){
