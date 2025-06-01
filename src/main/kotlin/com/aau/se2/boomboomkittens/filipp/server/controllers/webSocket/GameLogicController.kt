@@ -1,13 +1,10 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.PlayerMessage
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
-import org.apache.naming.ServiceRef
+import com.aau.se2.boomboomkittens.game.cards.Card
 import org.springframework.messaging.handler.annotation.MessageMapping
-import org.springframework.messaging.handler.annotation.SendTo
-import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 import java.security.Principal
@@ -36,6 +33,19 @@ class GameLogicController(
             "EXIT" -> gameLogicService.exitPlayer(playerID)
             "INIT" -> gameLogicService.getInitState(playerID)
             "EXPLODE" -> gameLogicService.explodePlayer(playerID)
+            "CAT_COMBO" -> {
+                val targetId = playerMessage.targetId?.let { UUID.fromString(it) }
+                val cards = cardsPlayed.map { Card(it.type, it.name, it.aliasType) }
+                gameLogicService.playCatCombo(playerID, cards, targetId)
+            }
+            "CHOOSE_FROM_DISCARD" -> {
+                val chosenType = cardsPlayed.firstOrNull()?.type
+                if (chosenType != null) {
+                    gameLogicService.chooseFromDiscard(playerID, chosenType)
+                } else {
+                    gameLogicService.sendUserError(playerID, "Keine Karte ausgewählt.")
+                }
+            }
             else -> gameLogicService.sendUserError(playerID,"Invalid action")
         }
     }
@@ -66,5 +76,4 @@ class GameLogicController(
         }
         gameLogicService.joinGame(playerId, playerName)
     }
-
 }

@@ -1,10 +1,12 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry
 
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.FeralCatEffect
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.ShuffleEffect
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.cards.effects.BlankEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.DefuseEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.ExplodingKittenEffect
-//import com.aau.se2.boomboomkittens.game.cards.effects.NopeEffect
+import com.aau.se2.boomboomkittens.game.cards.effects.NopeEffect
 
 // fixme remove this registry, as its an unnecessary manual matching
 //  either add a constructor parameter for the effect to the CardType enum
@@ -13,10 +15,11 @@ object CardEffectRegistry {
     private val effects = mapOf(
         CardType.BLANK to BlankEffect(),
         CardType.DEFUSE to DefuseEffect(),
-        //CardType.NOPE to NopeEffect(),
+        CardType.NOPE to NopeEffect(),
         CardType.EXPLODING_KITTEN to ExplodingKittenEffect(),
-        //CardType.SHUFFLE to ShuffleEffect()
-    )
+        CardType.SHUFFLE to ShuffleEffect(),
+        CardType.FERAL_CAT to FeralCatEffect(),
+        )
 
     fun getEffect (cardType: CardType): CardEffect {
         return effects [cardType]

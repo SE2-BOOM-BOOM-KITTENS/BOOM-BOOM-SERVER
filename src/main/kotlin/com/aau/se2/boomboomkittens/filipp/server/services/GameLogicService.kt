@@ -5,8 +5,10 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLo
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
 import com.aau.se2.boomboomkittens.game.Lobby
+import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.CardType
+import com.aau.se2.boomboomkittens.game.cards.effects.CatComboEffectHandler
 import com.aau.se2.boomboomkittens.game.player.Player
-import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -58,7 +60,7 @@ class GameLogicService(
     }
 
     fun getPlayerHand(playerId: UUID){
-        val playerHand = getPlayerHand(playerId)
+        val playerHand = gameLogic.getPlayerHand(playerId)
         val serverMessage = ServerMessage("HAND","You have received your card hand",playerHand)
         sendGameUpdate(playerId= playerId, payload = serverMessage)
     }
@@ -70,6 +72,8 @@ class GameLogicService(
             messagingTemplate.convertAndSend("/topic/lobby/1234",payload)
         }
     }
+
+    fun getGameLogic(): GameLogic = gameLogic
 
     fun joinGame(playerId: UUID, playerName:String){
         gameLogic.addPlayer(playerId, playerName)
@@ -111,6 +115,23 @@ class GameLogicService(
     fun sendDebugBroadcast(){
         val serverMessage = ServerMessage("DEBUG","BROADCASTING TEST",null)
         messagingTemplate.convertAndSend("/topic/test",serverMessage)
+    }
+
+    fun playCatCombo(playerId: UUID, rawCards: List<Card>, targetId: UUID?) {
+        val player = gameLogic.getPlayerById(playerId) ?: return
+        val target = targetId?.let { gameLogic.getPlayerById(it) }
+
+        val handler = CatComboEffectHandler(gameLogic) { id, payload ->
+            sendGameUpdate(id, payload) // Callback für Nachrichten
+        }
+
+        handler.applyCombo(player, rawCards, target)
+    }
+
+    fun chooseFromDiscard(playerId: UUID, cardType: CardType) {
+        val card = gameLogic.discardPile.getPileList().lastOrNull { it.type == cardType } ?: return
+        gameLogic.discardPile.getPileList().remove(card)
+        gameLogic.getPlayerById(playerId)?.playerHand?.addCard(card)
     }
 
 }
