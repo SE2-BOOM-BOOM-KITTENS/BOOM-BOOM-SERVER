@@ -1,4 +1,4 @@
-/*package com.aau.se2.boomboomkittens.filipp.server.models.player.playerCircle
+package com.aau.se2.boomboomkittens.game.logic/*package com.aau.se2.boomboomkittens.filipp.server.models.player.playerCircle
 
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType

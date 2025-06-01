@@ -1,3 +1,5 @@
+package com.aau.se2.boomboomkittens.game.cards.effects
+
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.AlterTheFutureEffect
@@ -7,7 +9,6 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.util.*
 
-// fixme put in same package as CuT for maintainability
 class AlterTheFutureEffectTest {
 
     @Test
