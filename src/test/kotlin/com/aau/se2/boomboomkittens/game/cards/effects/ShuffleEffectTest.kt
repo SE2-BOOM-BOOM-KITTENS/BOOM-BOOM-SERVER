@@ -19,17 +19,18 @@ class ShuffleEffectTest{
         shuffleEffect = ShuffleEffect()
         gameLogic = mock()
         player = mock()
+        val card = Card(CardType.SHUFFLE)
     }
 
     @Test
     fun `apply should shuffle the deck`(){
-        shuffleEffect.apply(player, gameLogic)
+        shuffleEffect.apply(card, player, gameLogic)
         verify(gameLogic, times(1)).shuffleDeck()
     }
 
     @Test
     fun `apply should notify the player that the deck was shuffled`(){
-        shuffleEffect.apply(player, gameLogic)
+        shuffleEffect.apply(card, player, gameLogic)
         verify(gameLogic, times(1)).notifyDeckShuffled(player)
     }
 */

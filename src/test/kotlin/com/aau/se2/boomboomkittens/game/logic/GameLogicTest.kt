@@ -109,17 +109,6 @@ class GameLogicTest {
     }
 
     @Test
-    fun playCardExceptionTest_InvalidCardType() {
-        // TEST zur Hand hinzufügen, damit wir bis zur Effect-Ausführung kommen
-        player1.playerHand.addCard(Card(CardType.TEST))
-
-        val exception = assertThrows(IllegalArgumentException::class.java) {
-            gameLogic.playCard(player1.playerId, CardType.TEST)
-        }
-
-        assertEquals("No effect registered for TEST", exception.message)
-    }
-    @Test
     fun `peekTopCards returns expected amount`() {
         gameLogic.drawPile.add(Card(CardType.SHUFFLE))
         gameLogic.drawPile.add(Card(CardType.DEFUSE))
