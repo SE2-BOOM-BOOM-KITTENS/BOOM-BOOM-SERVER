@@ -35,7 +35,7 @@ class GameLogicController(
             "EXPLODE" -> gameLogicService.explodePlayer(playerID)
             "CAT_COMBO" -> {
                 val targetId = playerMessage.targetId?.let { UUID.fromString(it) }
-                val cards = cardsPlayed.map { Card(it.type, it.name, it.aliasType) }
+                val cards = cardsPlayed.map { Card(type=it.type, name=it.name, aliasType = it.aliasType) }
                 gameLogicService.playCatCombo(playerID, cards, targetId)
             }
             "CHOOSE_FROM_DISCARD" -> {
