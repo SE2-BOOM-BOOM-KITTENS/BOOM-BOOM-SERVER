@@ -24,11 +24,17 @@ open class GameLogic(
 
     val drawPile: LinkedList<Card> = LinkedList()
 
-    init {
-        for(player in players){
+    fun initializeGame() {
+        // 1. Spieler einfügen und Karten austeilen
+        for (player in players) {
             _playerLogic.addPlayerByID(player)
-            _cardLogic.addPlayer(player)
+            _cardLogic.addPlayer(player) // verteilt 7 Karten + 1 DEFUSE intern
         }
+
+        // 2. Exploding Kittens hinzufügen (n - 1 Spieler)
+        _cardLogic.finalizeDeck(players.size)
+
+        println("Spiel initialisiert: ${players.size} Spieler")
     }
 
     fun removePlayer(playerId: UUID){

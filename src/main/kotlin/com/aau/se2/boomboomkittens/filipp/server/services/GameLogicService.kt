@@ -23,7 +23,27 @@ class GameLogicService(
     private val cardLogic = gameLogic.cardLogic
     private val networkPacketMapper = NetworkPacketMapper()
 
+    fun startGame() {
+        gameLogic.initializeGame()
 
+        val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic, cardLogic)
+        val serverMessage = ServerMessage("GAME_START", "Das Spiel wurde gestartet.", gameState)
+        sendGameUpdate(payload = serverMessage)
+
+        // GameState an alle senden
+        gameLogic.playerLogic.getPlayerList().forEach { player ->
+            val playerHand = gameLogic.getPlayerHand(player.playerId)
+            val handMessage = ServerMessage("HAND", "Deine Startkarten", playerHand)
+            sendGameUpdate(playerId = player.playerId, payload = handMessage)
+        }
+
+        // Handkarten an alle Spieler senden
+        gameLogic.playerLogic.getPlayerList().forEach { player ->
+            val playerHand = gameLogic.getPlayerHand(player.playerId)
+            val handMessage = ServerMessage("HAND", "Deine Startkarten", playerHand)
+            sendGameUpdate(playerId = player.playerId, payload = handMessage)
+        }
+    }
 
     fun pass(playerId: UUID) {
         endTurn(playerId)

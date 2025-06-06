@@ -99,7 +99,8 @@ class CardLogic(playerSize: Int) {
         }
 
         // DEFUSE ins Deck: nur restliche nach Verteilung
-        val totalDefuses = if (useWithPaw) defOf(CardType.DEFUSE, cardDefs).withPawCount else defOf(CardType.DEFUSE, cardDefs).withoutPawCount
+        val defuseDef = cardDefs.first { it.type == CardType.DEFUSE }
+        val totalDefuses = if (useWithPaw) defuseDef.withPawCount else defuseDef.withoutPawCount
         val defusesForDeck = (totalDefuses - playerSize).coerceAtLeast(0)
         repeat(defusesForDeck) {
             pile.add(Card(CardType.DEFUSE))
@@ -108,8 +109,6 @@ class CardLogic(playerSize: Int) {
         pile.shuffle()
         return pile
     }
-
-    private fun defOf(type: CardType, list: List<CardDefinition>) = list.first { it.type == type }
 
     fun finalizeDeck(playerSize: Int) {
         repeat(playerSize - 1) {
