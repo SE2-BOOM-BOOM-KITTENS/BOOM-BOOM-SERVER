@@ -32,6 +32,7 @@ class GameLogicController(
             "PLAY_CARDS" ->  gameLogicService.playCards(playerID, cardsPlayed)
             "EXIT" -> gameLogicService.exitPlayer(playerID)
             "INIT" -> gameLogicService.getInitState(playerID)
+            "START_GAME" -> gameLogicService.startGame()
             "EXPLODE" -> gameLogicService.explodePlayer(playerID)
             "CAT_COMBO" -> {
                 val targetId = playerMessage.targetId?.let { UUID.fromString(it) }
