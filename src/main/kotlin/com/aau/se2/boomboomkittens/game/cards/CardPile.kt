@@ -22,13 +22,23 @@ class CardPile {
         pile.add(index, card)
     }
 
-    fun getPileList(): MutableList<Card>{
-        return pile
-    }
+    fun getCardsSnapshot(): List<Card> = pile.toList()
 
     fun take(n: Int):List<Card>{
         val cards: List<Card> = pile.take(n)
         return cards
+    }
+
+    fun removeCard(card: Card): Boolean {
+        return pile.remove(card)
+    }
+
+    fun clear() {
+        pile.clear()
+    }
+
+    fun addAll(cards: List<Card>) {
+        pile.addAll(cards)
     }
 
     fun removeFirst(): Card{

@@ -136,8 +136,8 @@ class GameLogicService(
     }
 
     fun chooseFromDiscard(playerId: UUID, cardType: CardType) {
-        val card = gameLogic.discardPile.getPileList().lastOrNull { it.type == cardType } ?: return
-        gameLogic.discardPile.getPileList().remove(card)
+        val card = gameLogic.discardPile.getCardsSnapshot().lastOrNull { it.type == cardType } ?: return
+        gameLogic.discardPile.removeCard(card)
         gameLogic.getPlayerById(playerId)?.playerHand?.addCard(card)
     }
 

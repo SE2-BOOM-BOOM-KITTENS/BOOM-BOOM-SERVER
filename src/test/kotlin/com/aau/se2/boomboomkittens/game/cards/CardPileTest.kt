@@ -48,7 +48,7 @@ class CardPileTest {
         cardPile.insertAt(1, card2)
         cardPile.insertAt(2, card3)
 
-        val pile = cardPile.getPileList()
+        val pile = cardPile.getCardsSnapshot()
         assertEquals(card1, pile[0])
         assertEquals(card2, pile[1])
         assertEquals(card3, pile[2])

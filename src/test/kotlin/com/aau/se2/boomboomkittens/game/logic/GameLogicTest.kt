@@ -48,7 +48,7 @@ class GameLogicTest {
 
     @Test
     fun drawCardExceptionTest(){
-        cardLogic.drawPile.getPileList().clear()
+        cardLogic.drawPile.clear()
         Assertions.assertTrue(cardLogic.drawPile.isEmpty())
 
         val exception = assertThrows<IllegalStateException> {
