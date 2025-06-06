@@ -22,7 +22,7 @@ open class GameLogic(
     val discardPile: CardPile get() = _discardPile
     val cardRegistry: CardEffectRegistry get() = _cardRegistry
 
-    val drawPile: LinkedList<Card> = LinkedList()
+    val drawPile: CardPile get() = _cardLogic.drawPile
 
     fun initializeGame() {
         // 1. Spieler einfügen und Karten austeilen
