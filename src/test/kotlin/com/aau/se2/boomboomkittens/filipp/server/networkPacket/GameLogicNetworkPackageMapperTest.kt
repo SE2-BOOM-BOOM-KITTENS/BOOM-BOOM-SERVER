@@ -22,18 +22,22 @@ class GameLogicNetworkPacketMapperTest {
 
     @BeforeEach
     fun setUp() {
-        mapper = NetworkPacketMapper()
-
-        player1 = Player(UUID.randomUUID(), "player1")
-        player2 = Player(UUID.randomUUID(), "player2")
-
-        gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player1,player2))
+        gameLogic = GameLogic(UUID.randomUUID())
         cardLogic = gameLogic.cardLogic
 
-        cardLogic.drawPile.insertAt(0, Card(CardType.BLANK))
+        val player1Id = UUID.randomUUID()
+        val player2Id = UUID.randomUUID()
+
+        gameLogic.addPlayer(player1Id, "player1")
+        gameLogic.addPlayer(player2Id, "player2")
+
+        player1 = gameLogic.getPlayerById(player1Id)!!
+        player2 = gameLogic.getPlayerById(player2Id)!!
 
         cardLogic.addCardToPlayer(player1.playerId, Card(CardType.BLANK))
         cardLogic.addCardToPlayer(player2.playerId, Card(CardType.BLANK))
+
+        mapper = NetworkPacketMapper()
     }
 
     @Test
