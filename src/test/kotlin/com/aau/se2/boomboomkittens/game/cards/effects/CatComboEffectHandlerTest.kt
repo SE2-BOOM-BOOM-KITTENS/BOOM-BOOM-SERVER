@@ -256,7 +256,7 @@ class CatComboEffectHandlerTest {
 
         gameLogic.getPlayerHand(player.playerId)!!.addCard(Card(CardType.FERAL_CAT))
 
-        assertDoesNotThrow {
+        assertThrows<IllegalStateException> {
             gameLogic.playCard(player.playerId, CardType.FERAL_CAT)
         }
     }

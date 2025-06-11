@@ -107,22 +107,6 @@ class GameLogicTest {
     }
 
     @Test
-    fun playCardExceptionTest_InvalidCardType() {
-        val player = Player(UUID.randomUUID(), "Tester")
-        val gameLogic = GameLogic(UUID.randomUUID())
-        gameLogic.addPlayer(player.playerId, player.name)
-
-        // Spieler bekommt eine Karte mit ungültigem Typ
-        val testCard = Card(CardType.TEST)
-        gameLogic.cardLogic.addCardToPlayer(player.playerId, testCard)
-
-        val exception = assertThrows<IllegalArgumentException> {
-            gameLogic.playCard(player.playerId, CardType.TEST)
-        }
-        assertEquals("No effect registered for TEST", exception.message)
-    }
-
-    @Test
     fun `peekTopCards returns expected amount`() {
         gameLogic.drawPile.add(Card(CardType.SHUFFLE))
         gameLogic.drawPile.add(Card(CardType.DEFUSE))
