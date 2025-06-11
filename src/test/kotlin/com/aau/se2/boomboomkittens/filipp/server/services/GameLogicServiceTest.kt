@@ -22,10 +22,16 @@ class GameLogicServiceTest {
     @BeforeEach
     fun setup() {
         service = GameLogicService(messagingTemplate)
-        player = Player(name = "Tester")
-        target = Player(name = "Opfer")
-        service.joinGame(player.playerId, player.name)
-        service.joinGame(target.playerId, target.name)
+
+        val playerId = java.util.UUID.randomUUID()
+        val targetId = java.util.UUID.randomUUID()
+
+        service.joinGame(playerId, "Tester")
+        service.joinGame(targetId, "Opfer")
+
+        val game = service.getGameLogic()
+        player = game.getPlayerById(playerId)!!
+        target = game.getPlayerById(targetId)!!
     }
 
     @Test
@@ -39,8 +45,8 @@ class GameLogicServiceTest {
 
         service.playCatCombo(player.playerId, cards, target.playerId)
 
-        //assertEquals(1, player.playerHand.getCardAmount())
-        //assertEquals(0, target.playerHand.getCardAmount())
+        assertEquals(1, player.playerHand.getCardAmount())
+        assertEquals(0, target.playerHand.getCardAmount())
     }
 
     @Test
