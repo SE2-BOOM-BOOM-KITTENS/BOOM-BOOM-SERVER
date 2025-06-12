@@ -21,25 +21,27 @@ class GameLogicController(
     fun processAction(playerMessage: PlayerMessage, principal: Principal) {
         val playerID = UUID.fromString(principal.name)
         val action = playerMessage.action
-        lateinit var cardsPlayed: List<CardNetworkPacket>
-        if(playerMessage.cardsPlayed!= null) {
-            cardsPlayed = playerMessage.cardsPlayed
-        }else{
-            cardsPlayed = mutableListOf<CardNetworkPacket>()
-        }
+        val payload = playerMessage.payload
         when(action){
+            "CHEAT" -> gameLogicService.cheatDuplicate(playerID,payload)
+            "CHECK_CHEAT" -> gameLogicService.checkIfDuplicate(playerID,payload)
             "PASS" -> gameLogicService.pass(playerID)
-            "PLAY_CARDS" ->  gameLogicService.playCards(playerID, cardsPlayed)
+            "PLAY_CARDS" ->  gameLogicService.playCards(playerID, payload)
             "EXIT" -> gameLogicService.exitPlayer(playerID)
             "INIT" -> gameLogicService.getInitState(playerID)
             "EXPLODE" -> gameLogicService.explodePlayer(playerID)
             "CAT_COMBO" -> {
                 val targetId = playerMessage.targetId?.let { UUID.fromString(it) }
-                val cards = cardsPlayed.map { Card(type=it.type, name=it.name, aliasType = it.aliasType) }
-                gameLogicService.playCatCombo(playerID, cards, targetId)
+                val networkCards = (payload as? List<*>)?.filterIsInstance<CardNetworkPacket>()
+
+                if(networkCards != null && networkCards.isNotEmpty()) {
+                    val cards = networkCards.map { Card(type = it.type, name = it.name, aliasType = it.aliasType) }
+                    gameLogicService.playCatCombo(playerID, cards, targetId)
+                }
             }
             "CHOOSE_FROM_DISCARD" -> {
-                val chosenType = cardsPlayed.firstOrNull()?.type
+                val cards = (payload as? List<*>)?.filterIsInstance<CardNetworkPacket>()
+                val chosenType = cards?.firstOrNull()?.type
                 if (chosenType != null) {
                     gameLogicService.chooseFromDiscard(playerID, chosenType)
                 } else {

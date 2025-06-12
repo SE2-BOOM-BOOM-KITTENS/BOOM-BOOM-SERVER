@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services
 
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.CheckCardNetworkPacket
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
@@ -9,6 +10,9 @@ import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.cards.effects.CatComboEffectHandler
 import com.aau.se2.boomboomkittens.game.player.Player
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -16,14 +20,13 @@ import java.util.UUID
 
 @Service
 class GameLogicService(
-    val messagingTemplate: SimpMessagingTemplate
+    val messagingTemplate: SimpMessagingTemplate,
+    private val jacksonObjectMapper: ObjectMapper
 ) {
     private val lobby = Lobby(creator = Player(name="Steve"), maxPlayers = 2)
     private val gameLogic = GameLogic(lobby.id)
     private val cardLogic = gameLogic.cardLogic
     private val networkPacketMapper = NetworkPacketMapper()
-
-
 
     fun pass(playerId: UUID) {
         endTurn(playerId)
@@ -33,8 +36,9 @@ class GameLogicService(
         sendGameUpdate(payload = serverMessage)
     }
 
-    fun playCards(playerId: UUID, cards: List<CardNetworkPacket>) {
+    fun playCards(playerId: UUID, payload: Any?) {
         var cardsNames = ""
+        val cards = (payload as? List<*>)?.filterIsInstance<Card>()!!
         for(card in cards){
             cardsNames += card.name+", "
             gameLogic.playCard(playerId,card.type)
@@ -43,6 +47,39 @@ class GameLogicService(
         val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
         val serverMessage = ServerMessage("GAME_STATE", "Player $playerId has played $cardsNames cards", gameState)
         sendGameUpdate(payload = serverMessage)
+    }
+
+    fun cheatDuplicate(playerId: UUID, payload: Any?) {
+        val mapper = jacksonObjectMapper
+        val card = try{
+            mapper.convertValue(payload, Card::class.java)
+        }catch (e:Exception){
+            null
+        }
+        cardLogic.cheatDuplicateCard(playerId, card!!)
+    }
+
+
+    fun checkIfDuplicate(playerId: UUID, payload: Any?) {
+        val mapper = jacksonObjectMapper
+        val packet = try{
+            mapper.convertValue(payload, CheckCardNetworkPacket::class.java)
+        } catch (e: Exception){
+            null
+        }
+        val result = cardLogic.isCardDuplicate(packet!!.targetId, packet.card)
+
+        if(result){
+            gameLogic.removePlayer(packet.targetId)
+            val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
+            val serverMessage = ServerMessage("GAME_STATE","Player ${packet.targetId} was too bad at cheating", gameState)
+            sendGameUpdate(payload = serverMessage)
+        } else{
+            cardLogic.drawCard(playerId)
+            val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
+            val serverMessage = ServerMessage("GAME_STATE","Player $playerId wrongly accused ${packet.targetId}", gameState)
+            sendGameUpdate(payload = serverMessage)
+        }
     }
 
     fun exitPlayer(playerId: UUID){
@@ -56,7 +93,7 @@ class GameLogicService(
     fun getInitState(playerId: UUID){
         val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
         val serverMessage = ServerMessage("GAME_STATE", "Starting State",gameState)
-        sendGameUpdate(payload = serverMessage)
+        sendGameUpdate(playerId = playerId, payload = serverMessage)
     }
 
     fun getPlayerHand(playerId: UUID){
