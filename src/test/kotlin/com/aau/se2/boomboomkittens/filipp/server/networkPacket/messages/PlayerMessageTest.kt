@@ -13,7 +13,7 @@ class PlayerMessageTest {
         val message = PlayerMessage(
             playerName = "Steve",
             action = "CAT_COMBO",
-            cardsPlayed = emptyList(),
+            payload = emptyList(),
             targetId = "1234"
         )
 
@@ -27,7 +27,7 @@ class PlayerMessageTest {
         val card = CardNetworkPacket("Feral", CardType.FERAL_CAT, aliasType = CardType.CAT_CATERMELON)
         val message = PlayerMessage("P1", "CAT_COMBO", listOf(card), null)
 
-        val played = message.cardsPlayed?.first()
+        val played = message.payload?.first()
         assertEquals(CardType.FERAL_CAT, played?.type)
         assertEquals(CardType.CAT_CATERMELON, played?.aliasType)
     }
