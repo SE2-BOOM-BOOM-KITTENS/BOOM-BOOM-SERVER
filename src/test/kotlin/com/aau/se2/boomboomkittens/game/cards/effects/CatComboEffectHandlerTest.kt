@@ -252,7 +252,7 @@ class CatComboEffectHandlerTest {
         val gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player))
         player.playerHand.addCard(Card(CardType.FERAL_CAT))
 
-        assertDoesNotThrow {
+        assertThrows<IllegalStateException> {
             gameLogic.playCard(player.playerId, CardType.FERAL_CAT)
         }
     }

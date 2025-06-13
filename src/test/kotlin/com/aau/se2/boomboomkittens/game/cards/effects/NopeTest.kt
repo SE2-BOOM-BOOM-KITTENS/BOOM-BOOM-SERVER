@@ -14,13 +14,14 @@ package com.aau.se2.boomboomkittens.game.cards.effects
         player1 = Player (playerId = UUID.randomUUID(), name = "Player1", defuseCount = 0, isAlive = true)
         gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player0, player1))
         playerLogic = PlayerLogic()
+        val card = Card(CardType.NOPE)
     }
 
     @Test
     fun nopeTest(){
         val effect = NopeEffect()
 
-        effect.apply(player0, gameLogic)
+        effect.apply(card, player0, gameLogic)
 
         assertEquals(gameLogic.playerLogic.getCurrentPlayer(), player0)
     }
