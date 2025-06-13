@@ -58,10 +58,52 @@ class GameLogicControllerTest {
     }
 
     @Test
+    fun playCardsTest(){
+        val msg = PlayerMessage("Player","PLAY_CARDS","payload",null,lobbyId)
+        controller.processAction(msg, principal)
+        verify(service).playCards(lobbyId, playerId,"payload")
+    }
+
+    @Test
     fun cheatTest(){
         val msg = PlayerMessage("Player","CHEAT","payload",null,lobbyId)
         controller.processAction(msg, principal)
         verify(service).cheatDuplicate(lobbyId, playerId,"payload")
+    }
+
+    @Test
+    fun checkCheatTest(){
+        val msg = PlayerMessage("Player","CHECK_CHEAT","payload",null,lobbyId)
+        controller.processAction(msg, principal)
+        verify(service).checkIfDuplicate(lobbyId, playerId,"payload")
+    }
+
+    @Test
+    fun exitTest(){
+        val msg = PlayerMessage("Player","EXIT","payload",null,lobbyId)
+        controller.processAction(msg, principal)
+        verify(service).exitPlayer(lobbyId, playerId)
+    }
+
+    @Test
+    fun handTest(){
+        val msg = PlayerMessage("Player","HAND","payload",null,lobbyId)
+        controller.processAction(msg, principal)
+        verify(service).getPlayerHand(lobbyId, playerId)
+    }
+
+    @Test
+    fun initTest(){
+        val msg = PlayerMessage("Player","INIT","payload",null,lobbyId)
+        controller.processAction(msg, principal)
+        verify(service).getInitState(lobbyId, playerId)
+    }
+
+    @Test
+    fun explodeTest(){
+        val msg = PlayerMessage("Player","EXPLODE","payload",null,lobbyId)
+        controller.processAction(msg, principal)
+        verify(service).explodePlayer(lobbyId, playerId)
     }
 
     @Test
