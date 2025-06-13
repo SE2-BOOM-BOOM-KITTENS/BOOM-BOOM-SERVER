@@ -42,4 +42,8 @@ class PlayerHand(
     fun getCardAmount(): Int{
         return cards.size
     }
+
+    fun clear(){
+        cards.clear()
+    }
 }

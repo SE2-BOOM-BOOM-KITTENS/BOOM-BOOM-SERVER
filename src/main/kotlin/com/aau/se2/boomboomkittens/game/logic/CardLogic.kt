@@ -38,9 +38,10 @@ class CardLogic(playerSize: Int) {
         player.playerHand.removeCard(card)
     }
 
-    fun cheatDuplicateCard(playerId: UUID, card: Card) {
+    fun cheatDuplicateCard(playerId: UUID, card: Card): Card {
         val duplicate = Card(type = card.type, name = card.name, aliasType = card.aliasType, cheatDuplicated = true)
         addCardToPlayer(playerId, duplicate)
+        return duplicate
     }
 
     fun isCardDuplicate(playerId: UUID, card: Card): Boolean {
