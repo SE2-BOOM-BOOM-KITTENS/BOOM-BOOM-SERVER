@@ -3,103 +3,159 @@ package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.se
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.CheckCardNetworkPacket
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
-import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.cards.effects.CatComboEffectHandler
 import com.aau.se2.boomboomkittens.game.player.Player
-import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.json.JsonMapper
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import java.util.UUID
-
+import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class GameLogicService(
     val messagingTemplate: SimpMessagingTemplate,
     private val jacksonObjectMapper: ObjectMapper
 ) {
-    private val lobby = Lobby(creator = Player(name="Steve"), maxPlayers = 2)
-    private val gameLogic = GameLogic(lobby.id)
-    private val cardLogic = gameLogic.cardLogic
+    private val games = ConcurrentHashMap<UUID, GameLogic>()
     private val networkPacketMapper = NetworkPacketMapper()
 
-    fun pass(playerId: UUID) {
-        endTurn(playerId)
+    //TEMPORARY PARAMETER; FOR TESTING PURPOSES ONLY; REMOVE AFTER FIXING THE TEST CLASS
+    var lobbyId: UUID? = null
 
-        val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
-        val serverMessage = ServerMessage("GAME_STATE","Player $playerId has passed",gameState)
-        sendGameUpdate(payload = serverMessage)
+
+    //TEMPORARY SOLUTION; FOR DEBUGGING ONLY; REMOVE WHEN LOBBIES ARE IMPLEMENTED
+    init {
+        val lobby = Lobby(creator = Player(name="Steve"), maxPlayers = 2)
+        lobbyId = lobby.id
+        createGame(lobby)
     }
 
-    fun playCards(playerId: UUID, payload: Any?) {
+    fun createGame(lobby: Lobby) {
+        val gameLogic = GameLogic(lobby.id, lobby.players)
+        games[lobby.id] = gameLogic
+    }
+
+    fun getGame(lobbyId: UUID): GameLogic {
+        val game = games[lobbyId]
+        if(game == null) {
+            throw IllegalArgumentException("Game with id $lobbyId does not exist")
+        }
+        return game
+    }
+
+    fun pass(lobbyId: UUID, playerId: UUID) {
+        endTurn(lobbyId,playerId)
+
+        val game = getGame(lobbyId)
+        sendGameState("Player $playerId has passed",game)
+    }
+
+    fun playCards(lobbyId: UUID,playerId: UUID, payload: Any?) {
+        val game = getGame(lobbyId)
         var cardsNames = ""
         val cards = (payload as? List<*>)?.filterIsInstance<Card>()!!
+
         for(card in cards){
             cardsNames += card.name+", "
-            gameLogic.playCard(playerId,card.type)
+            game.playCard(playerId,card.type)
         }
-        endTurn(playerId)
-        val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
-        val serverMessage = ServerMessage("GAME_STATE", "Player $playerId has played $cardsNames cards", gameState)
-        sendGameUpdate(payload = serverMessage)
+        endTurn(lobbyId,playerId)
+        sendGameState("Player $playerId has played $cardsNames cards",game)
     }
 
-    fun cheatDuplicate(playerId: UUID, payload: Any?) {
+    fun cheatDuplicate(lobbyID: UUID, playerId: UUID, payload: Any?) {
+        val game = getGame(lobbyID)
         val mapper = jacksonObjectMapper
         val card = try{
             mapper.convertValue(payload, Card::class.java)
         }catch (e:Exception){
             null
         }
-        cardLogic.cheatDuplicateCard(playerId, card!!)
+        game.cardLogic.cheatDuplicateCard(playerId, card!!)
     }
 
-
-    fun checkIfDuplicate(playerId: UUID, payload: Any?) {
+    fun checkIfDuplicate(lobbyId: UUID, playerId: UUID, payload: Any?) {
+        val game = getGame(lobbyId)
         val mapper = jacksonObjectMapper
         val packet = try{
             mapper.convertValue(payload, CheckCardNetworkPacket::class.java)
         } catch (e: Exception){
             null
         }
-        val result = cardLogic.isCardDuplicate(packet!!.targetId, packet.card)
+        val result = game.cardLogic.isCardDuplicate(packet!!.targetId, packet.card)
 
         if(result){
-            gameLogic.removePlayer(packet.targetId)
-            val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
-            val serverMessage = ServerMessage("GAME_STATE","Player ${packet.targetId} was too bad at cheating", gameState)
-            sendGameUpdate(payload = serverMessage)
+            game.removePlayer(packet.targetId)
+            sendGameState("Player ${packet.targetId} was too bad at cheating",game)
         } else{
-            cardLogic.drawCard(playerId)
-            val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
-            val serverMessage = ServerMessage("GAME_STATE","Player $playerId wrongly accused ${packet.targetId}", gameState)
-            sendGameUpdate(payload = serverMessage)
+            game.cardLogic.drawCard(playerId)
+            sendGameState("Player $playerId wrongly accused ${packet.targetId}",game)
         }
     }
 
-    fun exitPlayer(playerId: UUID){
-        gameLogic.removePlayer(playerId)
+    fun exitPlayer(lobbyId: UUID,playerId: UUID){
+        val game = getGame(lobbyId)
+        game.removePlayer(playerId)
 
-        val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
-        val serverMessage = ServerMessage("GAME_STATE","Player $playerId has exited",gameState)
+        sendGameState("Player $playerId exited the game",game)
+    }
+
+    fun getInitState(lobbyId:UUID, playerId: UUID){
+        val game = getGame(lobbyId)
+        sendGameState("Starting State",game,playerId)
+    }
+
+    fun getPlayerHand(lobbyId: UUID, playerId: UUID){
+        val game = getGame(lobbyId)
+        val playerHand = game.getPlayerHand(playerId)
+        val serverMessage = ServerMessage("HAND","You have received your card hand",playerHand)
+        sendGameUpdate(playerId= playerId, payload = serverMessage)
+    }
+
+    fun joinGame(lobbyId: UUID, playerId: UUID, playerName:String){
+        val game = getGame(lobbyId)
+        game.addPlayer(playerId, playerName)
+
+        val gameState = networkPacketMapper.gameStateToNetworkPacket(game,game.cardLogic)
+        val player = game.getPlayerById(playerId)
+        var playerHand = getPlayerHand(lobbyId,playerId)
+        if(playerHand != null){
+        } else{
+            val playerPacket = networkPacketMapper.playerToNetworkPacket(player,playerHand)
+        }
+        val serverMessage = ServerMessage("GAME_STATE","Player $playerId has joined",gameState)
         sendGameUpdate(payload = serverMessage)
     }
 
-    fun getInitState(playerId: UUID){
-        val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
-        val serverMessage = ServerMessage("GAME_STATE", "Starting State",gameState)
-        sendGameUpdate(playerId = playerId, payload = serverMessage)
+    fun explodePlayer(lobbyId:UUID, playerId: UUID){
+        val game = getGame(lobbyId)
+        game.removePlayer(playerId)
+
+
+
+        sendGameState("Player $playerId has exploded",game)
+        val privateServerMessage = ServerMessage("EXPLODE", "You have exploded",null)
+        sendGameUpdate(playerId, payload = privateServerMessage)
     }
 
-    fun getPlayerHand(playerId: UUID){
-        val playerHand = gameLogic.getPlayerHand(playerId)
-        val serverMessage = ServerMessage("HAND","You have received your card hand",playerHand)
-        sendGameUpdate(playerId= playerId, payload = serverMessage)
+    private fun endTurn(lobbyId: UUID, playerId: UUID){
+        val game = getGame(lobbyId)
+        game.cardLogic.drawCard(playerId)
+        game.nextTurn()
+    }
+
+    fun sendGameState(message:String, game: GameLogic, playerId: UUID? = null){
+        val gameState = networkPacketMapper.gameStateToNetworkPacket(game,game.cardLogic)
+        val serverMessage = ServerMessage("GAME_STATE",message,gameState)
+        if(playerId != null){
+            sendGameUpdate(playerId = playerId, payload = serverMessage)
+        }else {
+            sendGameUpdate(payload = serverMessage)
+        }
     }
 
     fun sendGameUpdate(playerId: UUID? = null, payload: Any){
@@ -110,65 +166,29 @@ class GameLogicService(
         }
     }
 
-    fun getGameLogic(): GameLogic = gameLogic
-
-    fun joinGame(playerId: UUID, playerName:String){
-        gameLogic.addPlayer(playerId, playerName)
-
-        val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
-        val player = gameLogic.getPlayerById(playerId)
-        var playerHand = getPlayerHand(playerId)
-        if(playerHand != null){
-        } else{
-            val playerPacket = networkPacketMapper.playerToNetworkPacket(player,playerHand)
-        }
-        val serverMessage = ServerMessage("GAME_STATE","Player $playerId has joined",gameState)
-        sendGameUpdate(payload = serverMessage)
-    }
-
-    fun explodePlayer(playerId: UUID){
-        gameLogic.removePlayer(playerId)
-
-        val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
-        val serverMessage = ServerMessage("GAME_STATE", "Player $playerId has exploded",gameState)
-        val privateServerMessage = ServerMessage("EXPLODE", "You have exploded",null)
-
-        sendGameUpdate(payload = serverMessage)
-        sendGameUpdate(playerId, payload = privateServerMessage)
-
-    }
-
-    private fun endTurn(playerId: UUID){
-        cardLogic.drawCard(playerId)
-        gameLogic.nextTurn()
-    }
-
     fun sendUserError(playerId: UUID, errorMessage: String){
         val serverMessage = ServerMessage("ERROR", errorMessage,null)
         sendGameUpdate(payload = serverMessage)
         sendGameUpdate(playerId,serverMessage)
     }
 
-    fun sendDebugBroadcast(){
-        val serverMessage = ServerMessage("DEBUG","BROADCASTING TEST",null)
-        messagingTemplate.convertAndSend("/topic/test",serverMessage)
-    }
+    fun playCatCombo(lobbyId:UUID, playerId: UUID, rawCards: List<Card>, targetId: UUID?) {
+        val game = getGame(lobbyId)
+        val player = game.getPlayerById(playerId) ?: return
+        val target = targetId?.let { game.getPlayerById(it) }
 
-    fun playCatCombo(playerId: UUID, rawCards: List<Card>, targetId: UUID?) {
-        val player = gameLogic.getPlayerById(playerId) ?: return
-        val target = targetId?.let { gameLogic.getPlayerById(it) }
-
-        val handler = CatComboEffectHandler(gameLogic) { id, payload ->
+        val handler = CatComboEffectHandler(game) { id, payload ->
             sendGameUpdate(id, payload) // Callback für Nachrichten
         }
 
         handler.applyCombo(player, rawCards, target)
     }
 
-    fun chooseFromDiscard(playerId: UUID, cardType: CardType) {
-        val card = gameLogic.discardPile.getPileList().lastOrNull { it.type == cardType } ?: return
-        gameLogic.discardPile.getPileList().remove(card)
-        gameLogic.getPlayerById(playerId)?.playerHand?.addCard(card)
+    fun chooseFromDiscard(lobbyID: UUID, playerId: UUID, cardType: CardType) {
+        val game = getGame(lobbyID)
+        val card = game.discardPile.getPileList().lastOrNull { it.type == cardType } ?: return
+        game.discardPile.getPileList().remove(card)
+        game.getPlayerById(playerId)?.playerHand?.addCard(card)
     }
 
 }
