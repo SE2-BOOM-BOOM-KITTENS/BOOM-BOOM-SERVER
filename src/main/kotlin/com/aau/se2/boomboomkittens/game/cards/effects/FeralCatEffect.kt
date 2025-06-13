@@ -2,11 +2,12 @@ package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effec
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffect
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
+import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.player.Player
 
 class FeralCatEffect : CardEffect {
-    override fun apply(player: Player, gameLogic: GameLogic) {
+    override fun apply(card: Card, player: Player, gameLogic: GameLogic) {
         // Diese Karte wird nie direkt ausgespielt, sondern nur als Teil einer Kombo
-        println("Feral Cat kann nur als andere Cat Card verwendet werden.")
+        throw IllegalStateException("${card.type} kann nicht alleine ausgespielt werden. Kombiniere sie mit anderen Cat-Karten.")
     }
 }
