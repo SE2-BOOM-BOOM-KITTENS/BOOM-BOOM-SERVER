@@ -11,14 +11,12 @@ open class GameLogic(
     var lobbyId: UUID,
     val players: MutableList<Player> = mutableListOf(),
 ){
+
     private val _playerLogic: PlayerLogic = PlayerLogic()
     private val _cardLogic: CardLogic = CardLogic(players.size)
-    private val _discardPile: CardPile = CardPile()
 
     val playerLogic: PlayerLogic get() = _playerLogic
     val cardLogic: CardLogic get() = _cardLogic
-    val discardPile: CardPile get() = _discardPile
-
     val drawPile: LinkedList<Card> = LinkedList()
 
     init {
@@ -61,43 +59,6 @@ open class GameLogic(
 
     fun getPlayerHand(playerId: UUID): PlayerHand? {
         return _cardLogic.getPlayerHand(playerId)
-    }
-
-    fun playCard(playerId: UUID, cardType: CardType) {
-        val player = _playerLogic.getPlayerByID(playerId)
-            ?: throw IllegalArgumentException("Player not found")
-
-        val card = player.playerHand.cards.firstOrNull { it.type == cardType }
-            ?: throw IllegalStateException("Player doesn't have card type $cardType")
-
-        cardType.effect.apply(card, player, this)
-    }
-
-    fun shuffleDeck(){
-        discardPile.shuffle()
-    }
-
-    fun notifyDeckShuffled(player: Player){
-        // eventDispatcher.sendToAllPlayers("DeckShuffled", currentCardPileState())
-    }
-    open fun peekTopCards(count: Int): List<Card> {
-        return drawPile.take(count)
-    }
-
-    open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
-        if (newOrder.size > drawPile.size) {
-            throw IllegalArgumentException("New order has more cards than the draw pile.")
-        }
-
-        repeat(newOrder.size) {
-            drawPile.removeFirst()
-        }
-
-        for (i in newOrder.size - 1 downTo 0) {
-            drawPile.add(newOrder[i])
-        }
-
-        println("${player.name} rearranged the top ${newOrder.size} cards.")
     }
 
 }

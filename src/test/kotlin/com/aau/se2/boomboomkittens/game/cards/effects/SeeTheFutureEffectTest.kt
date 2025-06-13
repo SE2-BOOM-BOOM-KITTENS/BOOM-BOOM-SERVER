@@ -3,6 +3,7 @@ package com.aau.se2.boomboomkittens.game.cards.effects
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.SeeTheFutureEffect
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.*
@@ -23,15 +24,15 @@ class SeeTheFutureEffectTest {
             Card(CardType.DEFUSE)
         )
 
-        val gameLogic = object : GameLogic(UUID.randomUUID()) {
+        val cardLogic = object : CardLogic(2) {
             override fun peekTopCards(count: Int): List<Card> {
                 return expectedTopCards
             }
         }
 
-        effect.apply(card, player, gameLogic)
+        effect.apply(card, player, cardLogic)
 
-        val actualTopCards = gameLogic.peekTopCards(3)
+        val actualTopCards = cardLogic.peekTopCards(3)
 
         assertEquals(expectedTopCards.size, actualTopCards.size)
         assertEquals(expectedTopCards[0].name, actualTopCards[0].name)

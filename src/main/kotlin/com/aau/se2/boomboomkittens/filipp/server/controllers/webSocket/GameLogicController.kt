@@ -16,7 +16,6 @@ class GameLogicController(
     private val gameLogicService: GameLogicService
 ) {
 
-
     @MessageMapping("/action")
     fun processAction(playerMessage: PlayerMessage, principal: Principal) {
         val playerID = UUID.fromString(principal.name)

@@ -111,7 +111,7 @@ class GameLogicTest {
     fun `peekTopCards returns expected amount`() {
         gameLogic.drawPile.add(Card(CardType.SHUFFLE))
         gameLogic.drawPile.add(Card(CardType.DEFUSE))
-        val top = gameLogic.peekTopCards(2)
+        val top = cardLogic.peekTopCards(2)
         assertEquals(2, top.size)
     }
 
@@ -124,9 +124,9 @@ class GameLogicTest {
         gameLogic.drawPile.addAll(listOf(cardA, cardB, cardC))
         val newOrder = listOf(cardC, cardB, cardA)
 
-        gameLogic.allowPlayerToRearrangeTopCards(player1, newOrder)
+        cardLogic.allowPlayerToRearrangeTopCards(player1, newOrder)
 
-        val result = gameLogic.peekTopCards(3)
+        val result = cardLogic.peekTopCards(3)
         assertEquals(CardType.SHUFFLE, result[0].type)
         assertEquals(CardType.DEFUSE, result[1].type)
         assertEquals(CardType.BLANK, result[2].type)
@@ -137,7 +137,7 @@ class GameLogicTest {
         gameLogic.drawPile.add(Card(CardType.BLANK))
         val tooBig = listOf(Card(CardType.DEFUSE), Card(CardType.SHUFFLE))
         assertThrows<IllegalArgumentException> {
-            gameLogic.allowPlayerToRearrangeTopCards(player1, tooBig)
+            cardLogic.allowPlayerToRearrangeTopCards(player1, tooBig)
         }
     }
 }

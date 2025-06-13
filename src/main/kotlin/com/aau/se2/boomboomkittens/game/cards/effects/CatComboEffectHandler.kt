@@ -1,13 +1,14 @@
 package com.aau.se2.boomboomkittens.game.cards.effects
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import java.util.*
 
-class CatComboEffectHandler(private val gameLogic: GameLogic, private val sendToPlayer: (UUID, Any) -> Unit) {
+class CatComboEffectHandler(private val cardLogic: CardLogic, private val sendToPlayer: (UUID, Any) -> Unit) {
 
     fun applyCombo(player: Player, cards: List<Card>, target: Player?) {
         val resolvedTypes = cards.map {
@@ -32,7 +33,7 @@ class CatComboEffectHandler(private val gameLogic: GameLogic, private val sendTo
             }
 
             resolvedTypes.size == 5 && resolvedTypes.toSet().size == 5 -> {
-                val discardTypes = gameLogic.discardPile.getPileList().map { it.type }.distinct()
+                val discardTypes = cardLogic.discardPile.getPileList().map { it.type }.distinct()
                 log("${player.name} sieht den Ablagestapel: $discardTypes")
                 val msg = ServerMessage(
                     type = "CHOOSE_FROM_DISCARD",
@@ -50,7 +51,7 @@ class CatComboEffectHandler(private val gameLogic: GameLogic, private val sendTo
 
 
         // Alle Karten zur Ablage hinzufügen
-        cards.forEach { gameLogic.discardPile.add(it) }
+        cards.forEach { cardLogic.discardPile.add(it) }
         }
 
         private fun stealRandomCard(from: Player, to: Player) {

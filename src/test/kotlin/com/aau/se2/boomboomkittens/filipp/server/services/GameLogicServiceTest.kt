@@ -46,7 +46,7 @@ class GameLogicServiceTest {
     @Test
     fun `chooseFromDiscard should move card to player hand`() {
         val discardCard = Card(CardType.SHUFFLE)
-        service.getGameLogic().discardPile.add(discardCard)
+        service.getGameLogic().cardLogic.discardPile.add(discardCard)
 
         service.chooseFromDiscard(player.playerId, CardType.SHUFFLE)
 

@@ -37,7 +37,7 @@ class GameLogicService(
         var cardsNames = ""
         for(card in cards){
             cardsNames += card.name+", "
-            gameLogic.playCard(playerId,card.type)
+            cardLogic.playCard(playerId,card.type)
         }
         endTurn(playerId)
         val gameState = networkPacketMapper.gameStateToNetworkPacket(gameLogic,cardLogic)
@@ -121,7 +121,7 @@ class GameLogicService(
         val player = gameLogic.getPlayerById(playerId) ?: return
         val target = targetId?.let { gameLogic.getPlayerById(it) }
 
-        val handler = CatComboEffectHandler(gameLogic) { id, payload ->
+        val handler = CatComboEffectHandler(cardLogic) { id, payload ->
             sendGameUpdate(id, payload) // Callback für Nachrichten
         }
 
@@ -129,8 +129,8 @@ class GameLogicService(
     }
 
     fun chooseFromDiscard(playerId: UUID, cardType: CardType) {
-        val card = gameLogic.discardPile.getPileList().lastOrNull { it.type == cardType } ?: return
-        gameLogic.discardPile.getPileList().remove(card)
+        val card = cardLogic.discardPile.getPileList().lastOrNull { it.type == cardType } ?: return
+        cardLogic.discardPile.getPileList().remove(card)
         gameLogic.getPlayerById(playerId)?.playerHand?.addCard(card)
     }
 

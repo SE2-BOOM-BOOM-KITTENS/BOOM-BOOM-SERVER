@@ -11,7 +11,7 @@ class PlayerHandshakeHandler : DefaultHandshakeHandler() {
         request: ServerHttpRequest,
         wsHandler: WebSocketHandler,
         attributes: Map<String?, Any?>
-    ): Principal? {
+    ): Principal {
         val playerId = attributes["playerId"] as UUID
         return Principal {playerId.toString()}
     }
