@@ -23,7 +23,7 @@ class SeeTheFutureEffectTest {
             Card(CardType.DEFUSE)
         )
 
-        val gameLogic = object : GameLogic(UUID.randomUUID()) {
+        val gameLogic = object : GameLogic(UUID.randomUUID(),mutableListOf()) {
             override fun peekTopCards(count: Int): List<Card> {
                 return expectedTopCards
             }

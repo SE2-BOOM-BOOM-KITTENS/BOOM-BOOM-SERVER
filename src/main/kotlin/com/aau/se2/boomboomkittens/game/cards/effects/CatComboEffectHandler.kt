@@ -37,7 +37,7 @@ class CatComboEffectHandler(private val gameLogic: GameLogic, private val sendTo
                 val msg = ServerMessage(
                     type = "CHOOSE_FROM_DISCARD",
                     message = "Wähle eine Karte aus dem Ablagestapel",
-                    gameState = discardTypes
+                    payload = discardTypes
                 )
                 sendToPlayer(player.playerId, msg)
 

@@ -9,7 +9,7 @@ import java.util.*
 
 open class GameLogic(
     var lobbyId: UUID,
-    val players: MutableList<Player> = mutableListOf(),
+    val players: MutableList<Player>
 ){
     private val _playerLogic: PlayerLogic = PlayerLogic()
     private val _cardLogic: CardLogic = CardLogic(players.size)
