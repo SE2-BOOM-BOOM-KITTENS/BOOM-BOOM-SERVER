@@ -7,5 +7,5 @@ data class PlayerMessage(
     val action: String?,
     val payload: Any?,
     val targetId: String? = null,
-    val lobbyId: UUID = UUID.randomUUID(),
+    val lobbyId: UUID? = null,
     )

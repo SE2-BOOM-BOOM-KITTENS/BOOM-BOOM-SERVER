@@ -29,7 +29,7 @@ class GameLogicService(
 
     //TEMPORARY SOLUTION; FOR DEBUGGING ONLY; REMOVE WHEN LOBBIES ARE IMPLEMENTED
     init {
-        val lobby = Lobby(creator = Player(name="Steve"), maxPlayers = 2)
+        val lobby = Lobby(id= UUID.fromString("00000000-0000-0000-0000-000000001234"),creator = Player(name="Steve"), maxPlayers = 2)
         lobbyId = lobby.id
         createGame(lobby)
     }
@@ -51,7 +51,7 @@ class GameLogicService(
         endTurn(lobbyId,playerId)
 
         val game = getGame(lobbyId)
-        sendGameState("Player $playerId has passed",game)
+        sendGameState(lobbyId,"Player $playerId has passed",game)
     }
 
     fun playCards(lobbyId: UUID,playerId: UUID, payload: Any?) {
@@ -64,7 +64,7 @@ class GameLogicService(
             game.playCard(playerId,card.type)
         }
         endTurn(lobbyId,playerId)
-        sendGameState("Player $playerId has played $cardsNames cards",game)
+        sendGameState(lobbyId,"Player $playerId has played $cardsNames cards",game)
     }
 
     fun cheatDuplicate(lobbyID: UUID, playerId: UUID, payload: Any?) {
@@ -90,10 +90,10 @@ class GameLogicService(
 
         if(result){
             game.removePlayer(packet.targetId)
-            sendGameState("Player ${packet.targetId} was too bad at cheating",game)
+            sendGameState(lobbyId,"Player ${packet.targetId} was too bad at cheating",game)
         } else{
             game.cardLogic.drawCard(playerId)
-            sendGameState("Player $playerId wrongly accused ${packet.targetId}",game)
+            sendGameState(lobbyId,"Player $playerId wrongly accused ${packet.targetId}",game)
         }
     }
 
@@ -101,19 +101,19 @@ class GameLogicService(
         val game = getGame(lobbyId)
         game.removePlayer(playerId)
 
-        sendGameState("Player $playerId exited the game",game)
+        sendGameState(lobbyId,"Player $playerId exited the game",game)
     }
 
     fun getInitState(lobbyId:UUID, playerId: UUID){
         val game = getGame(lobbyId)
-        sendGameState("Starting State",game,playerId)
+        sendGameState(lobbyId,"Starting State",game,playerId)
     }
 
     fun getPlayerHand(lobbyId: UUID, playerId: UUID){
         val game = getGame(lobbyId)
         val playerHand = game.getPlayerHand(playerId)
         val serverMessage = ServerMessage("HAND","You have received your card hand",playerHand)
-        sendGameUpdate(playerId= playerId, payload = serverMessage)
+        sendGameUpdate(lobbyId=lobbyId,playerId= playerId, payload = serverMessage)
     }
 
     fun joinGame(lobbyId: UUID, playerId: UUID, playerName:String){
@@ -121,14 +121,8 @@ class GameLogicService(
         game.addPlayer(playerId, playerName)
 
         val gameState = networkPacketMapper.gameStateToNetworkPacket(game,game.cardLogic)
-        val player = game.getPlayerById(playerId)
-        var playerHand = getPlayerHand(lobbyId,playerId)
-        if(playerHand != null){
-        } else{
-            val playerPacket = networkPacketMapper.playerToNetworkPacket(player,playerHand)
-        }
-        val serverMessage = ServerMessage("GAME_STATE","Player $playerId has joined",gameState)
-        sendGameUpdate(payload = serverMessage)
+        val serverMessage = ServerMessage("GAME_STATE","Player $playerName has joined",gameState)
+        sendGameUpdate(lobbyId = lobbyId,payload = serverMessage)
     }
 
     fun explodePlayer(lobbyId:UUID, playerId: UUID){
@@ -137,7 +131,7 @@ class GameLogicService(
 
 
 
-        sendGameState("Player $playerId has exploded",game)
+        sendGameState(lobbyId,"Player $playerId has exploded",game)
         val privateServerMessage = ServerMessage("EXPLODE", "You have exploded",null)
         sendGameUpdate(playerId, payload = privateServerMessage)
     }
@@ -148,28 +142,29 @@ class GameLogicService(
         game.nextTurn()
     }
 
-    fun sendGameState(message:String, game: GameLogic, playerId: UUID? = null){
+    fun sendGameState(lobbyId: UUID, message:String, game: GameLogic, playerId: UUID? = null){
         val gameState = networkPacketMapper.gameStateToNetworkPacket(game,game.cardLogic)
         val serverMessage = ServerMessage("GAME_STATE",message,gameState)
         if(playerId != null){
-            sendGameUpdate(playerId = playerId, payload = serverMessage)
+            sendGameUpdate(lobbyId= lobbyId,playerId = playerId, payload = serverMessage)
         }else {
-            sendGameUpdate(payload = serverMessage)
+            sendGameUpdate(lobbyId = lobbyId, payload = serverMessage)
         }
     }
 
-    fun sendGameUpdate(playerId: UUID? = null, payload: Any){
+    fun sendGameUpdate(lobbyId: UUID, playerId: UUID? = null, payload: Any){
         if(playerId != null){
             messagingTemplate.convertAndSendToUser(playerId.toString(),"/queue/private", payload)
         } else{
-            messagingTemplate.convertAndSend("/topic/lobby/1234",payload)
+            println("Sending message to lobby: $lobbyId")
+            messagingTemplate.convertAndSend("/topic/lobby/${lobbyId}",payload)
         }
     }
 
-    fun sendUserError(playerId: UUID, errorMessage: String){
+    fun sendUserError(lobbyId: UUID, playerId: UUID, errorMessage: String){
         val serverMessage = ServerMessage("ERROR", errorMessage,null)
-        sendGameUpdate(payload = serverMessage)
-        sendGameUpdate(playerId,serverMessage)
+        sendGameUpdate(lobbyId= lobbyId,payload = serverMessage)
+        sendGameUpdate(lobbyId,playerId,serverMessage)
     }
 
     fun playCatCombo(lobbyId:UUID, playerId: UUID, rawCards: List<Card>, targetId: UUID?) {
@@ -178,7 +173,7 @@ class GameLogicService(
         val target = targetId?.let { game.getPlayerById(it) }
 
         val handler = CatComboEffectHandler(game) { id, payload ->
-            sendGameUpdate(id, payload) // Callback für Nachrichten
+            sendGameUpdate(lobbyId,id, payload) // Callback für Nachrichten
         }
 
         handler.applyCombo(player, rawCards, target)
