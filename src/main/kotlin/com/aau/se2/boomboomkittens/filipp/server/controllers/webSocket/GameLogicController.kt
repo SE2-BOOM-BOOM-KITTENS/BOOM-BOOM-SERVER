@@ -20,7 +20,7 @@ class GameLogicController(
     @MessageMapping("/action")
     fun processAction(playerMessage: PlayerMessage, principal: Principal) {
         val playerID = UUID.fromString(principal.name)
-        val lobbyID = playerMessage.lobbyId
+        val lobbyID = playerMessage.lobbyId!!
         val action = playerMessage.action
         val payload = playerMessage.payload
         when(action){
@@ -47,10 +47,10 @@ class GameLogicController(
                 if (chosenType != null) {
                     gameLogicService.chooseFromDiscard(lobbyID,playerID, chosenType)
                 } else {
-                    gameLogicService.sendUserError(playerID, "Keine Karte ausgewählt.")
+                    gameLogicService.sendUserError(lobbyID,playerID, "Keine Karte ausgewählt.")
                 }
             }
-            else -> gameLogicService.sendUserError(playerID,"Invalid action")
+            else -> gameLogicService.sendUserError(lobbyID,playerID,"Invalid action")
         }
     }
 
@@ -62,12 +62,7 @@ class GameLogicController(
     fun addPlayer(playerMessage: PlayerMessage, principal: Principal) {
         val lobbyId = playerMessage.lobbyId
         val playerId = UUID.fromString(principal.name)
-        lateinit var playerName: String
-        if(playerMessage.playerName != null) {
-            playerName = playerMessage.playerName
-        }else{
-            playerName = ""
-        }
-        gameLogicService.joinGame(lobbyId,playerId, playerName)
+        val playerName = playerMessage.playerName!!
+        gameLogicService.joinGame(lobbyId!!,playerId, playerName)
     }
 }
