@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.controllers.rest
 
+import com.aau.se2.boomboomkittens.game.player.LobbyPlayer
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.filipp.server.services.LobbyService
 import com.aau.se2.boomboomkittens.game.player.Player
@@ -20,7 +21,7 @@ class LobbyRestController(private val lobbyService: LobbyService) {
     fun getLobbies(): ConcurrentHashMap<String, Lobby> = lobbyService.getLobbies()
 
     @GetMapping("/players")
-    fun getPlayersInLobby(@RequestHeader lobbyId:String): List<Player>{
+    fun getPlayersInLobby(@RequestHeader lobbyId:String): List<LobbyPlayer>{
         val lobby = lobbyService.getLobby(lobbyId)
         if (lobby != null) {
             return lobby.players
@@ -29,9 +30,16 @@ class LobbyRestController(private val lobbyService: LobbyService) {
     }
 
     @PostMapping
-    fun createLobby(@RequestBody creator: Player, maxPlayers:Int): String{
-        val lobby = lobbyService.createLobby(creator,maxPlayers)
-        return "Created lobby ${lobby.id}"
+    fun createLobby(@RequestBody request: CreateLobbyRequest): CreateLobbyResponse{
+        val lobby = lobbyService.createLobby(request.player, request.maxPlayers)
+        return CreateLobbyResponse("Created lobby", lobby.id.toString())
     }
 
 }
+
+data class CreateLobbyRequest(
+    val player: LobbyPlayer,
+    val maxPlayers: Int
+)
+
+data class CreateLobbyResponse(val message: String, val lobbyId: String)
