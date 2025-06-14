@@ -1,6 +1,5 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffectRegistry
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.cards.CardType
@@ -10,17 +9,15 @@ import java.util.*
 
 open class GameLogic(
     var lobbyId: UUID,
-    val players: MutableList<Player> = mutableListOf(),
+    val players: MutableList<Player>
 ){
     private val _playerLogic: PlayerLogic = PlayerLogic()
     private val _cardLogic: CardLogic = CardLogic(players.size)
     private val _discardPile: CardPile = CardPile()
-    private val _cardRegistry = CardEffectRegistry
 
     val playerLogic: PlayerLogic get() = _playerLogic
     val cardLogic: CardLogic get() = _cardLogic
     val discardPile: CardPile get() = _discardPile
-    val cardRegistry: CardEffectRegistry get() = _cardRegistry
 
     val drawPile: CardPile get() = _cardLogic.drawPile
 
@@ -76,14 +73,10 @@ open class GameLogic(
         val player = _playerLogic.getPlayerByID(playerId)
             ?: throw IllegalArgumentException("Player not found")
 
-        if (!player.playerHand.containsCardType(cardType)) {
-            throw IllegalStateException("Player doesn't have card type $cardType")
-        }
+        val card = player.playerHand.cards.firstOrNull { it.type == cardType }
+            ?: throw IllegalStateException("Player doesn't have card type $cardType")
 
-        // fixme after removing the registry you can use the effect directly
-        val effect = _cardRegistry.getEffect(cardType)
-
-        effect.apply(player, this)
+        cardType.effect.apply(card, player, this)
     }
 
     fun shuffleDeck(){

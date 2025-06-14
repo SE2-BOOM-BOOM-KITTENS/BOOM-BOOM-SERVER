@@ -15,6 +15,7 @@ class SeeTheFutureEffectTest {
     fun `see the future reveals top 3 cards`() {
         val player = Player(playerId = UUID.randomUUID(), name = "Player1", defuseCount = 0, isAlive = true)
         val effect = SeeTheFutureEffect()
+        val card = Card(CardType.SEE_THE_FUTURE)
 
         val expectedTopCards = listOf(
             Card(CardType.SEE_THE_FUTURE),
@@ -22,13 +23,13 @@ class SeeTheFutureEffectTest {
             Card(CardType.DEFUSE)
         )
 
-        val gameLogic = object : GameLogic(UUID.randomUUID()) {
+        val gameLogic = object : GameLogic(UUID.randomUUID(),mutableListOf()) {
             override fun peekTopCards(count: Int): List<Card> {
                 return expectedTopCards
             }
         }
 
-        effect.apply(player, gameLogic)
+        effect.apply(card, player, gameLogic)
 
         val actualTopCards = gameLogic.peekTopCards(3)
 

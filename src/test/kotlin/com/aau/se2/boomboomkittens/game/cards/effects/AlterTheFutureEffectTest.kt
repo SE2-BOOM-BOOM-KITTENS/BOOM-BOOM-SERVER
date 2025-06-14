@@ -15,10 +15,11 @@ class AlterTheFutureEffectTest {
     fun `alter the future rearranges top 3 cards`() {
         val player = Player(playerId = UUID.randomUUID(), name = "Player1", defuseCount = 0, isAlive = true)
         val effect = AlterTheFutureEffect()
+        val card = Card(CardType.ALTER_THE_FUTURE)
 
         var rearrangedCards: List<Card>? = null
 
-        val gameLogic = object : GameLogic(UUID.randomUUID()) {
+        val gameLogic = object : GameLogic(UUID.randomUUID(), mutableListOf()) {
             override fun peekTopCards(count: Int): List<Card> {
                 return listOf(
                     Card(CardType.DEFUSE),
@@ -32,7 +33,7 @@ class AlterTheFutureEffectTest {
             }
         }
 
-        effect.apply(player, gameLogic)
+        effect.apply(card, player, gameLogic)
 
         assertNotNull(rearrangedCards)
         assertEquals("ALTER_THE_FUTURE", rearrangedCards!![0].name)
