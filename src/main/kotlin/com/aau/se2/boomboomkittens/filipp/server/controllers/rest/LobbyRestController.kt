@@ -21,7 +21,7 @@ class LobbyRestController(private val lobbyService: LobbyService) {
     fun getLobbies(): ConcurrentHashMap<String, Lobby> = lobbyService.getLobbies()
 
     @GetMapping("/players")
-    fun getPlayersInLobby(@RequestHeader lobbyId:String): List<LobbyPlayer>{
+    fun getPlayersInLobby(@RequestHeader lobbyId:String): List<Player>{
         val lobby = lobbyService.getLobby(lobbyId)
         if (lobby != null) {
             return lobby.players
@@ -38,7 +38,7 @@ class LobbyRestController(private val lobbyService: LobbyService) {
 }
 
 data class CreateLobbyRequest(
-    val player: LobbyPlayer,
+    val player: Player,
     val maxPlayers: Int
 )
 
