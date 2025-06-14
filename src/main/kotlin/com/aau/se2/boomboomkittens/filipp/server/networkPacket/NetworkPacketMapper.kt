@@ -60,7 +60,7 @@ class NetworkPacketMapper {
         val cardCount = cardPile.size
         var cards : MutableList<CardNetworkPacket>? = null
         if(!isDrawPile){
-            val list : List<Card> = cardPile.getCardsSnapshot()
+            val list : List<Card> = cardPile.getPileList()
             cards = mutableListOf()
             for(card in list){
                 cards.add(cardToNetworkPacket(card))

@@ -24,6 +24,10 @@ class CardPile {
 
     fun getCardsSnapshot(): List<Card> = pile.toList()
 
+    fun getPileList(): MutableList<Card> {
+        return pile
+    }
+
     fun take(n: Int):List<Card>{
         val cards: List<Card> = pile.take(n)
         return cards

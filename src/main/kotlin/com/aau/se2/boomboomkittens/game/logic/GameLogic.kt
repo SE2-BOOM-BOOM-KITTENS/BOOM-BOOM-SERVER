@@ -21,17 +21,11 @@ open class GameLogic(
 
     val drawPile: CardPile get() = _cardLogic.drawPile
 
-    fun initializeGame() {
-        // 1. Spieler einfügen und Karten austeilen
-        for (player in players) {
+    init {
+        for(player in players){
             _playerLogic.addPlayerByID(player)
-            _cardLogic.addPlayer(player) // verteilt 7 Karten + 1 DEFUSE intern
+            _cardLogic.addPlayer(player)
         }
-
-        // 2. Exploding Kittens hinzufügen (n - 1 Spieler)
-        _cardLogic.finalizeDeck(players.size)
-
-        println("Spiel initialisiert: ${players.size} Spieler")
     }
 
     fun removePlayer(playerId: UUID){
