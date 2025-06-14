@@ -1,11 +1,6 @@
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.PlayerLogic
+package com.aau.se2.boomboomkittens.game.cards.effects
+
 //import com.aau.se2.boomboomkittens.game.cards.effects.NopeEffect
-import com.aau.se2.boomboomkittens.game.player.Player
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import java.util.*
 
 /*class NopeTest {
     private lateinit var player0: Player
@@ -19,13 +14,14 @@ import java.util.*
         player1 = Player (playerId = UUID.randomUUID(), name = "Player1", defuseCount = 0, isAlive = true)
         gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player0, player1))
         playerLogic = PlayerLogic()
+        val card = Card(CardType.NOPE)
     }
 
     @Test
     fun nopeTest(){
         val effect = NopeEffect()
 
-        effect.apply(player0, gameLogic)
+        effect.apply(card, player0, gameLogic)
 
         assertEquals(gameLogic.playerLogic.getCurrentPlayer(), player0)
     }

@@ -1,8 +1,5 @@
-package com.aau.se2.boomboomkittens.game.model.cards
+package com.aau.se2.boomboomkittens.game.cards
 
-import com.aau.se2.boomboomkittens.game.cards.Card
-import com.aau.se2.boomboomkittens.game.cards.CardPile
-import com.aau.se2.boomboomkittens.game.cards.CardType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach

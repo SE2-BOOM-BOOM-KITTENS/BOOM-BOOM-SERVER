@@ -8,6 +8,7 @@ import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 
 class NetworkPacketMapper {
+    // fixme you don't need the cardLogic param if its just gameLogic.cardLogic
     fun gameStateToNetworkPacket(gameLogic: GameLogic, cardLogic: CardLogic): GameStateNetworkPacket {
         val playerLogic = gameLogic.playerLogic
         val playerList = playerLogic.getPlayerList()

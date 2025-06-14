@@ -25,11 +25,33 @@ class CardLogicTest {
     fun setup() {
         playerId = UUID.randomUUID()
         player = Player(playerId, "TestPlayer")
-
         falseId = UUID.randomUUID()
         falsePlayer = Player(falseId, "FalsePlayer")
         cardLogic = CardLogic(1)
         cardLogic.addPlayer(player)
+        player.playerHand.clear()
+    }
+
+    @Test
+    fun cheatDuplicateCardTest(){
+        cardLogic.addCardToPlayer(playerId, dummyCard)
+        cardLogic.cheatDuplicateCard(playerId, dummyCard)
+
+        assertTrue(player.playerHand.containsCard(dummyCard))
+        assertTrue(player.playerHand.getCardAmount()==2)
+    }
+
+    @Test
+    fun isCardDuplicateTest(){
+        cardLogic.addCardToPlayer(playerId, dummyCard)
+        assertTrue(player.playerHand.containsCard(dummyCard))
+        val duplicate = cardLogic.cheatDuplicateCard(playerId, dummyCard)
+
+        var result = cardLogic.isCardDuplicate(playerId, duplicate)
+        assertTrue(result)
+
+        result = cardLogic.isCardDuplicate(playerId, dummyCard)
+        assertFalse(result)
     }
 
     @Test
@@ -58,6 +80,7 @@ class CardLogicTest {
         // Karte hinzufügen
         hand.addCard(card)
 
+        // fixme split test into add and remove card where the first tests is the precondition for the second
         // Vorher prüfen, dass sie da ist
         assertTrue(hand.containsCardType(card.type), "Card should be present before removal")
 

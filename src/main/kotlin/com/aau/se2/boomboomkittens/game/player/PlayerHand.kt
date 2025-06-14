@@ -27,6 +27,10 @@ class PlayerHand(
         return cards.shuffled().first()
     }
 
+    fun getCardById(cardId: UUID): Card {
+        return cards.first { it.id == cardId }
+    }
+
     fun containsCard(card: Card): Boolean {
         return cards.any { it.type == card.type }
     }
@@ -37,5 +41,9 @@ class PlayerHand(
 
     fun getCardAmount(): Int{
         return cards.size
+    }
+
+    fun clear(){
+        cards.clear()
     }
 }

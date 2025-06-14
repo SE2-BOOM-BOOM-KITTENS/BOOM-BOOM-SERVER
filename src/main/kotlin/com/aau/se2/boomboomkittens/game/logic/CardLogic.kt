@@ -38,6 +38,20 @@ class CardLogic(playerSize: Int) {
         player.playerHand.removeCard(card)
     }
 
+    fun cheatDuplicateCard(playerId: UUID, card: Card): Card {
+        val duplicate = Card(type = card.type, name = card.name, aliasType = card.aliasType, cheatDuplicated = true)
+        addCardToPlayer(playerId, duplicate)
+        return duplicate
+    }
+
+    fun isCardDuplicate(playerId: UUID, card: Card): Boolean {
+
+
+        val hand = getPlayerHand(playerId)
+        val card = hand!!.getCardById(card.id)
+        return card.cheatDuplicated
+    }
+
     fun drawCard(playerId: UUID){
         if (drawPile.isEmpty()) {
             throw IllegalStateException("Cannot draw from empty pile")
@@ -46,6 +60,7 @@ class CardLogic(playerSize: Int) {
         addCardToPlayer(playerId, card)
     }
 
+    // fixme after removing the registry pass the effects here
     fun giveInitialHand(player: Player){
         player.playerHand.addCard(Card(CardType.BLANK))
         player.playerHand.addCard(Card(CardType.DEFUSE))
