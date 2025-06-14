@@ -135,7 +135,7 @@ class GameLogicControllerTest {
         val msg = PlayerMessage("Player","CHOOSE_FROM_DISCARD",emptyList<CardNetworkPacket>(),null,lobbyId)
 
         controller.processAction(msg, principal)
-        verify(service).sendUserError(lobbyId,eq(playerId),any())
+        verify(service).sendUserError(eq(lobbyId),eq(playerId),any())
     }
 
     @Test
@@ -143,7 +143,7 @@ class GameLogicControllerTest {
         val msg = PlayerMessage("Player","UNKNOWN",null,null,lobbyId)
 
         controller.processAction(msg, principal)
-        verify(service).sendUserError(lobbyId, eq(playerId),any())
+        verify(service).sendUserError(eq(lobbyId), eq(playerId),any())
     }
 
     @LocalServerPort
