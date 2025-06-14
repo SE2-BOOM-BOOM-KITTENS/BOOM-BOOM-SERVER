@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
+import com.aau.se2.boomboomkittens.game.player.LobbyPlayer
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.springframework.stereotype.Service
@@ -15,7 +16,7 @@ class LobbyService(
         createLobby(steve,2)
     }
 
-    fun createLobby(creator: Player, maxPlayers:Int): Lobby {
+    fun createLobby(creator: Player, maxPlayers: Int): Lobby {
         val lobby = Lobby(creator=creator,players = mutableListOf(), maxPlayers = maxPlayers)
         lobbies[lobby.id.toString()] = lobby
         return lobby
