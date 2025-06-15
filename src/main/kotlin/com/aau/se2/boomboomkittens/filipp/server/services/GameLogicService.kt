@@ -3,8 +3,6 @@ package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.se
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.CheckCardNetworkPacket
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
-import com.aau.se2.boomboomkittens.game.player.LobbyPlayer
-import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.cards.Card
@@ -115,7 +113,8 @@ class GameLogicService(
         val game = getGame(lobbyId)
         val playerHand = game.getPlayerHand(playerId)
         val serverMessage = ServerMessage("HAND","You have received your card hand",playerHand)
-        sendGameUpdate(lobbyId=lobbyId,playerId= playerId, payload = serverMessage)
+        println("Sending hand to user $lobbyId")
+        sendResponse(lobbyId=lobbyId,playerId= playerId, payload = serverMessage)
     }
 
     fun joinGame(lobbyId: UUID, playerId: UUID, playerName:String){
@@ -124,7 +123,9 @@ class GameLogicService(
 
         val gameState = networkPacketMapper.gameStateToNetworkPacket(game,game.cardLogic)
         val serverMessage = ServerMessage("GAME_STATE","Player $playerName has joined",gameState)
-        sendGameUpdate(lobbyId = lobbyId,payload = serverMessage)
+        sendResponse(lobbyId = lobbyId,payload = serverMessage)
+
+        getPlayerHand(lobbyId,playerId)
     }
 
     fun explodePlayer(lobbyId:UUID, playerId: UUID){
@@ -135,7 +136,7 @@ class GameLogicService(
 
         sendGameState(lobbyId,"Player $playerId has exploded",game)
         val privateServerMessage = ServerMessage("EXPLODE", "You have exploded",null)
-        sendGameUpdate(playerId, payload = privateServerMessage)
+        sendResponse(playerId, payload = privateServerMessage)
     }
 
     private fun endTurn(lobbyId: UUID, playerId: UUID){
@@ -148,14 +149,15 @@ class GameLogicService(
         val gameState = networkPacketMapper.gameStateToNetworkPacket(game,game.cardLogic)
         val serverMessage = ServerMessage("GAME_STATE",message,gameState)
         if(playerId != null){
-            sendGameUpdate(lobbyId= lobbyId,playerId = playerId, payload = serverMessage)
+            sendResponse(lobbyId= lobbyId,playerId = playerId, payload = serverMessage)
         }else {
-            sendGameUpdate(lobbyId = lobbyId, payload = serverMessage)
+            sendResponse(lobbyId = lobbyId, payload = serverMessage)
         }
     }
 
-    fun sendGameUpdate(lobbyId: UUID, playerId: UUID? = null, payload: Any){
+    fun sendResponse(lobbyId: UUID, playerId: UUID? = null, payload: Any){
         if(playerId != null){
+            println("Sending message to player: $playerId")
             messagingTemplate.convertAndSendToUser(playerId.toString(),"/queue/private", payload)
         } else{
             println("Sending message to lobby: $lobbyId")
@@ -165,8 +167,8 @@ class GameLogicService(
 
     fun sendUserError(lobbyId: UUID, playerId: UUID, errorMessage: String){
         val serverMessage = ServerMessage("ERROR", errorMessage,null)
-        sendGameUpdate(lobbyId= lobbyId,payload = serverMessage)
-        sendGameUpdate(lobbyId,playerId,serverMessage)
+        sendResponse(lobbyId= lobbyId,payload = serverMessage)
+        sendResponse(lobbyId,playerId,serverMessage)
     }
 
     fun playCatCombo(lobbyId:UUID, playerId: UUID, rawCards: List<Card>, targetId: UUID?) {
@@ -175,7 +177,7 @@ class GameLogicService(
         val target = targetId?.let { game.getPlayerById(it) }
 
         val handler = CatComboEffectHandler(game) { id, payload ->
-            sendGameUpdate(lobbyId,id, payload) // Callback für Nachrichten
+            sendResponse(lobbyId,id, payload) // Callback für Nachrichten
         }
 
         handler.applyCombo(player, rawCards, target)
