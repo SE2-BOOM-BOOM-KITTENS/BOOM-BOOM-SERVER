@@ -6,8 +6,6 @@ import org.springframework.boot.runApplication
 @SpringBootApplication
 open class BoomboomkittensApplication
 
-annotation class SpringBootApplication
-
 fun main(args: Array<String>) {
 	runApplication<BoomboomkittensApplication>(*args)
 }
