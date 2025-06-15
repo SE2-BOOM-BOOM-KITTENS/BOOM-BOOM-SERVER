@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.CardDefinition
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.cards.CardType
@@ -60,76 +61,74 @@ class CardLogic(playerSize: Int) {
         addCardToPlayer(playerId, card)
     }
 
-    // fixme after removing the registry pass the effects here
-    fun giveInitialHand(player: Player){
-        player.playerHand.addCard(Card(CardType.BLANK))
-        player.playerHand.addCard(Card(CardType.DEFUSE))
+    private fun giveInitialHand(player: Player) {
+        // Ziehe 7 Karten vom Stapel
+        repeat(7) {
+            if (drawPile.isEmpty()) {
+                throw IllegalStateException("Nicht genügend Karten im Stapel für Startverteilung!")
+            }
+            player.playerHand.addCard(drawPile.draw())
+        }
+
+        // Gib dem Spieler eine garantierte DEFUSE-Karte
+        val defuseCard = Card(CardType.DEFUSE)
+        player.playerHand.addCard(defuseCard)
+        player.addDefuseCard()  // erhöht logische defuseCount
     }
 
-    fun buildInitialPile(playerCount: Int): CardPile {
+    fun buildInitialPile(playerSize: Int): CardPile {
         val pile = CardPile()
 
-        fun add(type: CardType, countWithPaw: Int, countWithoutPaw: Int) {
-            val count = if (playerCount <= 3) countWithPaw else countWithoutPaw
-            repeat(count) { pile.add(Card(type)) }
-        }
+        // Nur Karten mit Pfote erlauben für 2–3 Spieler, sonst ohne
+        val useWithPaw = playerSize <= 3
+        val cardDefs = listOf(
+            CardDefinition(CardType.DEFUSE, 3, 7), // +1 je Spieler kommt auf die Hand
+            CardDefinition(CardType.NOPE, 4, 6),
+            //CardDefinition(CardType.FAVOR, 2, 4),
+            //CardDefinition(CardType.ATTACK, 4, 7),
+            //CardDefinition(CardType.SKIP, 4, 6),
+            CardDefinition(CardType.SEE_THE_FUTURE, 3, 3),
+            CardDefinition(CardType.ALTER_THE_FUTURE, 2, 4),
+            CardDefinition(CardType.SHUFFLE, 2, 4),
+            //CardDefinition(CardType.DRAW_FROM_THE_BOTTOM, 3, 4),
+            CardDefinition(CardType.FERAL_CAT, 2, 4),
+            //CardDefinition(CardType.REVERSE, 2, 3),
+            //CardDefintion(CardType.TARGETED_ATTACK, 2, 3),
 
-        // Regelgemäße Karten, noch nicht alle implementiert
-        //add(CardType.FAVOR, 2, 4)
-        //add(CardType.NOPE, 4, 6)
-        //add(CardType.ATTACK, 4, 7)
-        //add(CardType.SKIP, 4, 6)
-        //add(CardType.SEE_THE_FUTURE, 3, 3)
-        //add(CardType.ALTER_THE_FUTURE, 2, 4)
-        //add(CardType.SHUFFLE, 2, 4)
-        //add(CardType.DRAW_FROM_BOTTOM, 3, 4)
-        //add(CardType.FERAL_CAT, 2, 4)
-
-        // Cat Cards
-        val catTypes = listOf(
-            CardType.CAT_BEARD,
-            CardType.CAT_TACO,
-            CardType.CAT_HAIRY_POTATO,
-            CardType.CAT_RAINBOW_RALPHING,
-            CardType.CAT_CATERMELON
+            // Cat Cards (je 5 Typen)
+            CardDefinition(CardType.CAT_TACO, 3, 4),
+            CardDefinition(CardType.CAT_BEARD, 3, 4),
+            CardDefinition(CardType.CAT_HAIRY_POTATO, 3, 4),
+            CardDefinition(CardType.CAT_RAINBOW_RALPHING, 3, 4),
+            CardDefinition(CardType.CAT_CATERMELON, 3, 4)
         )
-        for (cat in catTypes) {
-            add(cat, 3, 4)
+
+        for (def in cardDefs) {
+            val count = if (useWithPaw) def.withPawCount else def.withoutPawCount
+            if (def.type != CardType.DEFUSE) {
+                repeat(count) {
+                    pile.add(Card(def.type))
+                }
+            }
         }
 
-        // Defuse-Karten (gesamte Anzahl), später gibst du 1 pro Spieler raus
-        repeat(if (playerCount <= 3) 3 else 7) {
+        // DEFUSE ins Deck: nur restliche nach Verteilung
+        val defuseDef = cardDefs.first { it.type == CardType.DEFUSE }
+        val totalDefuses = if (useWithPaw) defuseDef.withPawCount else defuseDef.withoutPawCount
+        val defusesForDeck = (totalDefuses - playerSize).coerceAtLeast(0)
+        repeat(defusesForDeck) {
             pile.add(Card(CardType.DEFUSE))
-        }
-
-        // Exploding Kittens: (Spielerzahl - 1)
-        repeat(playerCount - 1) {
-            pile.add(Card(CardType.EXPLODING_KITTEN))
         }
 
         pile.shuffle()
         return pile
+    }
 
-        //TODO Insert specific cards based on player count
-/*
-        val cardPile = CardPile()
-        val blank = Card(CardType.BLANK)
-        val defuse = Card(CardType.DEFUSE)
-        val explodingKitten = Card(CardType.EXPLODING_KITTEN)
-        var i = 0
-        while (i < 100) {
-            cardPile.insertAt(i, blank)
-            i++
-            cardPile.insertAt(i, defuse)
-            i++
-            cardPile.insertAt(i, explodingKitten)
-            i++
+    fun finalizeDeck(playerSize: Int) {
+        repeat(playerSize - 1) {
+            drawPile.add(Card(CardType.EXPLODING_KITTEN))
         }
-
-        cardPile.shuffle()
-
-        return cardPile*/
-
+        drawPile.shuffle()
     }
 
     /**

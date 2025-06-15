@@ -249,8 +249,10 @@ class CatComboEffectHandlerTest {
     @Test
     fun `FeralCatEffect gibt Hinweis bei direktem Ausspielen`() {
         val player = Player(name = "Tester")
-        val gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player))
-        player.playerHand.addCard(Card(CardType.FERAL_CAT))
+        val playerList = mutableListOf(player)
+        val gameLogic = GameLogic(UUID.randomUUID(), playerList)
+
+        gameLogic.getPlayerHand(player.playerId)!!.addCard(Card(CardType.FERAL_CAT))
 
         assertThrows<IllegalStateException> {
             gameLogic.playCard(player.playerId, CardType.FERAL_CAT)

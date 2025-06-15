@@ -19,7 +19,7 @@ open class GameLogic(
     val cardLogic: CardLogic get() = _cardLogic
     val discardPile: CardPile get() = _discardPile
 
-    val drawPile: LinkedList<Card> = LinkedList()
+    val drawPile: CardPile get() = _cardLogic.drawPile
 
     init {
         for(player in players){
