@@ -2,6 +2,7 @@ package com.aau.se2.boomboomkittens.game.cards.effects
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.PlayerLogic
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
@@ -25,7 +26,7 @@ class CatComboEffectHandlerTest {
         player = Player(name = "Tester")
         target = Player(name = "Opfer")
         game = GameLogic(UUID.randomUUID(), mutableListOf(player, target))
-        cardLogic = CardLogic(2)
+        cardLogic = CardLogic(2, playerLogic = PlayerLogic())
         player.playerHand.cards.clear()
         target.playerHand.cards.clear()
         handler = CatComboEffectHandler(cardLogic) { _, _ -> }
@@ -75,7 +76,6 @@ class CatComboEffectHandlerTest {
     @Test
     fun `Ungueltige Cat-Kombination wird ignoriert`() {
         val player = Player(name = "Tester")
-        val gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player))
         val handler = CatComboEffectHandler(cardLogic) { _, _ -> }
 
         val cards = listOf(
@@ -252,11 +252,11 @@ class CatComboEffectHandlerTest {
     @Test
     fun `FeralCatEffect gibt Hinweis bei direktem Ausspielen`() {
         val player = Player(name = "Tester")
-        val cardLogic = CardLogic(2)
+        game.playerLogic.addPlayerByID(player)
         player.playerHand.addCard(Card(CardType.FERAL_CAT))
 
         assertThrows<IllegalStateException> {
-            cardLogic.playCard(player.playerId, CardType.FERAL_CAT)
+            game.cardLogic.playCard(player.playerId, CardType.FERAL_CAT)
         }
     }
 

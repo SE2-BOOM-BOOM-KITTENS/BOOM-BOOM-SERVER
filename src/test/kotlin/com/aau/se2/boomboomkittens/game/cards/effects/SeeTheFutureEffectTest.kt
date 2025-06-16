@@ -5,6 +5,7 @@ import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.SeeTheFutureEffect
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.PlayerLogic
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -24,7 +25,7 @@ class SeeTheFutureEffectTest {
             Card(CardType.DEFUSE)
         )
 
-        val cardLogic = object : CardLogic(2) {
+        val cardLogic = object : CardLogic(2, playerLogic = PlayerLogic()) {
             override fun peekTopCards(count: Int): List<Card> {
                 return expectedTopCards
             }

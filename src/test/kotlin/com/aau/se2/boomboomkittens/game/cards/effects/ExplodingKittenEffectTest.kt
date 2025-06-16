@@ -14,7 +14,7 @@ class ExplodingKittenEffectTest {
     @Test
     fun `exploding kitten kills player without defuse`() {
         val player = Player(playerId = UUID.randomUUID(), name = "Player1", defuseCount = 0, isAlive = true)
-        val cardLogic = CardLogic(2)
+        val cardLogic = CardLogic(2, playerLogic = PlayerLogic())
         val card = Card(CardType.EXPLODING_KITTEN)
         val playerLogic = PlayerLogic()
         playerLogic.addPlayerByID(player)
@@ -30,7 +30,7 @@ class ExplodingKittenEffectTest {
     fun `exploding kitten defused when player has defuse card`(){
         val player = Player (playerId = UUID.randomUUID(), name = "Player2", defuseCount = 1, isAlive = true)
         val effect = ExplodingKittenEffect()
-        val cardLogic = CardLogic(2)
+        val cardLogic = CardLogic(2, playerLogic = PlayerLogic())
         val card = Card(CardType.EXPLODING_KITTEN)
 
         effect.apply(card, player, cardLogic)

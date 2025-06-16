@@ -24,7 +24,7 @@ class NopeTest {
         player0 = Player (playerId = UUID.randomUUID(), name = "Player0", defuseCount = 0, isAlive = true)
         player1 = Player (playerId = UUID.randomUUID(), name = "Player1", defuseCount = 0, isAlive = true)
         gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player0, player1))
-        cardLogic = CardLogic(2)
+        cardLogic = CardLogic(2, playerLogic = PlayerLogic())
         playerLogic = PlayerLogic()
         card = Card(CardType.NOPE)
     }

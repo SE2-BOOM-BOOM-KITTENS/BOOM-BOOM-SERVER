@@ -1,6 +1,8 @@
 package com.aau.se2.boomboomkittens.game.logic
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.PlayerLogic
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.cards.CardType
@@ -10,11 +12,13 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.test.context.event.annotation.BeforeTestClass
 import java.util.UUID
 
 class CardLogicTest {
 
     private lateinit var cardLogic: CardLogic
+    private lateinit var gameLogic: GameLogic
     private lateinit var player: Player
     private lateinit var falsePlayer: Player
     private lateinit var playerId: UUID
@@ -24,17 +28,18 @@ class CardLogicTest {
     @BeforeEach
     fun setup() {
         playerId = UUID.randomUUID()
-        player = Player(playerId, "TestPlayer")
-
         falseId = UUID.randomUUID()
+
+        player = Player(playerId, "TestPlayer")
+        gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player))
+
         falsePlayer = Player(falseId, "FalsePlayer")
-        cardLogic = CardLogic(1)
-        cardLogic.addPlayer(player)
+        cardLogic = CardLogic(1, playerLogic = PlayerLogic())
     }
 
     @Test
     fun addCardToPlayerTest() {
-        cardLogic.addCardToPlayer(playerId, dummyCard)
+        gameLogic.cardLogic.addCardToPlayer(playerId, dummyCard)
         assertTrue(player.playerHand.containsCard(dummyCard))
     }
 
@@ -50,7 +55,7 @@ class CardLogicTest {
         val card = Card(CardType.BLANK)
 
         // Echte Hand aus CardLogic holen
-        val hand = cardLogic.getPlayerHand(playerId) ?: error("Player hand not found")
+        val hand = gameLogic.cardLogic.getPlayerHand(playerId) ?: error("Player hand not found")
 
         // Handkarten vollständig leeren, damit Test isoliert ist
         hand.cards.clear()
@@ -63,7 +68,7 @@ class CardLogicTest {
         assertTrue(hand.containsCardType(card.type), "Card should be present before removal")
 
         // Karte entfernen
-        cardLogic.removeCardFromPlayer(playerId, card)
+        gameLogic.cardLogic.removeCardFromPlayer(playerId, card)
 
         // Nachher prüfen, dass sie weg ist
         assertFalse(hand.containsCardType(card.type), "Card should no longer be present after removal")
@@ -79,8 +84,8 @@ class CardLogicTest {
     @Test
     fun drawCardTest() {
         val topCard = Card(CardType.BLANK)
-        cardLogic.drawPile.insertAt(0, topCard)
-        cardLogic.drawCard(playerId)
+        gameLogic.cardLogic.drawPile.insertAt(0, topCard)
+        gameLogic.cardLogic.drawCard(playerId)
         assertTrue(player.playerHand.containsCard(topCard))
     }
 

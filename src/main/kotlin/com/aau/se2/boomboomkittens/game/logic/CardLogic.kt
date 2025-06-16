@@ -7,36 +7,26 @@ import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
 
-open class CardLogic(playerSize: Int) {
-    private val playerMap = mutableMapOf<UUID, Player>()
+open class CardLogic(playerSize: Int, private val playerLogic: PlayerLogic) {
     private val _discardPile: CardPile = CardPile()
-    private val _playerLogic: PlayerLogic = PlayerLogic()
 
     val discardPile: CardPile get() = _discardPile
     var drawPile: CardPile = buildInitialPile(playerSize)
 
     fun addCardToPlayer(playerId: UUID, card: Card) {
-        val player = playerMap[playerId]
-        requireNotNull(player) {
-            throw IllegalArgumentException("Player with id $playerId not found")
-        }
+        val player = playerLogic.getPlayerByID(playerId)
+            ?: throw IllegalArgumentException("Player with id $playerId not found")
         player.playerHand.addCard(card)
     }
 
-    fun addPlayer(player: Player) {
-        playerMap[player.playerId] = player
-        giveInitialHand(player)
-    }
-
     fun getPlayerHand(playerId: UUID): PlayerHand? {
-        requireNotNull(playerMap[playerId]) {
-            throw IllegalArgumentException("Player with id $playerId not found")
-        }
-        return playerMap[playerId]?.playerHand
+        val player = playerLogic.getPlayerByID(playerId)
+            ?: throw IllegalArgumentException("Player with id $playerId not found")
+        return player.playerHand
     }
 
     fun removeCardFromPlayer(playerId: UUID, card: Card) {
-        val player = playerMap[playerId]
+        val player = playerLogic.getPlayerByID(playerId)
             ?: throw IllegalArgumentException("Player with id $playerId not found")
         player.playerHand.removeCard(card)
     }
@@ -49,14 +39,13 @@ open class CardLogic(playerSize: Int) {
         addCardToPlayer(playerId, card)
     }
 
-    // fixme after removing the registry pass the effects here
     fun giveInitialHand(player: Player) {
         player.playerHand.addCard(Card(CardType.BLANK))
         player.playerHand.addCard(Card(CardType.DEFUSE))
     }
 
     fun playCard(playerId: UUID, cardType: CardType) {
-        val player = _playerLogic.getPlayerByID(playerId)
+        val player = playerLogic.getPlayerByID(playerId)
             ?: throw IllegalArgumentException("Player not found")
 
         val card = player.playerHand.cards.firstOrNull { it.type == cardType }
@@ -89,7 +78,7 @@ open class CardLogic(playerSize: Int) {
         println("${player.name} rearranged the top ${newOrder.size} cards.")
     }
 
-    fun buildInitialPile(playerCount: Int): CardPile {
+fun buildInitialPile(playerCount: Int): CardPile {
         val pile = CardPile()
 
         fun add(type: CardType, countWithPaw: Int, countWithoutPaw: Int) {

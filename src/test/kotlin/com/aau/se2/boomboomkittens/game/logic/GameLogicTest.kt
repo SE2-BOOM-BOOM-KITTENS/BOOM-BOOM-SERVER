@@ -3,6 +3,7 @@ package com.aau.se2.boomboomkittens.game.logic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.cards.Card
+import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions
@@ -121,12 +122,17 @@ class GameLogicTest {
         val cardB = Card(CardType.DEFUSE)
         val cardC = Card(CardType.BLANK)
 
-        gameLogic.drawPile.addAll(listOf(cardA, cardB, cardC))
+        //gameLogic.drawPile.addAll(listOf(cardA, cardB, cardC))
+        gameLogic.cardLogic.drawPile = CardPile()
+        gameLogic.drawPile.add(cardA)
+        gameLogic.drawPile.add(cardB)
+        gameLogic.drawPile.add(cardC)
+
         val newOrder = listOf(cardC, cardB, cardA)
 
-        cardLogic.allowPlayerToRearrangeTopCards(player1, newOrder)
+        gameLogic.cardLogic.allowPlayerToRearrangeTopCards(player1, newOrder)
 
-        val result = cardLogic.peekTopCards(3)
+        val result = gameLogic.cardLogic.peekTopCards(3)
         assertEquals(CardType.SHUFFLE, result[0].type)
         assertEquals(CardType.DEFUSE, result[1].type)
         assertEquals(CardType.BLANK, result[2].type)
@@ -134,7 +140,9 @@ class GameLogicTest {
 
     @Test
     fun `allowPlayerToRearrangeTopCards throws if newOrder too big`() {
-        gameLogic.drawPile.add(Card(CardType.BLANK))
+        gameLogic.cardLogic.drawPile.add(Card(CardType.BLANK))
+        gameLogic.cardLogic.drawPile = CardPile()
+
         val tooBig = listOf(Card(CardType.DEFUSE), Card(CardType.SHUFFLE))
         assertThrows<IllegalArgumentException> {
             cardLogic.allowPlayerToRearrangeTopCards(player1, tooBig)
