@@ -12,6 +12,10 @@ class NetworkPacketMapper {
     fun gameStateToNetworkPacket(gameLogic: GameLogic, cardLogic: CardLogic): GameStateNetworkPacket {
         val playerLogic = gameLogic.playerLogic
         val playerList = playerLogic.getPlayerList()
+        println("Player list")
+        for (player in playerList) {
+            println("Player $player")
+        }
         val playerNetworkPackets = mutableListOf<PlayerNetworkPacket>()
 
         for(player in playerList){
@@ -20,6 +24,9 @@ class NetworkPacketMapper {
         }
 
         val currentPlayer = playerLogic.getCurrentPlayer()
+        if(currentPlayer == null){
+            println("Mistakes were made")
+        }
         val currentPlayerHand = currentPlayer!!.playerHand
         val currentPlayerDTO = playerToNetworkPacket(currentPlayer,currentPlayerHand)
 

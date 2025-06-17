@@ -29,7 +29,13 @@ class GameLogicService(
 
     //TEMPORARY SOLUTION; FOR DEBUGGING ONLY; REMOVE WHEN LOBBIES ARE IMPLEMENTED
     init {
-        val lobby = Lobby(id= UUID.fromString("00000000-0000-0000-0000-000000001234"),creator = Player(name="Steve"), maxPlayers = 2)
+        val creator = Player(name="Evil Steve")
+        val bob = Player(name="Bob")
+        val john = Player(name="John")
+        val lobby = Lobby(id= UUID.fromString("00000000-0000-0000-0000-000000001234"),creator = creator, maxPlayers = 8)
+        lobby.players.add(creator)
+        lobby.players.add(bob)
+        lobby.players.add(john)
         lobbyId = lobby.id
         createGame(lobby)
     }
@@ -114,7 +120,7 @@ class GameLogicService(
         val game = getGame(lobbyId)
         val playerHand = game.getPlayerHand(playerId)
         val serverMessage = ServerMessage("HAND","You have received your card hand",playerHand)
-        println("Sending hand to user $lobbyId")
+        println("Sending hand to user $playerId")
         sendResponse(lobbyId=lobbyId,playerId= playerId, payload = serverMessage)
     }
 
@@ -133,9 +139,9 @@ class GameLogicService(
         val game = getGame(lobbyId)
         game.removePlayer(playerId)
 
+        val player = game.getPlayerById(playerId)
 
-
-        sendGameState(lobbyId,"Player $playerId has exploded",game)
+        sendGameState(lobbyId,"Player ${player!!.name} has exploded",game)
         val privateServerMessage = ServerMessage("EXPLODE", "You have exploded",null)
         sendResponse(playerId, payload = privateServerMessage)
     }

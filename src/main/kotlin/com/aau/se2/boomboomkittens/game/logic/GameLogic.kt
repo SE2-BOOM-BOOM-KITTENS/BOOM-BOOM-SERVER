@@ -37,6 +37,7 @@ open class GameLogic(
 
     fun nextTurn(){
         _playerLogic.moveToNextPlayer()
+        println("Current Player: ${playerLogic.getCurrentPlayer()!!.playerId}")
     }
 
     fun addPlayer(playerId: UUID, playerName:String){
