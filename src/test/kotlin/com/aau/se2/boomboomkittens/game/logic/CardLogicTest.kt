@@ -29,7 +29,7 @@ class CardLogicTest {
         player = Player(playerId, "TestPlayer")
         falseId = UUID.randomUUID()
         falsePlayer = Player(falseId, "FalsePlayer")
-        game = GameLogic(UUID.randomUUID())
+        game = GameLogic(UUID.randomUUID(), mutableListOf())
         cardLogic = CardLogic(1,game)
         cardLogic.addPlayer(player)
         player.playerHand.clear()

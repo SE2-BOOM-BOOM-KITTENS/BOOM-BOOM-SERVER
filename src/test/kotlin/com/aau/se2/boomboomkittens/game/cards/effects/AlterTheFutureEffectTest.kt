@@ -17,11 +17,13 @@ class AlterTheFutureEffectTest {
         val player = Player(playerId = UUID.randomUUID(), name = "Player1", defuseCount = 0, isAlive = true)
         val effect = AlterTheFutureEffect()
         val card = Card(CardType.ALTER_THE_FUTURE)
-        val gameLogic = GameLogic(UUID.randomUUID())
 
         var rearrangedCards: List<Card>? = null
-        val cardLogic = object : CardLogic(2, gameLogic) {
-        val gameLogic = object : GameLogic(UUID.randomUUID(), mutableListOf()) {
+
+
+
+        val gameLogic = object : GameLogic(UUID.randomUUID(), mutableListOf()){}
+        val cardLogic = object : CardLogic(1,gameLogic) {
             override fun peekTopCards(count: Int): List<Card> {
                 return listOf(
                     Card(CardType.DEFUSE),

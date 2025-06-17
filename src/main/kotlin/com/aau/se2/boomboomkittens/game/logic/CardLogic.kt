@@ -56,7 +56,7 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         return card.cheatDuplicated
     }
 
-    fun drawCard(playerId: UUID){
+    fun drawCard(playerId: UUID) {
         if (drawPile.isEmpty()) {
             throw IllegalStateException("Cannot draw from empty pile")
         }
@@ -162,3 +162,4 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         pile.shuffle()
         return pile
     }
+}

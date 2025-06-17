@@ -26,7 +26,6 @@ class GameLogicTest {
         player2 = Player(UUID.randomUUID(), "player2")
         gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player1, player2))
         cardLogic = gameLogic.cardLogic
-        cardLogic.drawPile.clear()
     }
 
     @Test
@@ -118,7 +117,7 @@ class GameLogicTest {
 
     @Test
     fun `allowPlayerToRearrangeTopCards rearranges correctly`() {
-        gameLogic.drawPile.clear()
+        cardLogic.drawPile.clear()
         val cardA = Card(CardType.SHUFFLE)
         val cardB = Card(CardType.DEFUSE)
         val cardC = Card(CardType.BLANK)
@@ -143,6 +142,7 @@ class GameLogicTest {
         cardLogic.drawPile.add(Card(CardType.BLANK))
 
         val tooBig = listOf(Card(CardType.DEFUSE), Card(CardType.SHUFFLE))
+        cardLogic.drawPile.clear()
         assertThrows<IllegalArgumentException> {
             cardLogic.allowPlayerToRearrangeTopCards(player1, tooBig)
         }

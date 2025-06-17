@@ -15,8 +15,6 @@ open class GameLogic(
     val playerLogic: PlayerLogic get() = _playerLogic
     val cardLogic: CardLogic get() = _cardLogic
 
-    val drawPile: CardPile get() = _cardLogic.drawPile
-
 
     init {
         for(player in players){
