@@ -14,8 +14,8 @@ import java.util.*
 class NopeTest {
     private lateinit var player0: Player
     private lateinit var player1: Player
+    private lateinit var player2: Player
     private lateinit var gameLogic: GameLogic
-    private lateinit var playerLogic: PlayerLogic
     private lateinit var cardLogic: CardLogic
     private lateinit var card: Card
 
@@ -23,9 +23,9 @@ class NopeTest {
     fun setUp() {
         player0 = Player (playerId = UUID.randomUUID(), name = "Player0", defuseCount = 0, isAlive = true)
         player1 = Player (playerId = UUID.randomUUID(), name = "Player1", defuseCount = 0, isAlive = true)
-        gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player0, player1))
-        cardLogic = CardLogic(2)
-        playerLogic = PlayerLogic()
+        player2 = Player (playerId = UUID.randomUUID(), name = "Player2", defuseCount = 0, isAlive = true)
+        gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player0, player1, player2))
+        cardLogic = CardLogic(2,gameLogic)
         card = Card(CardType.NOPE)
     }
 
@@ -33,8 +33,13 @@ class NopeTest {
     fun nopeTest(){
         val effect = NopeEffect()
 
-        effect.apply(card, player0, cardLogic)
+        println("Current Player: ${gameLogic.playerLogic.getCurrentPlayer()?.name}")
 
-        assertEquals(gameLogic.playerLogic.getCurrentPlayer(), player0)
+        effect.apply(card, player0, cardLogic)
+        gameLogic.nextTurn()
+
+        println("Current Player: ${gameLogic.playerLogic.getCurrentPlayer()?.name}")
+
+        assertEquals(gameLogic.playerLogic.getCurrentPlayer(), player2)
     }
 }

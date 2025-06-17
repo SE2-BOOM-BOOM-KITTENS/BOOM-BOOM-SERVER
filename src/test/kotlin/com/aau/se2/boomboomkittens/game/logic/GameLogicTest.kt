@@ -26,6 +26,7 @@ class GameLogicTest {
         player2 = Player(UUID.randomUUID(), "player2")
         gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player1, player2))
         cardLogic = gameLogic.cardLogic
+        cardLogic.drawPile.clear()
     }
 
     @Test
@@ -109,8 +110,8 @@ class GameLogicTest {
 
     @Test
     fun `peekTopCards returns expected amount`() {
-        gameLogic.drawPile.add(Card(CardType.SHUFFLE))
-        gameLogic.drawPile.add(Card(CardType.DEFUSE))
+        cardLogic.drawPile.add(Card(CardType.SHUFFLE))
+        cardLogic.drawPile.add(Card(CardType.DEFUSE))
         val top = cardLogic.peekTopCards(2)
         assertEquals(2, top.size)
     }
@@ -121,7 +122,10 @@ class GameLogicTest {
         val cardB = Card(CardType.DEFUSE)
         val cardC = Card(CardType.BLANK)
 
-        gameLogic.drawPile.addAll(listOf(cardA, cardB, cardC))
+        cardLogic.drawPile.clear()
+        cardLogic.drawPile.add(cardA)
+        cardLogic.drawPile.add(cardB)
+        cardLogic.drawPile.add(cardC)
         val newOrder = listOf(cardC, cardB, cardA)
 
         cardLogic.allowPlayerToRearrangeTopCards(player1, newOrder)
@@ -134,7 +138,7 @@ class GameLogicTest {
 
     @Test
     fun `allowPlayerToRearrangeTopCards throws if newOrder too big`() {
-        gameLogic.drawPile.add(Card(CardType.BLANK))
+        cardLogic.drawPile.add(Card(CardType.BLANK))
         val tooBig = listOf(Card(CardType.DEFUSE), Card(CardType.SHUFFLE))
         assertThrows<IllegalArgumentException> {
             cardLogic.allowPlayerToRearrangeTopCards(player1, tooBig)

@@ -9,7 +9,7 @@ import java.util.*
 
 class ExplodingKittenEffect : CardEffect {
     override fun apply (card: Card, player: Player, cardLogic: CardLogic){
-        val gameLogic = GameLogic(UUID.randomUUID())
+        val gameLogic = cardLogic.gameLogic
 
         if (player.hasDefuseCard()){
             player.useDefuseCard()

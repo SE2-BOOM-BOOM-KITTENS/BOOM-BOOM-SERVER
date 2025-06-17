@@ -7,10 +7,10 @@ import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
 
-open class CardLogic(playerSize: Int) {
+open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
     private val playerMap = mutableMapOf<UUID, Player>()
     private val _discardPile: CardPile = CardPile()
-    private val _playerLogic: PlayerLogic = PlayerLogic()
+
 
     val discardPile: CardPile get() = _discardPile
     var drawPile: CardPile = buildInitialPile(playerSize)
@@ -56,7 +56,7 @@ open class CardLogic(playerSize: Int) {
     }
 
     fun playCard(playerId: UUID, cardType: CardType) {
-        val player = _playerLogic.getPlayerByID(playerId)
+        val player = playerMap[playerId]
             ?: throw IllegalArgumentException("Player not found")
 
         val card = player.playerHand.cards.firstOrNull { it.type == cardType }

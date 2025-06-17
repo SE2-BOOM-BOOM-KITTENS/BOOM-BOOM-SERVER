@@ -43,3 +43,5 @@ out/
 local.properties
 
 /target/
+
+Dockerfile

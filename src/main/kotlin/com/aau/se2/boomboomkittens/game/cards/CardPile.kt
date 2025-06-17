@@ -39,5 +39,9 @@ class CardPile {
         pile.shuffle()
     }
 
+    fun clear(){
+        pile.clear()
+    }
+
     fun isEmpty(): Boolean = pile.isEmpty()
 }

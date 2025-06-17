@@ -9,7 +9,7 @@ import java.util.*
 
 class NopeEffect : CardEffect {
     override fun apply (card: Card, player: Player, cardLogic: CardLogic){
-        val gameLogic = GameLogic(UUID.randomUUID())
+        val gameLogic = cardLogic.gameLogic
 
         gameLogic.nextTurn()
         println ("Nope got played. Your turn was skipped.")
