@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.game.cards.effects
 
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
@@ -17,15 +18,17 @@ class CatComboEffectHandlerTest {
     private lateinit var player: Player
     private lateinit var target: Player
     private lateinit var handler: CatComboEffectHandler
+    private lateinit var cardLogic: CardLogic
 
     @BeforeEach
     fun setup() {
         player = Player(name = "Tester")
         target = Player(name = "Opfer")
         game = GameLogic(UUID.randomUUID(), mutableListOf(player, target))
+        cardLogic = game.cardLogic
         player.playerHand.cards.clear()
         target.playerHand.cards.clear()
-        handler = CatComboEffectHandler(game) { _, _ -> }
+        handler = CatComboEffectHandler(cardLogic) { _, _ -> }
     }
 
     @Test
@@ -58,11 +61,11 @@ class CatComboEffectHandlerTest {
             CardType.CAT_RAINBOW_RALPHING,
             CardType.CAT_CATERMELON
         )
-        discardTypes.forEach { game.discardPile.add(Card(it)) }
+        discardTypes.forEach { cardLogic.discardPile.add(Card(it)) }
         val cards = discardTypes.map { Card(it) }
 
         var messageSent = false
-        handler = CatComboEffectHandler(game) { _, _ -> messageSent = true }
+        handler = CatComboEffectHandler(cardLogic) { _, _ -> messageSent = true }
 
         handler.applyCombo(player, cards, null)
 
@@ -73,7 +76,7 @@ class CatComboEffectHandlerTest {
     fun `Ungueltige Cat-Kombination wird ignoriert`() {
         val player = Player(name = "Tester")
         val gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player))
-        val handler = CatComboEffectHandler(gameLogic) { _, _ -> }
+        val handler = CatComboEffectHandler(cardLogic) { _, _ -> }
 
         val cards = listOf(
             Card(CardType.CAT_TACO),
@@ -146,7 +149,7 @@ class CatComboEffectHandlerTest {
 
         // discardPile ist leer, aber Methode sollte trotzdem aufgerufen werden
         var messageSent = false
-        val handlerWithMockSend = CatComboEffectHandler(game) { _, _ -> messageSent = true }
+        val handlerWithMockSend = CatComboEffectHandler(cardLogic) { _, _ -> messageSent = true }
 
         handlerWithMockSend.applyCombo(player, cards, null)
 
@@ -208,7 +211,7 @@ class CatComboEffectHandlerTest {
         )
 
         var triggered = false
-        val handlerWithSend = CatComboEffectHandler(game) { _, _ -> triggered = true }
+        val handlerWithSend = CatComboEffectHandler(cardLogic) { _, _ -> triggered = true }
 
         handlerWithSend.applyCombo(player, cards, null)
 
@@ -225,7 +228,7 @@ class CatComboEffectHandlerTest {
         ) // nur 4 Karten
 
         var triggered = false
-        val handlerWithSend = CatComboEffectHandler(game) { _, _ -> triggered = true }
+        val handlerWithSend = CatComboEffectHandler(cardLogic) { _, _ -> triggered = true }
 
         handlerWithSend.applyCombo(player, cards, null)
 
@@ -248,22 +251,18 @@ class CatComboEffectHandlerTest {
 
     @Test
     fun `FeralCatEffect gibt Hinweis bei direktem Ausspielen`() {
-        val player = Player(name = "Tester")
-        val playerList = mutableListOf(player)
-        val gameLogic = GameLogic(UUID.randomUUID(), playerList)
+        player.playerHand.addCard(Card(CardType.FERAL_CAT))
 
-        gameLogic.getPlayerHand(player.playerId)!!.addCard(Card(CardType.FERAL_CAT))
 
         assertThrows<IllegalStateException> {
-            gameLogic.playCard(player.playerId, CardType.FERAL_CAT)
+            cardLogic.playCard(player.playerId, CardType.FERAL_CAT)
         }
     }
 
     @Test
     fun `FeralCat ohne aliasType wirft Exception`() {
         val player = Player(name = "Tester")
-        val gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player))
-        val handler = CatComboEffectHandler(gameLogic) { _, _ -> }
+        val handler = CatComboEffectHandler(cardLogic) { _, _ -> }
 
         val cards = listOf(
             Card(CardType.FERAL_CAT), // kein aliasType

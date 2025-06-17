@@ -1,6 +1,7 @@
 package com.aau.se2.boomboomkittens.game.logic
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardPile
 import com.aau.se2.boomboomkittens.game.cards.CardType
@@ -20,6 +21,7 @@ class CardLogicTest {
     private lateinit var playerId: UUID
     private lateinit var falseId: UUID
     private val dummyCard = Card(CardType.BLANK)
+    private lateinit var game: GameLogic
 
     @BeforeEach
     fun setup() {
@@ -27,7 +29,8 @@ class CardLogicTest {
         player = Player(playerId, "TestPlayer")
         falseId = UUID.randomUUID()
         falsePlayer = Player(falseId, "FalsePlayer")
-        cardLogic = CardLogic(1)
+        game = GameLogic(UUID.randomUUID(), mutableListOf())
+        cardLogic = CardLogic(1,game)
         cardLogic.addPlayer(player)
         player.playerHand.clear()
     }

@@ -109,25 +109,28 @@ class GameLogicTest {
 
     @Test
     fun `peekTopCards returns expected amount`() {
-        gameLogic.drawPile.add(Card(CardType.SHUFFLE))
-        gameLogic.drawPile.add(Card(CardType.DEFUSE))
-        val top = gameLogic.peekTopCards(2)
+        cardLogic.drawPile.add(Card(CardType.SHUFFLE))
+        cardLogic.drawPile.add(Card(CardType.DEFUSE))
+        val top = cardLogic.peekTopCards(2)
         assertEquals(2, top.size)
     }
 
     @Test
     fun `allowPlayerToRearrangeTopCards rearranges correctly`() {
-        gameLogic.drawPile.clear()
+        cardLogic.drawPile.clear()
         val cardA = Card(CardType.SHUFFLE)
         val cardB = Card(CardType.DEFUSE)
         val cardC = Card(CardType.BLANK)
 
-        gameLogic.drawPile.addAll(listOf(cardA, cardB, cardC))
+        cardLogic.drawPile.clear()
+        cardLogic.drawPile.add(cardA)
+        cardLogic.drawPile.add(cardB)
+        cardLogic.drawPile.add(cardC)
         val newOrder = listOf(cardC, cardB, cardA)
 
-        gameLogic.allowPlayerToRearrangeTopCards(player1, newOrder)
+        cardLogic.allowPlayerToRearrangeTopCards(player1, newOrder)
 
-        val result = gameLogic.peekTopCards(3)
+        val result = cardLogic.peekTopCards(3)
         assertEquals(CardType.SHUFFLE, result[0].type)
         assertEquals(CardType.DEFUSE, result[1].type)
         assertEquals(CardType.BLANK, result[2].type)
@@ -135,11 +138,13 @@ class GameLogicTest {
 
     @Test
     fun `allowPlayerToRearrangeTopCards throws if newOrder too big`() {
-        gameLogic.drawPile.clear()
-        gameLogic.drawPile.add(Card(CardType.BLANK))
+
+        cardLogic.drawPile.add(Card(CardType.BLANK))
+
         val tooBig = listOf(Card(CardType.DEFUSE), Card(CardType.SHUFFLE))
+        cardLogic.drawPile.clear()
         assertThrows<IllegalArgumentException> {
-            gameLogic.allowPlayerToRearrangeTopCards(player1, tooBig)
+            cardLogic.allowPlayerToRearrangeTopCards(player1, tooBig)
         }
     }
 }

@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
-class LobbyService(
-) {
+class LobbyService {
     private val lobbies = ConcurrentHashMap<String, Lobby>()
 
     init {

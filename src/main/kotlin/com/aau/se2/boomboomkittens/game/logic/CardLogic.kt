@@ -8,32 +8,35 @@ import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
 
-class CardLogic(playerSize: Int) {
+open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
     private val playerMap = mutableMapOf<UUID, Player>()
+    private val _discardPile: CardPile = CardPile()
 
+
+    val discardPile: CardPile get() = _discardPile
     var drawPile: CardPile = buildInitialPile(playerSize)
 
-    fun addCardToPlayer(playerId: UUID, card: Card){
+    fun addCardToPlayer(playerId: UUID, card: Card) {
         val player = playerMap[playerId]
-        requireNotNull(player){
+        requireNotNull(player) {
             throw IllegalArgumentException("Player with id $playerId not found")
         }
         player.playerHand.addCard(card)
     }
 
-    fun addPlayer(player: Player){
+    fun addPlayer(player: Player) {
         playerMap[player.playerId] = player
         giveInitialHand(player)
     }
 
     fun getPlayerHand(playerId: UUID): PlayerHand? {
-        requireNotNull(playerMap[playerId]){
+        requireNotNull(playerMap[playerId]) {
             throw IllegalArgumentException("Player with id $playerId not found")
         }
         return playerMap[playerId]?.playerHand
     }
 
-    fun removeCardFromPlayer(playerId: UUID, card: Card){
+    fun removeCardFromPlayer(playerId: UUID, card: Card) {
         val player = playerMap[playerId]
             ?: throw IllegalArgumentException("Player with id $playerId not found")
         player.playerHand.removeCard(card)
@@ -53,13 +56,48 @@ class CardLogic(playerSize: Int) {
         return card.cheatDuplicated
     }
 
-    fun drawCard(playerId: UUID){
+    fun drawCard(playerId: UUID) {
         if (drawPile.isEmpty()) {
             throw IllegalStateException("Cannot draw from empty pile")
         }
         val card = drawPile.draw()
         addCardToPlayer(playerId, card)
     }
+
+    fun playCard(playerId: UUID, cardType: CardType) {
+        val player = playerMap[playerId]
+            ?: throw IllegalArgumentException("Player not found")
+
+        val card = player.playerHand.cards.firstOrNull { it.type == cardType }
+            ?: throw IllegalStateException("Player doesn't have card type $cardType")
+
+        cardType.effect.apply(card, player, this)
+    }
+
+    fun shuffleDeck() {
+        discardPile.shuffle()
+    }
+
+    open fun peekTopCards(count: Int): List<Card> {
+        return drawPile.take(count)
+    }
+
+    open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
+        if (newOrder.size > drawPile.size) {
+            throw IllegalArgumentException("New order has more cards than the draw pile.")
+        }
+
+        repeat(newOrder.size) {
+            drawPile.removeFirst()
+        }
+
+        for (i in newOrder.size - 1 downTo 0) {
+            drawPile.add(newOrder[i])
+        }
+
+        println("${player.name} rearranged the top ${newOrder.size} cards.")
+    }
+
 
     private fun giveInitialHand(player: Player) {
         // Ziehe 7 Karten vom Stapel
@@ -77,6 +115,7 @@ class CardLogic(playerSize: Int) {
     }
 
     fun buildInitialPile(playerSize: Int): CardPile {
+
         val pile = CardPile()
 
         // Nur Karten mit Pfote erlauben für 2–3 Spieler, sonst ohne
@@ -123,30 +162,4 @@ class CardLogic(playerSize: Int) {
         pile.shuffle()
         return pile
     }
-
-    fun finalizeDeck(playerSize: Int) {
-        repeat(playerSize - 1) {
-            drawPile.add(Card(CardType.EXPLODING_KITTEN))
-        }
-        drawPile.shuffle()
-    }
-
-    /**
-     * Commented out for rework
-     */
-//    open fun peekTopCards(count: Int): List<Card> {
-//        return drawPile.take(count)
-//    }
-//    open fun allowPlayerToRearrangeTopCards(player: Player, newOrder: List<Card>) {
-//        require(newOrder.size <= drawPile.size) {
-//            throw IllegalArgumentException("New order has more cards than the draw pile.")
-//        }
-//        repeat(newOrder.size) { drawPile.removeFirst() }
-//
-//        for (i in newOrder.size - 1 downTo 0) {
-//            drawPile.insertAt(0,newOrder[i])
-//        }
-//        println("${player.name} rearranged the top ${newOrder.size} cards.")
-//    }
-
 }

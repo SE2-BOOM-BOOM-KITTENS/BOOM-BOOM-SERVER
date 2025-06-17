@@ -3,6 +3,7 @@ package com.aau.se2.boomboomkittens.game.cards.effects
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.AlterTheFutureEffect
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.*
@@ -19,7 +20,10 @@ class AlterTheFutureEffectTest {
 
         var rearrangedCards: List<Card>? = null
 
-        val gameLogic = object : GameLogic(UUID.randomUUID(), mutableListOf()) {
+
+
+        val gameLogic = object : GameLogic(UUID.randomUUID(), mutableListOf()){}
+        val cardLogic = object : CardLogic(1,gameLogic) {
             override fun peekTopCards(count: Int): List<Card> {
                 return listOf(
                     Card(CardType.DEFUSE),
@@ -33,7 +37,7 @@ class AlterTheFutureEffectTest {
             }
         }
 
-        effect.apply(card, player, gameLogic)
+        effect.apply(card, player, cardLogic)
 
         assertNotNull(rearrangedCards)
         assertEquals("ALTER_THE_FUTURE", rearrangedCards!![0].name)

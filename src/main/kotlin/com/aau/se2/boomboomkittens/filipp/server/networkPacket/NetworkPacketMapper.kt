@@ -35,7 +35,7 @@ class NetworkPacketMapper {
         }
 
         val drawPile = cardPileToNetworkPacket(cardLogic.drawPile,true)
-        val discardPile = cardPileToNetworkPacket(gameLogic.discardPile,false)
+        val discardPile = cardPileToNetworkPacket(cardLogic.discardPile,false)
 
 
         return GameStateNetworkPacket(
