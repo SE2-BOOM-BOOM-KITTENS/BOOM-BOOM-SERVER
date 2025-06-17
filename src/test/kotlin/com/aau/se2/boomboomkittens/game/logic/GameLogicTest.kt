@@ -118,6 +118,7 @@ class GameLogicTest {
 
     @Test
     fun `allowPlayerToRearrangeTopCards rearranges correctly`() {
+        gameLogic.drawPile.clear()
         val cardA = Card(CardType.SHUFFLE)
         val cardB = Card(CardType.DEFUSE)
         val cardC = Card(CardType.BLANK)
@@ -138,7 +139,9 @@ class GameLogicTest {
 
     @Test
     fun `allowPlayerToRearrangeTopCards throws if newOrder too big`() {
+
         cardLogic.drawPile.add(Card(CardType.BLANK))
+
         val tooBig = listOf(Card(CardType.DEFUSE), Card(CardType.SHUFFLE))
         assertThrows<IllegalArgumentException> {
             cardLogic.allowPlayerToRearrangeTopCards(player1, tooBig)

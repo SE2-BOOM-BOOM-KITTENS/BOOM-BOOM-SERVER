@@ -13,7 +13,7 @@ class PlayerMessageTest {
         val message = PlayerMessage(
             playerName = "Steve",
             action = "CAT_COMBO",
-            cardsPlayed = emptyList(),
+            payload = emptyList<Any?>(),
             targetId = "1234"
         )
 
@@ -27,8 +27,9 @@ class PlayerMessageTest {
         val card = CardNetworkPacket("Feral", CardType.FERAL_CAT, aliasType = CardType.CAT_CATERMELON)
         val message = PlayerMessage("P1", "CAT_COMBO", listOf(card), null)
 
-        val played = message.cardsPlayed?.first()
-        assertEquals(CardType.FERAL_CAT, played?.type)
-        assertEquals(CardType.CAT_CATERMELON, played?.aliasType)
+        val playedList = message.payload as? List<*> ?: fail("Payload is not a list")
+        val played = playedList.firstOrNull() as? CardNetworkPacket ?: fail("first item is not a CardNetworkPacket")
+        assertEquals(CardType.FERAL_CAT, played.type)
+        assertEquals(CardType.CAT_CATERMELON, played.aliasType)
     }
 }

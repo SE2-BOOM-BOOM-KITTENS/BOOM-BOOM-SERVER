@@ -20,8 +20,8 @@ class AlterTheFutureEffectTest {
         val gameLogic = GameLogic(UUID.randomUUID())
 
         var rearrangedCards: List<Card>? = null
-
         val cardLogic = object : CardLogic(2, gameLogic) {
+        val gameLogic = object : GameLogic(UUID.randomUUID(), mutableListOf()) {
             override fun peekTopCards(count: Int): List<Card> {
                 return listOf(
                     Card(CardType.DEFUSE),

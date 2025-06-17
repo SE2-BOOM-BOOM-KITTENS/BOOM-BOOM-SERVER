@@ -25,7 +25,9 @@ class SeeTheFutureEffectTest {
             Card(CardType.DEFUSE)
         )
 
+
         val cardLogic = object : CardLogic(2, gameLogic) {
+
             override fun peekTopCards(count: Int): List<Card> {
                 return expectedTopCards
             }

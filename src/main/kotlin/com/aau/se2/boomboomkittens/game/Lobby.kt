@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.game
 
+import com.aau.se2.boomboomkittens.game.player.LobbyPlayer
 import com.aau.se2.boomboomkittens.game.player.Player
 import java.util.UUID
 

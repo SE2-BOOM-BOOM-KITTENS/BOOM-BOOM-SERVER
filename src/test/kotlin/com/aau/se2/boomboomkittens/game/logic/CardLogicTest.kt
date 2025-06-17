@@ -27,12 +27,34 @@ class CardLogicTest {
     fun setup() {
         playerId = UUID.randomUUID()
         player = Player(playerId, "TestPlayer")
-
         falseId = UUID.randomUUID()
         falsePlayer = Player(falseId, "FalsePlayer")
         game = GameLogic(UUID.randomUUID())
         cardLogic = CardLogic(1,game)
         cardLogic.addPlayer(player)
+        player.playerHand.clear()
+    }
+
+    @Test
+    fun cheatDuplicateCardTest(){
+        cardLogic.addCardToPlayer(playerId, dummyCard)
+        cardLogic.cheatDuplicateCard(playerId, dummyCard)
+
+        assertTrue(player.playerHand.containsCard(dummyCard))
+        assertTrue(player.playerHand.getCardAmount()==2)
+    }
+
+    @Test
+    fun isCardDuplicateTest(){
+        cardLogic.addCardToPlayer(playerId, dummyCard)
+        assertTrue(player.playerHand.containsCard(dummyCard))
+        val duplicate = cardLogic.cheatDuplicateCard(playerId, dummyCard)
+
+        var result = cardLogic.isCardDuplicate(playerId, duplicate)
+        assertTrue(result)
+
+        result = cardLogic.isCardDuplicate(playerId, dummyCard)
+        assertFalse(result)
     }
 
     @Test

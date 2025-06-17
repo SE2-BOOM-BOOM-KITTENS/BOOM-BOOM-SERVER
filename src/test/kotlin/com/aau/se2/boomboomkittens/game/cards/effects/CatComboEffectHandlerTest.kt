@@ -253,6 +253,7 @@ class CatComboEffectHandlerTest {
     fun `FeralCatEffect gibt Hinweis bei direktem Ausspielen`() {
         player.playerHand.addCard(Card(CardType.FERAL_CAT))
 
+
         assertThrows<IllegalStateException> {
             cardLogic.playCard(player.playerId, CardType.FERAL_CAT)
         }

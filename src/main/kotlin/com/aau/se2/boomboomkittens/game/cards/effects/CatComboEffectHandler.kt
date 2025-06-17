@@ -33,12 +33,14 @@ class CatComboEffectHandler(private val cardLogic: CardLogic, private val sendTo
             }
 
             resolvedTypes.size == 5 && resolvedTypes.toSet().size == 5 -> {
+
                 val discardTypes = cardLogic.discardPile.getPileList().map { it.type }.distinct()
+
                 log("${player.name} sieht den Ablagestapel: $discardTypes")
                 val msg = ServerMessage(
                     type = "CHOOSE_FROM_DISCARD",
                     message = "Wähle eine Karte aus dem Ablagestapel",
-                    gameState = discardTypes
+                    payload = discardTypes
                 )
                 sendToPlayer(player.playerId, msg)
 

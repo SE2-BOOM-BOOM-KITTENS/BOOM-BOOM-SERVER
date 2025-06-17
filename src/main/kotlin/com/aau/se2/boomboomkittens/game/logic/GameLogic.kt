@@ -6,7 +6,7 @@ import java.util.*
 
 open class GameLogic(
     var lobbyId: UUID,
-    val players: MutableList<Player> = mutableListOf(),
+    val players: MutableList<Player>
 ){
 
     private val _playerLogic: PlayerLogic = PlayerLogic()
@@ -14,6 +14,8 @@ open class GameLogic(
 
     val playerLogic: PlayerLogic get() = _playerLogic
     val cardLogic: CardLogic get() = _cardLogic
+
+    val drawPile: CardPile get() = _cardLogic.drawPile
 
 
     init {

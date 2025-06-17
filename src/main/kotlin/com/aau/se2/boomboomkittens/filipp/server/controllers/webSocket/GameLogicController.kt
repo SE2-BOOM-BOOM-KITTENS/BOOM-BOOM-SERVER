@@ -19,45 +19,38 @@ class GameLogicController(
     @MessageMapping("/action")
     fun processAction(playerMessage: PlayerMessage, principal: Principal) {
         val playerID = UUID.fromString(principal.name)
+        val lobbyID = playerMessage.lobbyId!!
         val action = playerMessage.action
-        lateinit var cardsPlayed: List<CardNetworkPacket>
-        if(playerMessage.cardsPlayed!= null) {
-            cardsPlayed = playerMessage.cardsPlayed
-        }else{
-            cardsPlayed = mutableListOf<CardNetworkPacket>()
-        }
+        val payload = playerMessage.payload
         when(action){
-            "PASS" -> gameLogicService.pass(playerID)
-            "PLAY_CARDS" ->  gameLogicService.playCards(playerID, cardsPlayed)
-            "EXIT" -> gameLogicService.exitPlayer(playerID)
-            "INIT" -> gameLogicService.getInitState(playerID)
-            "EXPLODE" -> gameLogicService.explodePlayer(playerID)
+            "CHEAT" -> gameLogicService.cheatDuplicate(lobbyID,playerID,payload)
+            "CHECK_CHEAT" -> gameLogicService.checkIfDuplicate(lobbyID,playerID,payload)
+            "PASS" -> gameLogicService.pass(lobbyID,playerID)
+            "PLAY_CARDS" ->  gameLogicService.playCards(lobbyID,playerID, payload)
+            "EXIT" -> gameLogicService.exitPlayer(lobbyID,playerID)
+            "HAND" -> gameLogicService.getPlayerHand(lobbyID,playerID)
+            "INIT" -> gameLogicService.getInitState(lobbyID,playerID)
+            "EXPLODE" -> gameLogicService.explodePlayer(lobbyID,playerID)
             "CAT_COMBO" -> {
                 val targetId = playerMessage.targetId?.let { UUID.fromString(it) }
-                val cards = cardsPlayed.map { Card(it.type, it.name, it.aliasType) }
-                gameLogicService.playCatCombo(playerID, cards, targetId)
-            }
-            "CHOOSE_FROM_DISCARD" -> {
-                val chosenType = cardsPlayed.firstOrNull()?.type
-                if (chosenType != null) {
-                    gameLogicService.chooseFromDiscard(playerID, chosenType)
-                } else {
-                    gameLogicService.sendUserError(playerID, "Keine Karte ausgewählt.")
+                val networkCards = (payload as? List<*>)?.filterIsInstance<CardNetworkPacket>()
+
+                if(networkCards != null && networkCards.isNotEmpty()) {
+                    val cards = networkCards.map { Card(type = it.type, name = it.name, aliasType = it.aliasType) }
+                    gameLogicService.playCatCombo(lobbyID,playerID, cards, targetId)
                 }
             }
-            else -> gameLogicService.sendUserError(playerID,"Invalid action")
+            "CHOOSE_FROM_DISCARD" -> {
+                val cards = (payload as? List<*>)?.filterIsInstance<CardNetworkPacket>()
+                val chosenType = cards?.firstOrNull()?.type
+                if (chosenType != null) {
+                    gameLogicService.chooseFromDiscard(lobbyID,playerID, chosenType)
+                } else {
+                    gameLogicService.sendUserError(lobbyID,playerID, "Keine Karte ausgewählt.")
+                }
+            }
+            else -> gameLogicService.sendUserError(lobbyID,playerID,"Invalid action")
         }
-    }
-
-    @MessageMapping("/getHand")
-    fun getHand(principal: Principal) {
-        val playerID = UUID.fromString(principal.name)
-        gameLogicService.getPlayerHand(playerID)
-    }
-
-    @MessageMapping("/test")
-    fun testGameLogicService(playerMessage: PlayerMessage, principal: Principal) {
-        gameLogicService.sendDebugBroadcast()
     }
 
     /** TODO()
@@ -66,13 +59,9 @@ class GameLogicController(
      */
     @MessageMapping("/addPlayer")
     fun addPlayer(playerMessage: PlayerMessage, principal: Principal) {
+        val lobbyId = playerMessage.lobbyId
         val playerId = UUID.fromString(principal.name)
-        lateinit var playerName: String
-        if(playerMessage.playerName != null) {
-            playerName = playerMessage.playerName
-        }else{
-            playerName = ""
-        }
-        gameLogicService.joinGame(playerId, playerName)
+        val playerName = playerMessage.playerName!!
+        gameLogicService.joinGame(lobbyId!!,playerId, playerName)
     }
 }
