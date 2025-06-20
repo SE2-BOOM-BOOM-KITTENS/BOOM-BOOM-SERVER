@@ -23,7 +23,7 @@ class PlayerService {
         if(players[id] == null){
             throw IllegalStateException("Player with id $id does not exist")
         } else {
-            return players[id]!!
+            return players.getValue(id)
         }
     }
 

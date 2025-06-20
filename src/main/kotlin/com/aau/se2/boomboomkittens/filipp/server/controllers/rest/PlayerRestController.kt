@@ -33,8 +33,10 @@ class PlayerRestController(private val playerService: PlayerService) {
 
     @PostMapping
     fun registerPlayer(@RequestBody name: String):String{
+
         val uuid =  playerService.createPlayer(name)
-        logger.info("Player $name registered with id $uuid")
+        val logName = name.replace("[\n\r]".toRegex(), "_")
+        logger.info("Player $logName registered with id $uuid")
         return uuid.toString()
     }
 
