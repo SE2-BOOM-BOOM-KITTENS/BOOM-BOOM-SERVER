@@ -2,9 +2,12 @@ package com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket.GameLogicController
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.PlayerMessage
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.playerHandshake.UserPrincipal
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
+import com.aau.se2.boomboomkittens.filipp.server.services.PlayerService
 import com.aau.se2.boomboomkittens.game.cards.CardType
+import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -12,10 +15,12 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.argThat
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.given
 import org.mockito.kotlin.isNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.messaging.converter.MappingJackson2MessageConverter
 import org.springframework.messaging.simp.stomp.StompHeaders
@@ -24,7 +29,6 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.web.socket.client.standard.StandardWebSocketClient
 import org.springframework.web.socket.messaging.WebSocketStompClient
-import java.security.Principal
 import java.util.UUID
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
@@ -36,9 +40,12 @@ class GameLogicControllerTest {
 
     private lateinit var controller: GameLogicController
     private lateinit var service: GameLogicService
-    private lateinit var principal: Principal
+    private lateinit var principal: UserPrincipal
     private val playerId = UUID.randomUUID()
     private val lobbyId = UUID.randomUUID()
+
+    @MockBean
+    lateinit var playerService: PlayerService
 
     @BeforeEach
     fun setup(){
@@ -151,11 +158,11 @@ class GameLogicControllerTest {
 
     private val messageQueue = LinkedBlockingQueue<String>()
 
-    private fun connectWithName(name: String): StompSession {
+    private fun connectWithName(id: String): StompSession {
         val stompClient = WebSocketStompClient(StandardWebSocketClient())
         stompClient.messageConverter = MappingJackson2MessageConverter()
 
-        val url = "ws://localhost:$port/game?name=$name"
+        val url = "ws://localhost:$port/game?id=$id"
 
         val session = stompClient.connectAsync(url, object : StompSessionHandlerAdapter(){})
             .get(1, TimeUnit.SECONDS)
@@ -164,7 +171,8 @@ class GameLogicControllerTest {
 
     @Test
     fun addPlayerTest(){
-        val session = connectWithName("Filipp")
+        given(playerService.getPlayer(playerId)).willReturn(Player(playerId=playerId,name="Dummy"))
+        val session = connectWithName(playerId.toString())
 
         session.subscribe("/topic/session", object: StompSessionHandlerAdapter() {
             override fun handleFrame(headers: StompHeaders, payload: Any?) {
@@ -173,7 +181,7 @@ class GameLogicControllerTest {
         })
 
         val playerMessage = mapOf(
-            "playerName" to "Filipp",
+            "playerName" to "Dummy",
             "action" to "PASS",
             "cardsPlayed" to emptyList<String>()
         )
