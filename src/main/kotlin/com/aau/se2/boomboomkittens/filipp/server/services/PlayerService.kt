@@ -7,23 +7,23 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class PlayerService {
-    private val players = ConcurrentHashMap<String, Player>()
+    private val players = ConcurrentHashMap<UUID, Player>()
 
-    fun createPlayer(name:String): Player {
+    fun createPlayer(name:String): UUID {
         val player = Player(playerId = UUID.randomUUID(), name = name)
-        players[player.playerId.toString()] = player
-        return player
+        players[player.playerId] = player
+        return player.playerId
     }
 
-    fun getPlayers(): ConcurrentHashMap<String, Player> {
+    fun getPlayers(): ConcurrentHashMap<UUID, Player> {
         return players
     }
 
-    fun getPlayer(id:String): Player? {
+    fun getPlayer(id:UUID): Player? {
         return players[id]
     }
 
-    fun removePlayer(id:String){
+    fun removePlayer(id:UUID){
         players.remove(id)
     }
 
