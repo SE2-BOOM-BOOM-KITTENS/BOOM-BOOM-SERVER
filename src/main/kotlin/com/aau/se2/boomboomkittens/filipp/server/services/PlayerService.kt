@@ -19,8 +19,12 @@ class PlayerService {
         return players
     }
 
-    fun getPlayer(id:UUID): Player? {
-        return players[id]
+    fun getPlayer(id:UUID): Player {
+        if(players[id] == null){
+            throw IllegalStateException("Player with id $id does not exist")
+        } else {
+            return players[id]!!
+        }
     }
 
     fun removePlayer(id:UUID){

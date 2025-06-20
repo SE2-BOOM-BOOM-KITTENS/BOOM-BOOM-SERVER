@@ -36,7 +36,7 @@ class PlayerRestControllerTest {
 
     @Test
     fun getPlayerByIdTest(){
-        given(playerService.getPlayer(player.playerId.toString())).willReturn(player)
+        given(playerService.getPlayer(player.playerId)).willReturn(player)
 
         mockMvc.get("/players"){
             header("id",id)
@@ -49,15 +49,16 @@ class PlayerRestControllerTest {
 
     @Test
     fun registerPlayerTest(){
-        val playerJson = objectMapper.writeValueAsString(player)
+        val playerJson = objectMapper.writeValueAsString(player.name)
 
+        given(playerService.createPlayer(player.name)).willReturn(id)
 
         mockMvc.post("/players"){
             contentType = MediaType.APPLICATION_JSON
-            content = playerJson
+            content = player.name
         }.andExpect {
             status { isOk() }
-            content { string("Received Dummy") }
+            content { player.playerId.toString() }
         }
     }
     }
