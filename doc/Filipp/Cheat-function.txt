@@ -1,0 +1,27 @@
+Cheat-function: Server side
+
+DESCRIPTION
+Player can cheat by duplicating a card they have. The card is then added to their hand
+but is off-colored. If that card is played, another player can check if the card is
+duplicated or not. If it is, the cheating player explodes. If it isn't,
+the accusing player has to take a card from draw pile
+
+PROGRAM-FLOW
+Duplication
+1. Client sends a request to duplicate a card
+2. CardLogic duplicates the card with a duplicated attribute == true
+3. Private Confirmation is sent back to client that card was duplicated
+
+Cheat-check
+1. Client sends a request to check if played card is duplicated
+2. CardLogic checks the card for been duplicated
+3. If true then cheat-player is removed from game -> Send public confirmation to players
+4. If false the accusing-player takes a card -> Send public confirmation to players
+
+IMPLEMENTATION REQUIREMENTS
+1. Cards need to be distinguishable from real or fake (parameter)
+2. An endpoint for client request to duplicate a card
+3. An endpoint for client request to check a card for duplication
+4. Function to duplicated card
+5. Function to check if card is duplicated
+

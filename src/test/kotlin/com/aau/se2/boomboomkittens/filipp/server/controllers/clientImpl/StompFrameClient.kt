@@ -5,6 +5,7 @@ import org.springframework.messaging.simp.stomp.StompHeaders
 import java.lang.reflect.Type
 import java.util.concurrent.BlockingQueue
 
+// fixme prefix with test for maintainablity
 open class StompFrameClient(val messageQueue: BlockingQueue<String>): StompFrameHandler {
 
 

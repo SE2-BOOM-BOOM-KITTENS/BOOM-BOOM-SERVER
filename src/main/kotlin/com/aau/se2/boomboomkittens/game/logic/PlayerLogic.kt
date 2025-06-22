@@ -4,7 +4,7 @@ import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerNode
 import java.util.*
 
-class PlayerLogic {
+class PlayerLogic() {
     private val playerMap = mutableMapOf<UUID, PlayerNode>()
     private var currentPlayer: PlayerNode? = null
 

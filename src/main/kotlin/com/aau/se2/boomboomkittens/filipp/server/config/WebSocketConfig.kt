@@ -9,7 +9,10 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
 @Configuration
 @EnableWebSocketMessageBroker
-open class WebSocketConfig : WebSocketMessageBrokerConfigurer {
+open class WebSocketConfig(
+    private val handshakeHandler: PlayerHandshakeHandler,
+    private val handshakeInterceptor: PlayerHandshakeInterceptor
+) : WebSocketMessageBrokerConfigurer {
 
 
 
@@ -22,9 +25,10 @@ open class WebSocketConfig : WebSocketMessageBrokerConfigurer {
 
     @Override
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/game").setAllowedOrigins("*")
-            .addInterceptors(PlayerHandshakeInterceptor())
-            .setHandshakeHandler(PlayerHandshakeHandler())
+        registry.addEndpoint("/game")
+            .setAllowedOrigins("*")
+            .addInterceptors(handshakeInterceptor)
+            .setHandshakeHandler(handshakeHandler)
         registry.addEndpoint("/game").withSockJS()
     }
 }
