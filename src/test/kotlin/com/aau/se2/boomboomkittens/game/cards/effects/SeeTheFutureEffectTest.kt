@@ -1,6 +1,9 @@
+package com.aau.se2.boomboomkittens.game.cards.effects
+
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.SeeTheFutureEffect
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.*
@@ -13,6 +16,8 @@ class SeeTheFutureEffectTest {
     fun `see the future reveals top 3 cards`() {
         val player = Player(playerId = UUID.randomUUID(), name = "Player1", defuseCount = 0, isAlive = true)
         val effect = SeeTheFutureEffect()
+        val gameLogic = GameLogic(UUID.randomUUID(), mutableListOf())
+        val card = Card(CardType.SEE_THE_FUTURE)
 
         val expectedTopCards = listOf(
             Card(CardType.SEE_THE_FUTURE),
@@ -20,15 +25,17 @@ class SeeTheFutureEffectTest {
             Card(CardType.DEFUSE)
         )
 
-        val gameLogic = object : GameLogic(UUID.randomUUID()) {
+
+        val cardLogic = object : CardLogic(2, gameLogic) {
+
             override fun peekTopCards(count: Int): List<Card> {
                 return expectedTopCards
             }
         }
 
-        effect.apply(player, gameLogic)
+        effect.apply(card, player, cardLogic)
 
-        val actualTopCards = gameLogic.peekTopCards(3)
+        val actualTopCards = cardLogic.peekTopCards(3)
 
         assertEquals(expectedTopCards.size, actualTopCards.size)
         assertEquals(expectedTopCards[0].name, actualTopCards[0].name)

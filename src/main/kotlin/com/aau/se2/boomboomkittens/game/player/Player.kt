@@ -4,7 +4,7 @@ import java.util.UUID
 
 data class Player(
     val playerId: UUID = UUID.randomUUID(),
-    val name: String,
+    val name: String = "",
     var defuseCount: Int = 1,
     var isAlive: Boolean = true,
     val status: String = "ACTIVE",

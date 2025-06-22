@@ -1,8 +1,5 @@
-package com.aau.se2.boomboomkittens.game.model.cards
+package com.aau.se2.boomboomkittens.game.cards
 
-import com.aau.se2.boomboomkittens.game.cards.Card
-import com.aau.se2.boomboomkittens.game.cards.CardPile
-import com.aau.se2.boomboomkittens.game.cards.CardType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -51,7 +48,7 @@ class CardPileTest {
         cardPile.insertAt(1, card2)
         cardPile.insertAt(2, card3)
 
-        val pile = cardPile.getPileList()
+        val pile = cardPile.getCardsSnapshot()
         assertEquals(card1, pile[0])
         assertEquals(card2, pile[1])
         assertEquals(card3, pile[2])

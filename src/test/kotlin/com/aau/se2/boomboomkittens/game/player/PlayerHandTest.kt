@@ -1,8 +1,7 @@
-package com.aau.se2.boomboomkittens.game.model.player
+package com.aau.se2.boomboomkittens.game.player
 
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
-import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
