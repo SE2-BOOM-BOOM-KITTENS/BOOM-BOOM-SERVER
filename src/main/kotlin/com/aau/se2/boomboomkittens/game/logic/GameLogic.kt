@@ -9,7 +9,7 @@ import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
 
 open class GameLogic(
-    var lobbyId: UUID,
+    var lobbyId: CardPile,
     val players: MutableList<Player> = mutableListOf(),
 ){
     private val _playerLogic: PlayerLogic = PlayerLogic()

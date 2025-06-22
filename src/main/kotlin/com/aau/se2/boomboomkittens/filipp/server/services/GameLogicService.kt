@@ -6,7 +6,6 @@ import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.player.Player
-import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import java.util.UUID
