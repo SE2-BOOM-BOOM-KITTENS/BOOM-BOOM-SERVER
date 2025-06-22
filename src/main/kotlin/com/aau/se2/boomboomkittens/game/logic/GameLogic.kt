@@ -1,6 +1,7 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
 import com.aau.se2.boomboomkittens.game.player.Player
+import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
 
@@ -14,6 +15,7 @@ open class GameLogic(
 
     val playerLogic: PlayerLogic get() = _playerLogic
     val cardLogic: CardLogic get() = _cardLogic
+    val drawPile: LinkedList<Card> = LinkedList()
 
 
     init {
@@ -52,6 +54,16 @@ open class GameLogic(
 
     fun getPlayerHand(playerId: UUID): PlayerHand? {
         return _cardLogic.getPlayerHand(playerId)
+    }
+    fun forceNextPlayerToDrawExtraCards(player: Player, amount: Int) {
+        if (amount <= 0) return
+
+        repeat(amount) {
+            if (!drawPile.isEmpty()) {
+                val card = drawPile.removeFirst() // ← hier angepasst!
+                player.playerHand.addCard(card)
+            }
+        }
     }
 
 }
