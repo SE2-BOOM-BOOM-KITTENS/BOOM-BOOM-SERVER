@@ -29,7 +29,7 @@ class TargetedAttackEffectTest {
         // drawPile leeren für Sicherheit
         gameLogic.drawPile.clear()
 
-        // ⚠️ Effekt in Registry für diesen Test mit FIXEM target registrieren
+        //Effekt in Registry für diesen Test mit FIXEM target registrieren
         CardEffectRegistry.register(CardType.TARGETED_ATTACK) { card, player, logic ->
             TargetedAttackEffect(target).apply(card, player, logic)
         }
