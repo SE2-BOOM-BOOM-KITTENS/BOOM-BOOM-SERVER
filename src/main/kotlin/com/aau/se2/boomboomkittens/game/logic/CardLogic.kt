@@ -75,7 +75,7 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
     }
 
     fun shuffleDeck() {
-        discardPile.shuffle()
+        drawPile.shuffle()
     }
 
     open fun peekTopCards(count: Int): List<Card> {
