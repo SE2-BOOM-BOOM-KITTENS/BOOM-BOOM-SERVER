@@ -5,7 +5,7 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effect
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.game.player.Player
 
-class TargetedAttackEffect(private val target: Unit) : CardEffect {
+class TargetedAttackEffect(private val target: Player) : CardEffect {
 
     override fun apply(card: Card, player: Player, cardLogic: CardLogic) {
         cardLogic.gameLogic.forceNextPlayerToDrawExtraCards(target, 2)

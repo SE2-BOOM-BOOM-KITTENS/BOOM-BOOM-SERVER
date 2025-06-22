@@ -55,7 +55,7 @@ open class GameLogic(
     fun getPlayerHand(playerId: UUID): PlayerHand? {
         return _cardLogic.getPlayerHand(playerId)
     }
-    fun forceNextPlayerToDrawExtraCards(player: Player, amount: Int) {
+    fun forceNextPlayerToDrawExtraCards(player: Unit, amount: Int) {
         if (amount <= 0) return
 
         repeat(amount) {
