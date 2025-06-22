@@ -21,4 +21,5 @@ enum class CardType(val effect: CardEffect) {
     SEE_THE_FUTURE(SeeTheFutureEffect()),
     NOPE(NopeEffect()),
     FERAL_CAT(FeralCatEffect()),
+    TARGETED_ATTACK(TODO()),
 }

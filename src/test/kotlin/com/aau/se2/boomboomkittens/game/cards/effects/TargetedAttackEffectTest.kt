@@ -1,72 +1,75 @@
 package com.aau.se2.boomboomkittens.game.cards.effects
 
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffectRegistry
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.CardLogic
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.game.player.Player
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
+import kotlin.test.assertEquals
 
 class TargetedAttackEffectTest {
 
-    private fun testCard(name: String = "TestCard"): Card =
-        Card(type = CardType.BLANK, name = name)
+    private lateinit var attacker: Player
+    private lateinit var target: Player
+    private lateinit var gameLogic: GameLogic
+    private lateinit var cardLogic: CardLogic
 
-    private fun createCardLogicWithGame(attacker: Player, target: Player, vararg drawCards: Card): Triple<GameLogic, CardLogic, TargetedAttackEffect> {
-        val players = mutableListOf(attacker, target)
-        val gameLogic = GameLogic(UUID.randomUUID(), players)
-        val cardLogic = gameLogic.cardLogic
+    @BeforeEach
+    fun setup() {
+        attacker = Player(name = "Attacker")
+        target = Player(name = "Target")
 
-        gameLogic.drawPile.addAll(drawCards)
+        gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(attacker, target))
+        cardLogic = gameLogic.cardLogic
 
-        val effect = TargetedAttackEffect(target)
+        // drawPile leeren für Sicherheit
+        gameLogic.drawPile.clear()
 
-        return Triple(gameLogic, cardLogic, effect)
+        // ⚠️ Effekt in Registry für diesen Test mit FIXEM target registrieren
+        CardEffectRegistry.register(CardType.TARGETED_ATTACK) { card, player, logic ->
+            TargetedAttackEffect(target).apply(card, player, logic)
+        }
     }
 
     @Test
-    fun `apply draws 2 cards for target`() {
-        val attacker = Player(name = "Attacker")
-        val target = Player(name = "Target")
-        val card = testCard()
+    fun `target draws 2 cards from draw pile`() {
+        gameLogic.drawPile.add(Card(CardType.SHUFFLE))
+        gameLogic.drawPile.add(Card(CardType.NOPE))
 
-        val (gameLogic, cardLogic, effect) = createCardLogicWithGame(attacker, target,
-            testCard("A"), testCard("B"), testCard("C"))
+        val effect = CardEffectRegistry.getEffect(CardType.TARGETED_ATTACK)
+        val card = Card(CardType.TARGETED_ATTACK)
 
         effect.apply(card, attacker, cardLogic)
 
         assertEquals(2, target.playerHand.getCardAmount())
-        assertEquals(1, gameLogic.drawPile.size)
+        assertEquals(0, gameLogic.drawPile.size)
     }
 
     @Test
-    fun `apply handles only 1 card in draw pile`() {
-        val attacker = Player(name = "Attacker")
-        val target = Player(name = "Target")
-        val card = testCard()
+    fun `target draws only 1 card if only one exists`() {
+        gameLogic.drawPile.add(Card(CardType.DEFUSE))
 
-        val (gameLogic, cardLogic, effect) = createCardLogicWithGame(attacker, target,
-            testCard("Only"))
+        val effect = CardEffectRegistry.getEffect(CardType.TARGETED_ATTACK)
+        val card = Card(CardType.TARGETED_ATTACK)
 
         effect.apply(card, attacker, cardLogic)
 
         assertEquals(1, target.playerHand.getCardAmount())
-        assertTrue(gameLogic.drawPile.isEmpty())
+        assertEquals(0, gameLogic.drawPile.size)
     }
 
     @Test
-    fun `apply handles empty draw pile`() {
-        val attacker = Player(name = "Attacker")
-        val target = Player(name = "Target")
-        val card = testCard()
-
-        val (gameLogic, cardLogic, effect) = createCardLogicWithGame(attacker, target)
+    fun `target draws nothing if draw pile is empty`() {
+        val effect = CardEffectRegistry.getEffect(CardType.TARGETED_ATTACK)
+        val card = Card(CardType.TARGETED_ATTACK)
 
         effect.apply(card, attacker, cardLogic)
 
         assertEquals(0, target.playerHand.getCardAmount())
-        assertTrue(gameLogic.drawPile.isEmpty())
+        assertEquals(0, gameLogic.drawPile.size)
     }
 }
