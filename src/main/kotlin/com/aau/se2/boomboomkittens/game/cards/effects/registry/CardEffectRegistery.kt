@@ -34,7 +34,7 @@ object CardEffectRegistry {
             TargetedAttackEffect(target).apply(card, player, logic)
         }
 
-        // Weitere Karten hier...
+        // Weitere Karten hier
     }
 
     fun register(type: CardType, effect: (Card, Player, CardLogic) -> Unit) {
