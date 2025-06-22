@@ -198,4 +198,10 @@ class GameLogicService(
         game.getPlayerById(playerId)?.playerHand?.addCard(card)
     }
 
+    fun shuffleDeck(lobbyId: UUID, playerId: UUID){
+        val game = getGame(lobbyId)
+        game.cardLogic.shuffleDeck()
+        sendGameState(lobbyId, "Player $playerId shuffled the deck", game)
+    }
+
 }
