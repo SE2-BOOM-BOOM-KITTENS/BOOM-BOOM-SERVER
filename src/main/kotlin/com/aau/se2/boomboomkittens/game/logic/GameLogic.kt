@@ -105,5 +105,15 @@ open class GameLogic(
 
         println("${player.name} rearranged the top ${newOrder.size} cards.")
     }
+    fun forceNextPlayerToDrawExtraCards(player: Player, amount: Int) {
+        if (amount <= 0) return
+
+        repeat(amount) {
+            if (!drawPile.isEmpty()) {
+                val card = drawPile.removeFirst() // ← hier angepasst!
+                player.playerHand.addCard(card)
+            }
+        }
+    }
 
 }
