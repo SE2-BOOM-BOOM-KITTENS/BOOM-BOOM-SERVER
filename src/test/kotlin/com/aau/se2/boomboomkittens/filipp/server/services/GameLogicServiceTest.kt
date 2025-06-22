@@ -1,6 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
+/*import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.cards.Card
@@ -127,3 +127,4 @@ class GameLogicServiceTest {
         assertTrue(hand!!.containsCardType(CardType.SHUFFLE))
     }
 }
+*/
