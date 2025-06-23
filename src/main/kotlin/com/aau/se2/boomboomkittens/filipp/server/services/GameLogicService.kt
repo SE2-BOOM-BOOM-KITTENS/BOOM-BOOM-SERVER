@@ -15,7 +15,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.log
 
 @Service
 class GameLogicService(
