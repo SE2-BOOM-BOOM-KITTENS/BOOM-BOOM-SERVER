@@ -20,7 +20,8 @@ class PlayerServiceTest {
 
     @Test
     fun createPlayerTest(){
-        val player = playerService.createPlayer("Player1")
+        val id = playerService.createPlayer("Player1")
+        val player = playerService.getPlayer(id)
 
         assertNotNull(player)
         assertNotNull(player.playerId)
@@ -29,39 +30,44 @@ class PlayerServiceTest {
 
     @Test
     fun getPlayersTest(){
-        val player1 = playerService.createPlayer("player1")
-        val player2 = playerService.createPlayer("player2")
+        val id1 = playerService.createPlayer("player1")
+        val id2 = playerService.createPlayer("player2")
 
+        val player1 = playerService.getPlayer(id1)
+        val player2 = playerService.getPlayer(id2)
         val players = playerService.getPlayers()
 
         assertEquals(2, players.size)
-        assertTrue(players.containsKey(player1.playerId.toString()))
-        assertTrue(players.containsKey(player2.playerId.toString()))
+        assertTrue(players.containsKey(player1.playerId))
+        assertTrue(players.containsKey(player2.playerId))
     }
 
     @Test
     fun getPlayerTest(){
-        val player = playerService.createPlayer("player")
+        val id = playerService.createPlayer("player")
 
-        val fetchedPlayer = playerService.getPlayer(player.playerId.toString())
+        val player = playerService.getPlayer(id)
+        val fetchedPlayer = playerService.getPlayer(player.playerId)
 
         assertNotNull(fetchedPlayer)
         // fixme the assertNotNull already guards the next line by throwing an exception if its null
-        if (fetchedPlayer != null) {
-            assertEquals(player.playerId, fetchedPlayer.playerId)
-        }
+        assertEquals(player.playerId, fetchedPlayer.playerId)
     }
 
     @Test
     fun removePlayerTest(){
-        val player = playerService.createPlayer("player")
+        val id = playerService.createPlayer("player")
+        val player = playerService.getPlayer(id)
 
-        val fetchedPlayer = playerService.getPlayer(player.playerId.toString())
+        val fetchedPlayer = playerService.getPlayer(player.playerId)
         assertNotNull(fetchedPlayer)
 
-        playerService.removePlayer(player.playerId.toString())
+        playerService.removePlayer(player.playerId)
 
-        val deletedPlayer = playerService.getPlayer(player.playerId.toString())
-        assertNull(deletedPlayer)
+        assertThrows(IllegalStateException::class.java){
+            playerService.getPlayer(player.playerId)
+        }
+
+
     }
 }

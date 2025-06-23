@@ -1,13 +1,13 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.PlayerMessage
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.playerHandshake.UserPrincipal
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
 import com.aau.se2.boomboomkittens.game.cards.Card
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
-import java.security.Principal
 import java.util.UUID
 
 @Controller
@@ -17,7 +17,7 @@ class GameLogicController(
 ) {
 
     @MessageMapping("/action")
-    fun processAction(playerMessage: PlayerMessage, principal: Principal) {
+    fun processAction(playerMessage: PlayerMessage, principal: UserPrincipal) {
         val playerID = UUID.fromString(principal.name)
         val lobbyID = playerMessage.lobbyId!!
         val action = playerMessage.action
@@ -31,6 +31,7 @@ class GameLogicController(
             "HAND" -> gameLogicService.getPlayerHand(lobbyID,playerID)
             "INIT" -> gameLogicService.getInitState(lobbyID,playerID)
             "EXPLODE" -> gameLogicService.explodePlayer(lobbyID,playerID)
+            "SHUFFLE_DECK" -> gameLogicService.shuffleDeck(lobbyID, playerID)
             "CAT_COMBO" -> {
                 val targetId = playerMessage.targetId?.let { UUID.fromString(it) }
                 val networkCards = (payload as? List<*>)?.filterIsInstance<CardNetworkPacket>()
@@ -58,7 +59,7 @@ class GameLogicController(
      * This should be later implemented into lobby functionality
      */
     @MessageMapping("/addPlayer")
-    fun addPlayer(playerMessage: PlayerMessage, principal: Principal) {
+    fun addPlayer(playerMessage: PlayerMessage, principal: UserPrincipal) {
         val lobbyId = playerMessage.lobbyId
         val playerId = UUID.fromString(principal.name)
         val playerName = playerMessage.playerName!!

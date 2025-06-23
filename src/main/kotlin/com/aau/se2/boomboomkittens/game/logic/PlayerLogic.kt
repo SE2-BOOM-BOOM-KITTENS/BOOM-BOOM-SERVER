@@ -74,4 +74,18 @@ class PlayerLogic() {
     fun getCurrentPlayerNode(): PlayerNode? {
         return currentPlayer
     }
+
+    fun reverseOrder() {
+        var node = currentPlayer
+        val visited = mutableSetOf<UUID>()
+
+        do {
+            val temp = node?.next
+            node?.next = node?.previous
+            node?.previous = temp
+
+            visited.add(node!!.player.playerId)
+            node = node.next
+        } while (node != null && !visited.contains(node.player.playerId))
+    }
 }
