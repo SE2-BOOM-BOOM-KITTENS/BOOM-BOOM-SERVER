@@ -52,8 +52,8 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
 
 
         val hand = getPlayerHand(playerId)
-        val card = hand!!.getCardById(card.id)
-        return card.cheatDuplicated
+        val cardInHand = hand!!.getCardById(card.id)
+        return cardInHand.cheatDuplicated
     }
 
     fun drawCard(playerId: UUID) {
