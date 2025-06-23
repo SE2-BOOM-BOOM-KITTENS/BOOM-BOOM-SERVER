@@ -21,7 +21,6 @@ class ReverseEffectTest {
 
     @BeforeEach
     fun setUp() {
-        // Baue ein Dummy GameLogic mit 3 Spielern
         player1 = Player(UUID.randomUUID(), "Alice")
         player2 = Player(UUID.randomUUID(), "Bob")
         player3 = Player(UUID.randomUUID(), "Charlie")
@@ -33,25 +32,21 @@ class ReverseEffectTest {
 
     @Test
     fun `should reverse player order when ReverseEffect is applied`() {
-        // Vorher: normaler Ring
         val before = gameLogic.playerLogic.getPlayerList().map { it.name }
 
-        // Wende ReverseEffect an
         val reverseEffect = ReverseEffect()
         val reverseCard = Card(CardType.REVERSE)
         reverseEffect.apply(reverseCard, player1, cardLogic)
 
-        // Nachher: Reihenfolge umgedreht!
         val after = gameLogic.playerLogic.getPlayerList().map { it.name }
 
-        // Überprüfe, ob die Reihenfolge wirklich gedreht wurde
         assertEquals(before.reversed(), after)
     }
 
     @Test
     fun `should move to next player after reverse without drawing`() {
         val currentBefore = gameLogic.playerLogic.getCurrentPlayerNode()
-        val nextExpected = currentBefore?.previous?.player  // Nach Reverse zum vorherigen Knoten
+        val nextExpected = currentBefore?.previous?.player
 
         val reverseEffect = ReverseEffect()
         val reverseCard = Card(CardType.REVERSE)
@@ -60,5 +55,45 @@ class ReverseEffectTest {
         val currentAfter = gameLogic.playerLogic.getCurrentPlayer()
 
         assertEquals(nextExpected, currentAfter)
+    }
+
+    @Test
+    fun `should handle reverse with two players`() {
+        player1 = Player(UUID.randomUUID(), "Alice")
+        player2 = Player(UUID.randomUUID(), "Bob")
+        val players = mutableListOf(player1, player2)
+        gameLogic = GameLogic(UUID.randomUUID(), players)
+        cardLogic = gameLogic.cardLogic
+
+        val before = gameLogic.playerLogic.getPlayerList().map { it.name }
+
+        val reverseEffect = ReverseEffect()
+        val reverseCard = Card(CardType.REVERSE)
+        reverseEffect.apply(reverseCard, player1, cardLogic)
+
+        val after = gameLogic.playerLogic.getPlayerList().map { it.name }
+
+        assertEquals(before.reversed(), after)
+    }
+
+    @Test
+    fun `should handle reverse with four players`() {
+        player1 = Player(UUID.randomUUID(), "Alice")
+        player2 = Player(UUID.randomUUID(), "Bob")
+        player3 = Player(UUID.randomUUID(), "Charlie")
+        val player4 = Player(UUID.randomUUID(), "Diana")
+        val players = mutableListOf(player1, player2, player3, player4)
+        gameLogic = GameLogic(UUID.randomUUID(), players)
+        cardLogic = gameLogic.cardLogic
+
+        val before = gameLogic.playerLogic.getPlayerList().map { it.name }
+
+        val reverseEffect = ReverseEffect()
+        val reverseCard = Card(CardType.REVERSE)
+        reverseEffect.apply(reverseCard, player1, cardLogic)
+
+        val after = gameLogic.playerLogic.getPlayerList().map { it.name }
+
+        assertEquals(before.reversed(), after)
     }
 }
