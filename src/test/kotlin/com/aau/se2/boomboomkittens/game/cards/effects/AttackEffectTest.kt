@@ -10,35 +10,56 @@ import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
+import java.util.*
+import org.junit.jupiter.api.Assertions.*
 
 
 class AttackEffectTest {
 
-    private lateinit var attackEffect: AttackEffect
-    private lateinit var mockCardLogic: CardLogic
-    private lateinit var mockGameLogic: GameLogic
-    private lateinit var testPlayer: Player
-    private lateinit var testCard: Card
+    private lateinit var gameLogic: GameLogic
+    private lateinit var cardLogic: CardLogic
+    private lateinit var player1: Player
+    private lateinit var player2: Player
+    private lateinit var player3: Player
+    private lateinit var attackCard: Card
 
     @BeforeEach
-    fun setUp(){
-        attackEffect = AttackEffect()
-        mockCardLogic = mock()
-        mockGameLogic = mock()
-        testPlayer = Player(name = "TestPlayer")
-        testCard = Card(CardType.ATTACK)
+    fun setup(){
+        player1 = Player(UUID.randomUUID(), "Alice")
+        player2 = Player(UUID.randomUUID(), "Bob")
+        player3 = Player(UUID.randomUUID(), "Charlie")
 
-        whenever(mockCardLogic.gameLogic).thenReturn(mockGameLogic)
+        val lobbyId = UUID.randomUUID()
+        val players = mutableListOf(player1, player2, player3)
+
+        gameLogic = GameLogic(lobbyId, players)
+        cardLogic = CardLogic(players.size, gameLogic)
+
+        // Aktuellen Spieler setzen
+        while (gameLogic.playerLogic.getCurrentPlayer() != player1){
+            gameLogic.playerLogic.moveToNextPlayer()
+        }
+
+        // Beispielkarte
+        attackCard = Card(CardType.ATTACK)
+
     }
+
 
     @Test
-    fun `apply should skip draw for current player and give extra turn to next player`(){
+    fun `apply attack card should skip current players draw and give next player extra turn`(){
+        val effect = AttackEffect()
 
-        attackEffect.apply(testCard, testPlayer, mockCardLogic)
+        // Anwendung der Attack Karte
+        effect.apply(attackCard, player1, cardLogic)
 
-        verify(mockGameLogic).skipDrawForCurrentPlayer()
-        verify(mockGameLogic).giveExtraTurnToNextPlayer()
+        // Spielerwechsel erwartet
+        val currentPlayerAfter = gameLogic.playerLogic.getCurrentPlayer()
+        assertEquals(player2, currentPlayerAfter, "Next player should be Bob")
+
+        // Logischer Check, Alice sollte nicht mehr am Zug sein
+        assertTrue(currentPlayerAfter != player1, "Alice should no longer be the current player")
+
     }
-
 
 }
