@@ -17,6 +17,9 @@ open class GameLogic(
     val cardLogic: CardLogic get() = _cardLogic
     val drawPile: LinkedList<Card> = LinkedList()
 
+    private var skipDraw = false
+    private val extraTurns = mutableMapOf<UUID, Int>()
+
 
     init {
         for(player in players){
@@ -38,9 +41,23 @@ open class GameLogic(
     }
 
     fun nextTurn(){
+        val currentPlayer = playerLogic.getCurrentPlayer() ?: return
+
+        if (consumeExtraTurn(currentPlayer.playerId)){
+            println("${currentPlayer.name} has an extra turn.")
+            // Player bleibt der gleiche, spielt noch eine Runde
+        } else {
+            playerLogic.moveToNextPlayer()
+        }
+
+        resetSkipDraw()
+    }
+
+    /* alte Implementierung für Playerwechsel
+    fun nextTurn(){
         _playerLogic.moveToNextPlayer()
         println("Current Player: ${playerLogic.getCurrentPlayer()!!.playerId}")
-    }
+    }*/
 
     fun addPlayer(playerId: UUID, playerName:String){
         val newPlayer = Player(playerId, playerName)
@@ -63,6 +80,40 @@ open class GameLogic(
                 val card = drawPile.removeFirst() // ← hier angepasst!
                 player.playerHand.addCard(card)
             }
+        }
+    }
+
+    fun skipDrawForCurrentPlayer(){
+        skipDraw = true
+    }
+
+    fun giveExtraTurnToNextPlayer(){
+        val nextPlayer = playerLogic.getCurrentPlayerNode()?.next?.player
+        if (nextPlayer != null){
+            val currentExtra = extraTurns.getOrDefault(nextPlayer.playerId, 0)
+            extraTurns[nextPlayer.playerId] = currentExtra + 1
+        }
+    }
+
+    fun shouldSkipDraw(): Boolean{
+        return skipDraw
+    }
+
+    fun resetSkipDraw() {
+        skipDraw = false
+    }
+
+    fun getExtraTurns(playerId: UUID): Int{
+        return extraTurns.getOrDefault(playerId, 0)
+    }
+
+    fun consumeExtraTurn(playerId: UUID): Boolean{
+        val turnsLeft = extraTurns.getOrDefault(playerId, 0)
+        return if (turnsLeft > 0){
+            extraTurns[playerId] = turnsLeft - 1
+            true
+        } else {
+            false
         }
     }
 
