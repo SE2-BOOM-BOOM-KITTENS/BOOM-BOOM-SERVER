@@ -10,5 +10,6 @@ class DrawFromTheBottomEffect : CardEffect {
         val bottomCard = cardLogic.drawPile.drawAt(cardLogic.drawPile.size - 1)
         player.playerHand.addCard(bottomCard)
         println("${player.name} drew ${bottomCard.name} from the bottom of the deck.")
+        cardLogic.gameLogic.nextTurn()
     }
 }

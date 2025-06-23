@@ -32,7 +32,10 @@ class DrawFromTheBottomEffectTest {
     @Test
     fun `should draw bottom card and add to hand`() {
         val drawFromBottomEffect = DrawFromTheBottomEffect()
+        val secondPlayer = Player(playerId = UUID.randomUUID(), name = "SecondPlayer")
+        gameLogic.playerLogic.addPlayerByID(secondPlayer)
 
+        val initialCurrentPlayer = gameLogic.playerLogic.getCurrentPlayer()
         val initialDeckSize = cardLogic.drawPile.size
         val initialBottomCard = cardLogic.drawPile.getPileList().last()
 
@@ -45,5 +48,9 @@ class DrawFromTheBottomEffectTest {
         assertTrue(player.playerHand.cards.contains(initialBottomCard))
         assertEquals(initialDeckSize - 1, cardLogic.drawPile.size)
         assertFalse(cardLogic.drawPile.getPileList().contains(initialBottomCard))
+
+        val newCurrentPlayer = gameLogic.playerLogic.getCurrentPlayer()
+        assertNotEquals(initialCurrentPlayer, newCurrentPlayer)
+        assertEquals(secondPlayer, newCurrentPlayer)
     }
 }
