@@ -3,6 +3,7 @@ package com.aau.se2.boomboomkittens.game.cards
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.*
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.*
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.*
 
 enum class CardType(val effect: CardEffect) {
     EXPLODING_KITTEN(ExplodingKittenEffect()),
@@ -18,6 +19,7 @@ enum class CardType(val effect: CardEffect) {
     SEE_THE_FUTURE(SeeTheFutureEffect()),
     NOPE(NopeEffect()),
     FERAL_CAT(FeralCatEffect()),
+    ATTACK(AttackEffect()),
     REVERSE(ReverseEffect()),
     DRAW_FROM_THE_BOTTOM(DrawFromTheBottomEffect()),
 }
