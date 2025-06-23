@@ -1,9 +1,6 @@
 package com.aau.se2.boomboomkittens.game.cards
 
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.AlterTheFutureEffect
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.FeralCatEffect
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.SeeTheFutureEffect
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.ShuffleEffect
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.*
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.registry.CardEffect
 import com.aau.se2.boomboomkittens.game.cards.effects.*
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.cards.effects.*
@@ -23,4 +20,6 @@ enum class CardType(val effect: CardEffect) {
     NOPE(NopeEffect()),
     FERAL_CAT(FeralCatEffect()),
     ATTACK(AttackEffect()),
+    REVERSE(ReverseEffect()),
+    DRAW_FROM_THE_BOTTOM(DrawFromTheBottomEffect()),
 }

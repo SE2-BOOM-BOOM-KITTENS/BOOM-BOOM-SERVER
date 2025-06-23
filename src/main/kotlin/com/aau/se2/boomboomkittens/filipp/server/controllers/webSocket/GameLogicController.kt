@@ -31,6 +31,7 @@ class GameLogicController(
             "HAND" -> gameLogicService.getPlayerHand(lobbyID,playerID)
             "INIT" -> gameLogicService.getInitState(lobbyID,playerID)
             "EXPLODE" -> gameLogicService.explodePlayer(lobbyID,playerID)
+            "SHUFFLE_DECK" -> gameLogicService.shuffleDeck(lobbyID, playerID)
             "CAT_COMBO" -> {
                 val targetId = playerMessage.targetId?.let { UUID.fromString(it) }
                 val networkCards = (payload as? List<*>)?.filterIsInstance<CardNetworkPacket>()

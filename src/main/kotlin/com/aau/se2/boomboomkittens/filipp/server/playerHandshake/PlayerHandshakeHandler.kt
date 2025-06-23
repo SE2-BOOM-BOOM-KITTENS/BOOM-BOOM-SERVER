@@ -19,7 +19,7 @@ class PlayerHandshakeHandler(
     ): Principal {
         println(attributes["id"])
         val playerId = attributes["id"] as UUID
-        val name = playerService.getPlayer(playerId)!!.name
+        val name = playerService.getPlayer(playerId).name
         return UserPrincipal(playerId, name)
     }
 }
