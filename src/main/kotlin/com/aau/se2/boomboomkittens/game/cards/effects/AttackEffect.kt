@@ -11,6 +11,7 @@ class AttackEffect : CardEffect {
 
         gameLogic.skipDrawForCurrentPlayer()
         gameLogic.giveExtraTurnToNextPlayer()
+        gameLogic.playerLogic.moveToNextPlayer()
 
         println("${player.name} played an ATTACK card!")
 
