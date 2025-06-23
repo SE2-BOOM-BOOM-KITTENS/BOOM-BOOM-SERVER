@@ -9,8 +9,8 @@ class AttackEffect : CardEffect {
     override fun apply (card: Card, player: Player, cardLogic: CardLogic){
         val gameLogic = cardLogic.gameLogic
 
-        gameLogic.nextTurn()
-        //gameLogic.giveExtraTurnToNextPlayer() TODO: implement method in gameLogic
+        gameLogic.skipDrawForCurrentPlayer()
+        gameLogic.giveExtraTurnToNextPlayer()
 
         println("${player.name} played an ATTACK card!")
 
