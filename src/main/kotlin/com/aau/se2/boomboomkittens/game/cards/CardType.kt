@@ -22,4 +22,5 @@ enum class CardType(val effect: CardEffect) {
     ATTACK(AttackEffect()),
     REVERSE(ReverseEffect()),
     DRAW_FROM_THE_BOTTOM(DrawFromTheBottomEffect()),
+    SKIP(SkipEffect()),
 }
