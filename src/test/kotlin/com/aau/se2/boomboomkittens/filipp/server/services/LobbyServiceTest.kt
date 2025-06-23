@@ -65,7 +65,7 @@ class LobbyServiceTest {
         val lobby = lobbyService.createLobby(creatorDummy,3)
         val player = Player(name = "Player1")
 
-        lobbyService.joinPlayer(lobby.id.toString(), player)
+        lobbyService.joinLobby(lobby.id.toString(), player)
 
         assertTrue(lobby.players.contains(player))
     }
@@ -75,7 +75,7 @@ class LobbyServiceTest {
         val creatorDummy = Player(UUID.randomUUID(),"Dummy")
         val lobby = lobbyService.createLobby(creatorDummy,3)
         val player = Player(name = "Player1")
-        lobbyService.joinPlayer(lobby.id.toString(), player)
+        lobbyService.joinLobby(lobby.id.toString(), player)
 
         assertTrue(lobby.players.contains(player))
 

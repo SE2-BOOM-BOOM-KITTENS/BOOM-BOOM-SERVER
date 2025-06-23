@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -34,7 +35,14 @@ class LobbyRestController(private val lobbyService: LobbyService) {
         val lobby = lobbyService.createLobby(request.player, request.maxPlayers)
         return CreateLobbyResponse("Created lobby", lobby.id.toString())
     }
-
+    @PostMapping("/{lobbyId}/players")
+    fun joinLobby(
+        @RequestHeader("lobbyId") lobbyId: String,
+        @RequestHeader("playerId") playerId: UUID
+    ): String {
+        lobbyService.joinLobby(lobbyId, playerId)
+        return "Added Player $playerId"
+    }
 }
 
 data class CreateLobbyRequest(
