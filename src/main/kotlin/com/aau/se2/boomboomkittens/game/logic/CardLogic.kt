@@ -129,7 +129,7 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
             CardDefinition(CardType.SEE_THE_FUTURE, 3, 3),
             CardDefinition(CardType.ALTER_THE_FUTURE, 2, 4),
             CardDefinition(CardType.SHUFFLE, 2, 4),
-            //CardDefinition(CardType.DRAW_FROM_THE_BOTTOM, 3, 4),
+            CardDefinition(CardType.DRAW_FROM_THE_BOTTOM, 3, 4),
             CardDefinition(CardType.FERAL_CAT, 2, 4),
             //CardDefinition(CardType.REVERSE, 2, 3),
             //CardDefintion(CardType.TARGETED_ATTACK, 2, 3),
