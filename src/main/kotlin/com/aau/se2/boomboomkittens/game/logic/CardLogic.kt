@@ -124,7 +124,7 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
             CardDefinition(CardType.DEFUSE, 3, 7), // +1 je Spieler kommt auf die Hand
             CardDefinition(CardType.NOPE, 4, 6),
             //CardDefinition(CardType.FAVOR, 2, 4),
-            //CardDefinition(CardType.ATTACK, 4, 7),
+            CardDefinition(CardType.ATTACK, 4, 7),
             //CardDefinition(CardType.SKIP, 4, 6),
             CardDefinition(CardType.SEE_THE_FUTURE, 3, 3),
             CardDefinition(CardType.ALTER_THE_FUTURE, 2, 4),
