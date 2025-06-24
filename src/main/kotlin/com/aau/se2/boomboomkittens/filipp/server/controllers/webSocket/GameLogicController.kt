@@ -83,10 +83,12 @@ class GameLogicController(
 
         val creator = lobby.creator
 
-//        if(creator.playerId != playerId){
-//            gameLogicService.sendUserError(lobbyId!!,playerId, "Player call is made by a non-creator.")
-//            return
-//        }
+        //SWITCH TO != AFTER YOU CAN CREATE A LOBBY
+        if(creator.playerId == playerId){
+            gameLogicService.sendUserError(lobbyId!!,playerId, "Player call is made by a non-creator.")
+            return
+        }
+
         gameLogicService.createGame(lobby)
         val serverMessage = ServerMessage("GAME_CREATED", "Game Created", null)
         gameLogicService.sendResponse(lobbyId=lobbyId!!, payload = serverMessage)
