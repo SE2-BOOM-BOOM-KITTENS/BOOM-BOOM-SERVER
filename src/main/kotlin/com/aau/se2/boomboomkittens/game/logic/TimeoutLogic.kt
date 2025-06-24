@@ -3,10 +3,10 @@ import java.util.*
 
 class TimeoutLogic(
     private val ejectPlayer: (UUID, UUID) -> Unit,
-    private val timeoutSeconds: Int = 60
+    private val timeoutSeconds: Int = 60,
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ) {
     private var currentTimeoutJob: Job? = null
-    private val scope = CoroutineScope(Dispatchers.Default)
 
     fun start(lobbyId: UUID, playerId: UUID) {
         cancel(lobbyId)
