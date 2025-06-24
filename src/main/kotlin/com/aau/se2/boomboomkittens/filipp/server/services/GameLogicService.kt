@@ -150,14 +150,15 @@ class GameLogicService(
         getPlayerHand(lobbyId,playerId)
     }
 
-    fun explodePlayer(lobbyId:UUID, playerId: UUID){
+    fun explodePlayer(lobbyId: UUID, playerId: UUID) {
         val game = getGame(lobbyId)
+        val player = game.getPlayerById(playerId) ?: return
+        val name = player.name
+
         game.removePlayer(playerId)
 
-        val player = game.getPlayerById(playerId)
-
-        sendGameState(lobbyId,"Player ${player!!.name} has exploded",game)
-        val privateServerMessage = ServerMessage("EXPLODE", "You have exploded",null)
+        sendGameState(lobbyId, "Player $name has exploded", game)
+        val privateServerMessage = ServerMessage("EXPLODE", "You have exploded", null)
         sendResponse(playerId, payload = privateServerMessage)
     }
 
