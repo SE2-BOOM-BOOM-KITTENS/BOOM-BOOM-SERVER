@@ -48,7 +48,7 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         return duplicate
     }
 
-    fun isCardDuplicate(playerId: UUID, card: Card): Boolean {
+    fun isCardDuplicate(playerId: Card, card: UUID): Boolean {
 
 
         val hand = getPlayerHand(playerId)

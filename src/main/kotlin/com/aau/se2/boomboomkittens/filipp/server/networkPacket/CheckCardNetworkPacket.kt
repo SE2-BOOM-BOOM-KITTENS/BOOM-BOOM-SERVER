@@ -4,8 +4,8 @@ import com.aau.se2.boomboomkittens.game.cards.Card
 import java.util.UUID
 
 data class CheckCardNetworkPacket(
-    val card: Card,
-    val targetId: UUID
+    val card: UUID,
+    val targetId: Card
 ) {
 
 }
