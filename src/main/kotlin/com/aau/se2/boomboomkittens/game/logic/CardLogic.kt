@@ -71,6 +71,7 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         val card = player.playerHand.cards.firstOrNull { it.type == cardType }
             ?: throw IllegalStateException("Player doesn't have card type $cardType")
 
+        player.playerHand.removeCard(card)
         cardType.effect.apply(card, player, this)
     }
 
@@ -125,7 +126,7 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
             CardDefinition(CardType.NOPE, 4, 6),
             //CardDefinition(CardType.FAVOR, 2, 4),
             CardDefinition(CardType.ATTACK, 4, 7),
-            //CardDefinition(CardType.SKIP, 4, 6),
+            CardDefinition(CardType.SKIP, 4, 6),
             CardDefinition(CardType.SEE_THE_FUTURE, 3, 3),
             CardDefinition(CardType.ALTER_THE_FUTURE, 2, 4),
             CardDefinition(CardType.SHUFFLE, 2, 4),

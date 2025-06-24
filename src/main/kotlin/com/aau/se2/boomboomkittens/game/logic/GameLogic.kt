@@ -48,6 +48,7 @@ open class GameLogic(
             // Player bleibt der gleiche, spielt noch eine Runde
         } else {
             playerLogic.moveToNextPlayer()
+            println("Current Player: ${playerLogic.getCurrentPlayer()!!.name}")
         }
 
         resetSkipDraw()

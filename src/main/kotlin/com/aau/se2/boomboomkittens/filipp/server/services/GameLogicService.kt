@@ -1,6 +1,7 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.CheckCardNetworkPacket
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.PlayerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
@@ -65,17 +66,17 @@ class GameLogicService(
 
     fun playCards(lobbyId: UUID,playerId: UUID, payload: Any?) {
         val game = getGame(lobbyId)
-        var cardsNames = ""
-        val cards = (payload as? List<*>)?.filterIsInstance<Card>()!!
+        val card = (payload as? Card)
         val player = game.getPlayerById(playerId)
 
-        for(card in cards){
-            cardsNames += card.name+", "
-            game.cardLogic.playCard(playerId,card.type)
+        if(card != null) {
+            game.cardLogic.playCard(playerId, card.type)
 
+            endTurn(lobbyId,playerId)
+            sendGameState(lobbyId,"Player ${player!!.name} has played ${card.name} cards",game)
+        } else {
+            sendUserError(lobbyId,playerId,"You played card that is null")
         }
-        endTurn(lobbyId,playerId)
-        sendGameState(lobbyId,"Player ${player!!.name} has played $cardsNames cards",game)
     }
 
     fun cheatDuplicate(lobbyID: UUID, playerId: UUID, payload: Any?) {
@@ -212,5 +213,21 @@ class GameLogicService(
         game.cardLogic.shuffleDeck()
         sendGameState(lobbyId, "Player $playerId shuffled the deck", game)
     }
+
+    fun sendGameCreated(lobbyId: UUID, playerId: UUID) {
+        val confirmation = PlayerMessage(
+            lobbyId = lobbyId,
+            action = "GAME_CREATED",
+            playerName = null,
+            payload = "Game successfully created!"
+        )
+
+        messagingTemplate.convertAndSendToUser(
+            playerId.toString(),
+            "/queue/game",
+            confirmation
+        )
+    }
+
 
 }

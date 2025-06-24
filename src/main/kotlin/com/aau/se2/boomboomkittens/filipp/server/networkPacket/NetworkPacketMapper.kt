@@ -27,11 +27,11 @@ class NetworkPacketMapper {
         }
 
         val currentPlayer = playerLogic.getCurrentPlayer()
-        val currentPlayerHand = currentPlayer!!.playerHand
+        val currentPlayerHand = currentPlayer?.playerHand
         val currentPlayerDTO = playerToNetworkPacket(currentPlayer,currentPlayerHand)
 
-        val nextPlayer = playerLogic.getCurrentPlayerNode()!!.next!!.player
-        val nextPlayerHand = nextPlayer.playerHand
+        val nextPlayer = playerLogic.getCurrentPlayerNode()?.next?.player
+        val nextPlayerHand = nextPlayer?.playerHand
         val nextPlayerDTO = playerToNetworkPacket(nextPlayer,nextPlayerHand)
 
         val winner = gameLogic.getWinner()
@@ -56,10 +56,10 @@ class NetworkPacketMapper {
             discardPile = discardPile,)
     }
 
-    fun playerToNetworkPacket(player: Player?, playerHand: PlayerHand): PlayerNetworkPacket {
-        val id = player!!.playerId
-        val name = player.name
-        val cardCount = playerHand.getCardAmount()
+    fun playerToNetworkPacket(player: Player?, playerHand: PlayerHand?): PlayerNetworkPacket {
+        val id = player?.playerId
+        val name = player?.name
+        val cardCount = playerHand?.getCardAmount()
         return PlayerNetworkPacket(id,name,cardCount)
     }
 
