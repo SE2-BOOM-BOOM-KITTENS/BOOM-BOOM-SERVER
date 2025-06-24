@@ -71,6 +71,7 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         val card = player.playerHand.cards.firstOrNull { it.type == cardType }
             ?: throw IllegalStateException("Player doesn't have card type $cardType")
 
+        player.playerHand.removeCard(card)
         cardType.effect.apply(card, player, this)
     }
 
