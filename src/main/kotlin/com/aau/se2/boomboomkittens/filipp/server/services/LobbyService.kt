@@ -1,5 +1,6 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
 import com.aau.se2.boomboomkittens.game.player.LobbyPlayer
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.player.Player
@@ -8,7 +9,7 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
-class LobbyService(private val playerService: PlayerService) {
+class LobbyService(private val playerService: PlayerService, private val gameLogicService: GameLogicService) {
     private val lobbies = ConcurrentHashMap<String, Lobby>()
 
     init {
@@ -19,6 +20,7 @@ class LobbyService(private val playerService: PlayerService) {
     fun createLobby(creator: Player, maxPlayers: Int): Lobby {
         val lobby = Lobby(creator=creator,players = mutableListOf(), maxPlayers = maxPlayers)
         lobbies[lobby.id.toString()] = lobby
+        gameLogicService.createGame(lobby)
         return lobby
     }
 

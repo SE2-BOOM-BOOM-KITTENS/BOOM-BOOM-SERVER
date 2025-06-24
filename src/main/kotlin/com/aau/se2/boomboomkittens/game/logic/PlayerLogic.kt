@@ -9,8 +9,9 @@ class PlayerLogic() {
     private var currentPlayer: PlayerNode? = null
 
     fun addPlayerByID(player: Player) {
-        require(!(playerMap.containsKey(player.playerId))){
-            throw IllegalArgumentException("Player with id ${player.playerId} already exists")
+        if (playerMap.containsKey(player.playerId)) {
+            println("Player with id ${player.playerId} already exists — skipping add.")
+            return
         }
         val newNode = PlayerNode(player)
         if(currentPlayer == null) {
