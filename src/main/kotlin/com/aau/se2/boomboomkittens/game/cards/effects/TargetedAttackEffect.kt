@@ -10,7 +10,7 @@ class TargetedAttackEffect : CardEffect {
     override fun apply(card: Card, player: Player, cardLogic: CardLogic) {
         val gameLogic = cardLogic.gameLogic
 
-        val target = gameLogic.playerLogic.moveToNextPlayer()
+        val target = gameLogic.playerLogic.getNextPlayer()
             ?: throw IllegalStateException("No target player available for targeted attack.")
 
         gameLogic.forceNextPlayerToDrawExtraCards(target, 2)

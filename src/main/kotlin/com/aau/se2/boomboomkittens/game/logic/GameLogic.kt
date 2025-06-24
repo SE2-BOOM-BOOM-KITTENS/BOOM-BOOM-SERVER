@@ -77,7 +77,7 @@ open class GameLogic(
 
         repeat(amount) {
             if (!drawPile.isEmpty()) {
-                val card = drawPile.removeFirst() // ← hier angepasst!
+                val card = drawPile.removeFirst()
                 player.playerHand.addCard(card)
             }
         }
