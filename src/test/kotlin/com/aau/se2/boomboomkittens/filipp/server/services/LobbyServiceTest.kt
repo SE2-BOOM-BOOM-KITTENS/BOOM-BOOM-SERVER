@@ -5,8 +5,10 @@ import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import java.util.UUID
 
 
@@ -16,6 +18,9 @@ class LobbyServiceTest {
 
     @Autowired
     lateinit var lobbyService: LobbyService
+
+    @MockBean
+    lateinit var playerService: PlayerService
 
     @BeforeEach
     fun clearLobbies() {
@@ -64,8 +69,9 @@ class LobbyServiceTest {
         val creatorDummy = Player(UUID.randomUUID(),"Dummy")
         val lobby = lobbyService.createLobby(creatorDummy,3)
         val player = Player(name = "Player1")
+        given(playerService.getPlayer(player.playerId)).willReturn(player)
 
-        lobbyService.joinPlayer(lobby.id.toString(), player)
+        lobbyService.joinLobby(lobby.id.toString(), player.playerId)
 
         assertTrue(lobby.players.contains(player))
     }
@@ -75,7 +81,8 @@ class LobbyServiceTest {
         val creatorDummy = Player(UUID.randomUUID(),"Dummy")
         val lobby = lobbyService.createLobby(creatorDummy,3)
         val player = Player(name = "Player1")
-        lobbyService.joinPlayer(lobby.id.toString(), player)
+        given(playerService.getPlayer(player.playerId)).willReturn(player)
+        lobbyService.joinLobby(lobby.id.toString(), player.playerId)
 
         assertTrue(lobby.players.contains(player))
 
