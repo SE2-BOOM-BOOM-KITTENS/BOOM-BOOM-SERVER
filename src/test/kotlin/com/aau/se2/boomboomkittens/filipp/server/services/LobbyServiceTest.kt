@@ -32,6 +32,7 @@ class LobbyServiceTest {
     fun createLobbyTest(){
         val creatorDummy = Player(UUID.randomUUID(),"Dummy")
         val lobby = lobbyService.createLobby(creatorDummy,3)
+        lobbyService.removePlayer(lobby.id.toString(), creatorDummy)
 
         assertNotNull(lobby)
         assertNotNull(lobby.id)
@@ -87,6 +88,7 @@ class LobbyServiceTest {
         assertTrue(lobby.players.contains(player))
 
         lobbyService.removePlayer(lobby.id.toString(), player)
+        lobbyService.removePlayer(lobby.id.toString(), creatorDummy)
 
         val deletedLobby = lobbyService.getLobby(lobby.id.toString())
         assertNull(deletedLobby)
