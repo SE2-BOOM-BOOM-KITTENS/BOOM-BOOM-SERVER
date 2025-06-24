@@ -1,5 +1,7 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
+import TimeoutLogic
+import com.aau.se2.boomboomkittens.filipp.server.services.TimeoutService
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
@@ -8,7 +10,6 @@ open class GameLogic(
     var lobbyId: UUID,
     val players: MutableList<Player>
 ){
-
     private val _playerLogic: PlayerLogic = PlayerLogic()
     private val _cardLogic: CardLogic = CardLogic(players.size, this)
 

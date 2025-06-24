@@ -1,33 +1,33 @@
 import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
+import java.util.*
 
 class TimeoutLogic(
-    private val ejectPlayer: (String) -> Unit,
-    private val timeoutSeconds: Int = 60,
-    private val coroutineContext: CoroutineContext = Dispatchers.Default
+    private val ejectPlayer: (UUID, UUID) -> Unit,
+    private val timeoutSeconds: Int = 60
 ) {
     private var currentTimeoutJob: Job? = null
+    private val scope = CoroutineScope(Dispatchers.Default)
 
-    fun start(playerId: String) {
-        cancel() // Cancel any previous job just in case
-        currentTimeoutJob = CoroutineScope(coroutineContext).launch {
+    fun start(lobbyId: UUID, playerId: UUID) {
+        cancel(lobbyId)
+        currentTimeoutJob = scope.launch {
             var timeLeft = timeoutSeconds
 
             while (timeLeft > 0) {
                 delay(1000)
                 timeLeft--
 
-                if(timeLeft == 20){
-                    println("[$playerId] has 20 seconds to finish their turn!")
+                if (timeLeft == 20) {
+                    println("[$playerId] has 20 seconds left.")
                 }
             }
 
-            println("TIMEOUT: [$playerId] left the game.")
-            ejectPlayer(playerId)
+            println("TIMEOUT: [$playerId] ejected.")
+            ejectPlayer(lobbyId, playerId)
         }
     }
 
-    fun cancel() {
+    fun cancel(lobbyId: UUID) {
         currentTimeoutJob?.cancel()
         currentTimeoutJob = null
     }

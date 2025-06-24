@@ -5,6 +5,7 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.net
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
+import com.aau.se2.boomboomkittens.filipp.server.services.TimeoutService
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
@@ -20,7 +21,8 @@ import java.util.concurrent.ConcurrentHashMap
 @Service
 class GameLogicService(
     val messagingTemplate: SimpMessagingTemplate,
-    private val jacksonObjectMapper: ObjectMapper
+    private val jacksonObjectMapper: ObjectMapper,
+    private val timeoutService: TimeoutService
 ) {
     private val games = ConcurrentHashMap<UUID, GameLogic>()
     private val networkPacketMapper = NetworkPacketMapper()
@@ -28,7 +30,6 @@ class GameLogicService(
 
     //TEMPORARY PARAMETER; FOR TESTING PURPOSES ONLY; REMOVE AFTER FIXING THE TEST CLASS
     var lobbyId: UUID? = null
-
 
     //TEMPORARY SOLUTION; FOR DEBUGGING ONLY; REMOVE WHEN LOBBIES ARE IMPLEMENTED
     init {
@@ -46,7 +47,12 @@ class GameLogicService(
     fun createGame(lobby: Lobby) {
         val gameLogic = GameLogic(lobby.id, lobby.players)
         games[lobby.id] = gameLogic
+        val currentPlayer = gameLogic.playerLogic.getCurrentPlayer()
         logger.info("Created game for lobby: ${lobby.id}")
+
+        if (currentPlayer != null) {
+            timeoutService.startTimeout(lobby.id, currentPlayer.playerId)
+        }
     }
 
     fun getGame(lobbyId: UUID): GameLogic {
@@ -71,8 +77,6 @@ class GameLogicService(
 
         if(card != null) {
             game.cardLogic.playCard(playerId, card.type)
-
-            endTurn(lobbyId,playerId)
             sendGameState(lobbyId,"Player ${player!!.name} has played ${card.name} cards",game)
         } else {
             sendUserError(lobbyId,playerId,"You played card that is null")
@@ -158,6 +162,8 @@ class GameLogicService(
     private fun endTurn(lobbyId: UUID, playerId: UUID){
         val game = getGame(lobbyId)
         game.cardLogic.drawCard(playerId)
+        timeoutService.cancelTimeout(lobbyId)
+        timeoutService.startTimeout(lobbyId, playerId)
         game.nextTurn()
     }
 
@@ -196,7 +202,6 @@ class GameLogicService(
             sendResponse(lobbyId,id, payload) // Callback für Nachrichten
 
         }
-
         handler.applyCombo(player, rawCards, target)
     }
 
