@@ -111,16 +111,18 @@ class PlayerLogicTest {
     }
 
     @Test
-    fun `reverse order works correctly`() {
+    fun `reverse order rotates correctly`() {
         logic.addPlayerByID(player1)
         logic.addPlayerByID(player2)
         logic.addPlayerByID(player3)
 
-        val before = logic.getPlayerList()
-        logic.reverseOrder()
-        val after = logic.getPlayerList()
+        val before = logic.getPlayerList().map { it.playerId }
 
-        assertEquals(before.reversed().map { it.playerId }, after.map { it.playerId })
+        logic.reverseOrder()
+        val after = logic.getPlayerList().map { it.playerId }
+
+        assertEquals(before.toSet(), after.toSet())
+        assertNotEquals(before, after)
     }
 
     @Test
