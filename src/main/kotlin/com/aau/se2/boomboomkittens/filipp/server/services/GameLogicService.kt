@@ -66,17 +66,17 @@ class GameLogicService(
 
     fun playCards(lobbyId: UUID,playerId: UUID, payload: Any?) {
         val game = getGame(lobbyId)
-        var cardsNames = ""
-        val cards = (payload as? List<*>)?.filterIsInstance<Card>()!!
+        val card = (payload as? Card)
         val player = game.getPlayerById(playerId)
 
-        for(card in cards){
-            cardsNames += card.name+", "
-            game.cardLogic.playCard(playerId,card.type)
+        if(card != null) {
+            game.cardLogic.playCard(playerId, card.type)
 
+            endTurn(lobbyId,playerId)
+            sendGameState(lobbyId,"Player ${player!!.name} has played ${card.name} cards",game)
+        } else {
+            sendUserError(lobbyId,playerId,"You played card that is null")
         }
-        endTurn(lobbyId,playerId)
-        sendGameState(lobbyId,"Player ${player!!.name} has played $cardsNames cards",game)
     }
 
     fun cheatDuplicate(lobbyID: UUID, playerId: UUID, payload: Any?) {
