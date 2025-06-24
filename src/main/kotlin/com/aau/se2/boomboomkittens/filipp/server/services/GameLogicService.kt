@@ -214,20 +214,4 @@ class GameLogicService(
         sendGameState(lobbyId, "Player $playerId shuffled the deck", game)
     }
 
-    fun sendGameCreated(lobbyId: UUID, playerId: UUID) {
-        val confirmation = PlayerMessage(
-            lobbyId = lobbyId,
-            action = "GAME_CREATED",
-            playerName = null,
-            payload = "Game successfully created!"
-        )
-
-        messagingTemplate.convertAndSendToUser(
-            playerId.toString(),
-            "/queue/game",
-            confirmation
-        )
-    }
-
-
 }
