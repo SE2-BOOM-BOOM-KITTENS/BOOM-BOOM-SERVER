@@ -42,17 +42,27 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         player.playerHand.removeCard(card)
     }
 
-    fun cheatDuplicateCard(playerId: UUID, card: Card): Card {
-        val duplicate = Card(type = card.type, name = card.name, aliasType = card.aliasType, cheatDuplicated = true)
+    fun cheatDuplicateCard(playerId: UUID, cardId: UUID): Card {
+        val hand = getPlayerHand(playerId)
+        val original = hand?.getCardById(cardId)
+            ?: throw IllegalArgumentException("Card with ID $cardId not found in player's hand")
+
+        val duplicate = Card(
+            type = original.type,
+            name = original.name,
+            aliasType = original.aliasType,
+            cheatDuplicated = true
+        )
+
         addCardToPlayer(playerId, duplicate)
         return duplicate
     }
 
-    fun isCardDuplicate(playerId: Card, card: UUID): Boolean {
+    fun isCardDuplicate(playerId: UUID, cardId: UUID): Boolean {
 
 
         val hand = getPlayerHand(playerId)
-        val cardInHand = hand!!.getCardById(card.id)
+        val cardInHand = hand!!.getCardById(cardId)
         return cardInHand.cheatDuplicated
     }
 

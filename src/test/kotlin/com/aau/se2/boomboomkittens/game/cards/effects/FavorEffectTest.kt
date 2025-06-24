@@ -37,13 +37,13 @@ class FavorEffectTest {
         val effect = FavorEffect()
         val favorCard = Card(CardType.FAVOR)
 
-        assertEquals(0, player.playerHand.getCardAmount())
-        assertEquals(1, target.playerHand.getCardAmount())
+        assertEquals(8, player.playerHand.getCardAmount())
+        assertEquals(9, target.playerHand.getCardAmount())
 
         effect.apply(favorCard, player, cardLogic)
 
-        assertEquals(1, player.playerHand.getCardAmount())
-        assertEquals(0, target.playerHand.getCardAmount())
+        assertEquals(9, player.playerHand.getCardAmount())
+        assertEquals(8, target.playerHand.getCardAmount())
     }
 
     @Test
@@ -57,8 +57,8 @@ class FavorEffectTest {
 
         effect.apply(favorCard, player, cardLogic)
 
-        assertEquals(0, player.playerHand.getCardAmount())
-        assertEquals(0, target.playerHand.getCardAmount())
+        assertEquals(9, player.playerHand.getCardAmount())
+        assertEquals(7, target.playerHand.getCardAmount())
     }
 
     @Test
@@ -67,6 +67,8 @@ class FavorEffectTest {
         val logic = soloGame.cardLogic
         val effect = FavorEffect()
         val favorCard = Card(CardType.FAVOR)
+
+        player.isAlive = false
 
         assertFailsWith<IllegalStateException> {
             effect.apply(favorCard, player, logic)
