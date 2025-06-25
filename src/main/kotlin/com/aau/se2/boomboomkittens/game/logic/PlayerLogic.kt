@@ -70,8 +70,34 @@ class PlayerLogic() {
     fun moveToNextPlayer(){
         currentPlayer = currentPlayer?.next
     }
-
     fun getCurrentPlayerNode(): PlayerNode? {
         return currentPlayer
+    }
+    fun getNextPlayer(): Player? {
+        var node = currentPlayer?.next
+        val start = currentPlayer
+
+        // Schleife bis wir einen lebenden Spieler finden oder zum Ausgangspunkt zurückkehren
+        while (node != null && node != start) {
+            if (node.player.isAlive) return node.player
+            node = node.next
+        }
+
+        // Falls nur ein Spieler lebt, gib ihn zurück
+        return if (start?.player?.isAlive == true) start.player else null
+    }
+
+    fun reverseOrder() {
+        var node = currentPlayer
+        val visited = mutableSetOf<UUID>()
+
+        do {
+            val temp = node?.next
+            node?.next = node?.previous
+            node?.previous = temp
+
+            visited.add(node!!.player.playerId)
+            node = node.next
+        } while (node != null && !visited.contains(node.player.playerId))
     }
 }

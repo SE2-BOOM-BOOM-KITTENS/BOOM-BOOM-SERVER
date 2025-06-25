@@ -1,6 +1,9 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 
+import TimeoutLogic
+import com.aau.se2.boomboomkittens.filipp.server.services.TimeoutService
 import com.aau.se2.boomboomkittens.game.player.Player
+import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
 
@@ -8,12 +11,15 @@ open class GameLogic(
     var lobbyId: UUID,
     val players: MutableList<Player>
 ){
-
     private val _playerLogic: PlayerLogic = PlayerLogic()
     private val _cardLogic: CardLogic = CardLogic(players.size, this)
 
     val playerLogic: PlayerLogic get() = _playerLogic
     val cardLogic: CardLogic get() = _cardLogic
+
+
+    private var skipDraw = false
+    private val extraTurns = mutableMapOf<UUID, Int>()
 
 
     init {
@@ -36,8 +42,17 @@ open class GameLogic(
     }
 
     fun nextTurn(){
-        _playerLogic.moveToNextPlayer()
-        println("Current Player: ${playerLogic.getCurrentPlayer()!!.playerId}")
+        val currentPlayer = playerLogic.getCurrentPlayer() ?: return
+
+        if (consumeExtraTurn(currentPlayer.playerId)){
+            println("${currentPlayer.name} has an extra turn.")
+            // Player bleibt der gleiche, spielt noch eine Runde
+        } else {
+            playerLogic.moveToNextPlayer()
+            println("Current Player: ${playerLogic.getCurrentPlayer()!!.name}")
+        }
+
+        resetSkipDraw()
     }
 
     fun addPlayer(playerId: UUID, playerName:String){
@@ -52,6 +67,40 @@ open class GameLogic(
 
     fun getPlayerHand(playerId: UUID): PlayerHand? {
         return _cardLogic.getPlayerHand(playerId)
+    }
+
+    fun skipDrawForCurrentPlayer(){
+        skipDraw = true
+    }
+
+    fun giveExtraTurnToNextPlayer(){
+        val nextPlayer = playerLogic.getCurrentPlayerNode()?.next?.player
+        if (nextPlayer != null){
+            val currentExtra = extraTurns.getOrDefault(nextPlayer.playerId, 0)
+            extraTurns[nextPlayer.playerId] = currentExtra + 1
+        }
+    }
+
+    fun shouldSkipDraw(): Boolean{
+        return skipDraw
+    }
+
+    fun resetSkipDraw() {
+        skipDraw = false
+    }
+
+    fun getExtraTurns(playerId: UUID): Int{
+        return extraTurns.getOrDefault(playerId, 0)
+    }
+
+    fun consumeExtraTurn(playerId: UUID): Boolean{
+        val turnsLeft = extraTurns.getOrDefault(playerId, 0)
+        return if (turnsLeft > 0){
+            extraTurns[playerId] = turnsLeft - 1
+            true
+        } else {
+            false
+        }
     }
 
 }

@@ -1,15 +1,17 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.CheckCardNetworkPacket
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.PlayerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
+import com.aau.se2.boomboomkittens.filipp.server.services.TimeoutService
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.cards.effects.CatComboEffectHandler
-import com.aau.se2.boomboomkittens.game.player.Player
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.slf4j.LoggerFactory
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -18,31 +20,23 @@ import java.util.concurrent.ConcurrentHashMap
 @Service
 class GameLogicService(
     val messagingTemplate: SimpMessagingTemplate,
-    private val jacksonObjectMapper: ObjectMapper
+    private val jacksonObjectMapper: ObjectMapper,
+    private val timeoutService: TimeoutService
 ) {
     private val games = ConcurrentHashMap<UUID, GameLogic>()
     private val networkPacketMapper = NetworkPacketMapper()
+    private val logger = LoggerFactory.getLogger(GameLogicService::class.java)
 
     //TEMPORARY PARAMETER; FOR TESTING PURPOSES ONLY; REMOVE AFTER FIXING THE TEST CLASS
     var lobbyId: UUID? = null
 
-
-    //TEMPORARY SOLUTION; FOR DEBUGGING ONLY; REMOVE WHEN LOBBIES ARE IMPLEMENTED
-    init {
-        val creator = Player(name="Evil Steve")
-        val bob = Player(name="Bob")
-        val john = Player(name="John")
-        val lobby = Lobby(id= UUID.fromString("00000000-0000-0000-0000-000000001234"),creator = creator, maxPlayers = 8)
-        lobby.players.add(creator)
-        lobby.players.add(bob)
-        lobby.players.add(john)
-        lobbyId = lobby.id
-        createGame(lobby)
-    }
-
     fun createGame(lobby: Lobby) {
         val gameLogic = GameLogic(lobby.id, lobby.players)
         games[lobby.id] = gameLogic
+        logger.info("Created game for lobby: ${lobby.id}")
+
+        timeoutService.createTimeout(lobby.id, gameLogic)
+
     }
 
     fun getGame(lobbyId: UUID): GameLogic {
@@ -62,16 +56,15 @@ class GameLogicService(
 
     fun playCards(lobbyId: UUID,playerId: UUID, payload: Any?) {
         val game = getGame(lobbyId)
-        var cardsNames = ""
-        val cards = (payload as? List<*>)?.filterIsInstance<Card>()!!
+        val card = (payload as? Card)
+        val player = game.getPlayerById(playerId)
 
-        for(card in cards){
-            cardsNames += card.name+", "
-            game.cardLogic.playCard(playerId,card.type)
-
+        if(card != null) {
+            game.cardLogic.playCard(playerId, card.type)
+            sendGameState(lobbyId,"Player ${player!!.name} has played ${card.name} cards",game)
+        } else {
+            sendUserError(lobbyId,playerId,"You played card that is null")
         }
-        endTurn(lobbyId,playerId)
-        sendGameState(lobbyId,"Player $playerId has played $cardsNames cards",game)
     }
 
     fun cheatDuplicate(lobbyID: UUID, playerId: UUID, payload: Any?) {
@@ -82,33 +75,43 @@ class GameLogicService(
         }catch (e:Exception){
             null
         }
-        game.cardLogic.cheatDuplicateCard(playerId, card!!)
+        game.cardLogic.cheatDuplicateCard(playerId, card!!.id)
     }
 
     fun checkIfDuplicate(lobbyId: UUID, playerId: UUID, payload: Any?) {
         val game = getGame(lobbyId)
         val mapper = jacksonObjectMapper
-        val packet = try{
+        val accuser = game.getPlayerById(playerId)
+        val packet = try {
             mapper.convertValue(payload, CheckCardNetworkPacket::class.java)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             null
         }
-        val result = game.cardLogic.isCardDuplicate(packet!!.targetId, packet.card)
 
-        if(result){
+        if (packet == null) {
+            sendUserError(lobbyId, playerId, "Invalid packet format")
+            return
+        }
+
+        val result = game.cardLogic.isCardDuplicate(packet.targetId, packet.card)
+        val cheater = game.getPlayerById(packet.targetId)
+
+        if (result) {
             game.removePlayer(packet.targetId)
-            sendGameState(lobbyId,"Player ${packet.targetId} was too bad at cheating",game)
-        } else{
+            sendGameState(lobbyId, "${cheater?.name ?: "Unknown"} was too bad at cheating", game)
+        } else {
             game.cardLogic.drawCard(playerId)
-            sendGameState(lobbyId,"Player $playerId wrongly accused ${packet.targetId}",game)
+            sendGameState(lobbyId, "${accuser?.name ?: "Unknown"} wrongly accused ${packet.targetId}", game)
         }
     }
 
     fun exitPlayer(lobbyId: UUID,playerId: UUID){
         val game = getGame(lobbyId)
+        val playerName = game.getPlayerById(playerId)!!.name
         game.removePlayer(playerId)
 
-        sendGameState(lobbyId,"Player $playerId exited the game",game)
+        sendGameState(lobbyId,"Player $playerName exited the game",game)
+        logger.info("Player $playerName exited the game $lobbyId")
     }
 
     fun getInitState(lobbyId:UUID, playerId: UUID){
@@ -120,7 +123,7 @@ class GameLogicService(
         val game = getGame(lobbyId)
         val playerHand = game.getPlayerHand(playerId)
         val serverMessage = ServerMessage("HAND","You have received your card hand",playerHand)
-        println("Sending hand to user $playerId")
+        logger.info("Sending hand to user $playerId")
         sendResponse(lobbyId=lobbyId,playerId= playerId, payload = serverMessage)
     }
 
@@ -135,20 +138,28 @@ class GameLogicService(
         getPlayerHand(lobbyId,playerId)
     }
 
-    fun explodePlayer(lobbyId:UUID, playerId: UUID){
+    fun explodePlayer(lobbyId: UUID, playerId: UUID) {
         val game = getGame(lobbyId)
+        val player = game.getPlayerById(playerId) ?: return
+        val name = player.name
+
         game.removePlayer(playerId)
 
-        val player = game.getPlayerById(playerId)
-
-        sendGameState(lobbyId,"Player ${player!!.name} has exploded",game)
-        val privateServerMessage = ServerMessage("EXPLODE", "You have exploded",null)
+        sendGameState(lobbyId, "Player $name has exploded", game)
+        val privateServerMessage = ServerMessage("EXPLODE", "You have exploded", null)
         sendResponse(playerId, payload = privateServerMessage)
     }
 
     private fun endTurn(lobbyId: UUID, playerId: UUID){
         val game = getGame(lobbyId)
         game.cardLogic.drawCard(playerId)
+        timeoutService.cancelTimeout(lobbyId)
+
+        val currentPlayer = game.playerLogic.getCurrentPlayer()
+
+        if (currentPlayer != null) {
+            timeoutService.startTimeout(lobbyId, currentPlayer.playerId)
+        }
         game.nextTurn()
     }
 
@@ -164,16 +175,17 @@ class GameLogicService(
 
     fun sendResponse(lobbyId: UUID, playerId: UUID? = null, payload: Any){
         if(playerId != null){
-            println("Sending message to player: $playerId")
+            logger.info("Sending message to player: $playerId")
             messagingTemplate.convertAndSendToUser(playerId.toString(),"/queue/private", payload)
         } else{
-            println("Sending message to lobby: $lobbyId")
+            logger.info("Sending message to lobby: $lobbyId")
             messagingTemplate.convertAndSend("/topic/lobby/${lobbyId}",payload)
         }
     }
 
     fun sendUserError(lobbyId: UUID, playerId: UUID, errorMessage: String){
         val serverMessage = ServerMessage("ERROR", errorMessage,null)
+        logger.error("Player:${playerId} has caused error: $errorMessage")
         sendResponse(lobbyId= lobbyId,payload = serverMessage)
         sendResponse(lobbyId,playerId,serverMessage)
     }
@@ -186,7 +198,6 @@ class GameLogicService(
             sendResponse(lobbyId,id, payload) // Callback für Nachrichten
 
         }
-
         handler.applyCombo(player, rawCards, target)
     }
 
@@ -203,5 +214,23 @@ class GameLogicService(
         game.cardLogic.shuffleDeck()
         sendGameState(lobbyId, "Player $playerId shuffled the deck", game)
     }
+
+
+    fun sendGameCreated(lobbyId: UUID, playerId: UUID) {
+        val confirmation = PlayerMessage(
+            lobbyId = lobbyId,
+            action = "GAME_CREATED",
+            playerName = null,
+            payload = "Game successfully created!"
+        )
+
+        messagingTemplate.convertAndSendToUser(
+            playerId.toString(),
+            "/queue/game",
+            confirmation
+        )
+    }
+
+
 
 }

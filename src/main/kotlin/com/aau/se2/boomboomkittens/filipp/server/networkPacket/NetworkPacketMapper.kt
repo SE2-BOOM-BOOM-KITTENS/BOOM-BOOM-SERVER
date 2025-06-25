@@ -6,15 +6,18 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLo
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
+import org.slf4j.LoggerFactory
 
 class NetworkPacketMapper {
+    private val logger = LoggerFactory.getLogger(NetworkPacketMapper::class.java)
+
     // fixme you don't need the cardLogic param if its just gameLogic.cardLogic
     fun gameStateToNetworkPacket(gameLogic: GameLogic, cardLogic: CardLogic): GameStateNetworkPacket {
         val playerLogic = gameLogic.playerLogic
         val playerList = playerLogic.getPlayerList()
-        println("Player list")
+        logger.info("Player List")
         for (player in playerList) {
-            println("Player $player")
+            logger.info("Player $player")
         }
         val playerNetworkPackets = mutableListOf<PlayerNetworkPacket>()
 
@@ -24,14 +27,11 @@ class NetworkPacketMapper {
         }
 
         val currentPlayer = playerLogic.getCurrentPlayer()
-        if(currentPlayer == null){
-            println("Mistakes were made")
-        }
-        val currentPlayerHand = currentPlayer!!.playerHand
+        val currentPlayerHand = currentPlayer?.playerHand
         val currentPlayerDTO = playerToNetworkPacket(currentPlayer,currentPlayerHand)
 
-        val nextPlayer = playerLogic.getCurrentPlayerNode()!!.next!!.player
-        val nextPlayerHand = nextPlayer.playerHand
+        val nextPlayer = playerLogic.getCurrentPlayerNode()?.next?.player
+        val nextPlayerHand = nextPlayer?.playerHand
         val nextPlayerDTO = playerToNetworkPacket(nextPlayer,nextPlayerHand)
 
         val winner = gameLogic.getWinner()
@@ -56,10 +56,10 @@ class NetworkPacketMapper {
             discardPile = discardPile,)
     }
 
-    fun playerToNetworkPacket(player: Player?, playerHand: PlayerHand): PlayerNetworkPacket {
-        val id = player!!.playerId
-        val name = player.name
-        val cardCount = playerHand.getCardAmount()
+    fun playerToNetworkPacket(player: Player?, playerHand: PlayerHand?): PlayerNetworkPacket {
+        val id = player?.playerId
+        val name = player?.name
+        val cardCount = playerHand?.getCardAmount()
         return PlayerNetworkPacket(id,name,cardCount)
     }
 

@@ -1,30 +1,24 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.mock
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argThat
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.messaging.simp.SimpMessagingTemplate
-import java.util.UUID
+import java.util.*
 
+@SpringBootTest
 class GameLogicServiceTest {
-
-    private lateinit var service: GameLogicService
     private val messagingTemplate: SimpMessagingTemplate = mock()
     private val jacksonObjectMapper: ObjectMapper = mock()
 
@@ -32,9 +26,14 @@ class GameLogicServiceTest {
     private lateinit var target: Player
     private lateinit var lobby: Lobby
 
+    @Autowired
+    lateinit var service: GameLogicService
+
+    @MockBean
+    lateinit var timeoutService: TimeoutService
+
     @BeforeEach
     fun setup() {
-        service = GameLogicService(messagingTemplate,jacksonObjectMapper)
 
         player = Player(name = "Tester")
         target = Player(name = "Opfer")

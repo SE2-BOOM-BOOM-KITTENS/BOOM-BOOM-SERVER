@@ -75,7 +75,6 @@ class CatComboEffectHandlerTest {
     @Test
     fun `Ungueltige Cat-Kombination wird ignoriert`() {
         val player = Player(name = "Tester")
-        val gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player))
         val handler = CatComboEffectHandler(cardLogic) { _, _ -> }
 
         val cards = listOf(

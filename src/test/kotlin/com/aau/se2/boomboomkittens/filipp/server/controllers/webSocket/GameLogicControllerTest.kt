@@ -5,7 +5,9 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.net
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.playerHandshake.UserPrincipal
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
+import com.aau.se2.boomboomkittens.filipp.server.services.LobbyService
 import com.aau.se2.boomboomkittens.filipp.server.services.PlayerService
+import com.aau.se2.boomboomkittens.filipp.server.services.TimeoutService
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.BeforeEach
@@ -45,12 +47,19 @@ class GameLogicControllerTest {
     private val lobbyId = UUID.randomUUID()
 
     @MockBean
+    lateinit var timeoutService: TimeoutService
+
+    @MockBean
     lateinit var playerService: PlayerService
+
+    @MockBean
+    lateinit var lobbyService: LobbyService
 
     @BeforeEach
     fun setup(){
         service = mock()
-        controller= GameLogicController(service)
+
+        controller= GameLogicController(service, lobbyService)
         principal = mock {
             on { name } doReturn playerId.toString()
         }

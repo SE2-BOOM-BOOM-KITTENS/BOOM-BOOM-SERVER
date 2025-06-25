@@ -7,6 +7,7 @@ import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
+import kotlin.collections.removeFirst
 
 open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
     private val playerMap = mutableMapOf<UUID, Player>()
@@ -42,18 +43,28 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         player.playerHand.removeCard(card)
     }
 
-    fun cheatDuplicateCard(playerId: UUID, card: Card): Card {
-        val duplicate = Card(type = card.type, name = card.name, aliasType = card.aliasType, cheatDuplicated = true)
+    fun cheatDuplicateCard(playerId: UUID, cardId: UUID): Card {
+        val hand = getPlayerHand(playerId)
+        val original = hand?.getCardById(cardId)
+            ?: throw IllegalArgumentException("Card with ID $cardId not found in player's hand")
+
+        val duplicate = Card(
+            type = original.type,
+            name = original.name,
+            aliasType = original.aliasType,
+            cheatDuplicated = true
+        )
+
         addCardToPlayer(playerId, duplicate)
         return duplicate
     }
 
-    fun isCardDuplicate(playerId: UUID, card: Card): Boolean {
+    fun isCardDuplicate(playerId: UUID, cardId: UUID): Boolean {
 
 
         val hand = getPlayerHand(playerId)
-        val card = hand!!.getCardById(card.id)
-        return card.cheatDuplicated
+        val cardInHand = hand!!.getCardById(cardId)
+        return cardInHand.cheatDuplicated
     }
 
     fun drawCard(playerId: UUID) {
@@ -71,6 +82,7 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         val card = player.playerHand.cards.firstOrNull { it.type == cardType }
             ?: throw IllegalStateException("Player doesn't have card type $cardType")
 
+        player.playerHand.removeCard(card)
         cardType.effect.apply(card, player, this)
     }
 
@@ -96,6 +108,17 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         }
 
         println("${player.name} rearranged the top ${newOrder.size} cards.")
+    }
+
+    fun forceNextPlayerToDrawExtraCards(player: Player, amount: Int) {
+        if (amount <= 0) return
+
+        repeat(amount) {
+            if (!drawPile.isEmpty()) {
+                val card = drawPile.removeFirst()
+                player.playerHand.addCard(card)
+            }
+        }
     }
 
 
@@ -124,14 +147,14 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
             CardDefinition(CardType.DEFUSE, 3, 7), // +1 je Spieler kommt auf die Hand
             CardDefinition(CardType.NOPE, 4, 6),
             //CardDefinition(CardType.FAVOR, 2, 4),
-            //CardDefinition(CardType.ATTACK, 4, 7),
-            //CardDefinition(CardType.SKIP, 4, 6),
+            CardDefinition(CardType.ATTACK, 4, 7),
+            CardDefinition(CardType.SKIP, 4, 6),
             CardDefinition(CardType.SEE_THE_FUTURE, 3, 3),
             CardDefinition(CardType.ALTER_THE_FUTURE, 2, 4),
             CardDefinition(CardType.SHUFFLE, 2, 4),
-            //CardDefinition(CardType.DRAW_FROM_THE_BOTTOM, 3, 4),
+            CardDefinition(CardType.DRAW_FROM_THE_BOTTOM, 3, 4),
             CardDefinition(CardType.FERAL_CAT, 2, 4),
-            //CardDefinition(CardType.REVERSE, 2, 3),
+            CardDefinition(CardType.REVERSE, 2, 3),
             //CardDefintion(CardType.TARGETED_ATTACK, 2, 3),
 
             // Cat Cards (je 5 Typen)

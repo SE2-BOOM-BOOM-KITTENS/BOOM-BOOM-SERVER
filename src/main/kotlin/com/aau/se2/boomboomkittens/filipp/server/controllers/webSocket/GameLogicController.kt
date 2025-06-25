@@ -1,9 +1,11 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.PlayerMessage
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.playerHandshake.UserPrincipal
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
+import com.aau.se2.boomboomkittens.filipp.server.services.LobbyService
 import com.aau.se2.boomboomkittens.game.cards.Card
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.stereotype.Controller
@@ -13,7 +15,8 @@ import java.util.UUID
 @Controller
 @RequestMapping("/game")
 class GameLogicController(
-    private val gameLogicService: GameLogicService
+    private val gameLogicService: GameLogicService,
+    private val lobbyService: LobbyService
 ) {
 
     @MessageMapping("/action")
@@ -65,4 +68,30 @@ class GameLogicController(
         val playerName = playerMessage.playerName!!
         gameLogicService.joinGame(lobbyId!!,playerId, playerName)
     }
+
+    @MessageMapping("/createGame")
+    fun createGame(playerMessage: PlayerMessage, principal: UserPrincipal){
+        println("Creating game")
+        val lobbyId = playerMessage.lobbyId
+        val playerId = UUID.fromString(principal.name)
+        val lobby = lobbyService.getLobby(lobbyId.toString())
+
+        if (lobby == null) {
+            gameLogicService.sendUserError(lobbyId!!, playerId, "Lobby not found.")
+            return
+        }
+
+        val creator = lobby.creator
+
+        if(creator.playerId != playerId){
+            gameLogicService.sendUserError(lobbyId!!,playerId, "Player call is made by a non-creator.")
+            return
+        }
+
+        gameLogicService.createGame(lobby)
+        val serverMessage = ServerMessage("GAME_CREATED", "Game Created", null)
+        gameLogicService.sendResponse(lobbyId=lobbyId!!, payload = serverMessage)
+        lobbyService.deleteLobby(lobbyId.toString())
+    }
+
 }
