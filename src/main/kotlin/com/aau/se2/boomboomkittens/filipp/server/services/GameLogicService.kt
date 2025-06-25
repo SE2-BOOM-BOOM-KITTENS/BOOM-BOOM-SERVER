@@ -56,15 +56,25 @@ class GameLogicService(
 
     fun playCards(lobbyId: UUID,playerId: UUID, payload: Any?) {
         val game = getGame(lobbyId)
-        val card = (payload as? Card)
+        val card = parseCardJson(payload)
         val player = game.getPlayerById(playerId)
 
-        if(card != null) {
-            game.cardLogic.playCard(playerId, card.type)
-            sendGameState(lobbyId,"Player ${player!!.name} has played ${card.name} cards",game)
-        } else {
-            sendUserError(lobbyId,playerId,"You played card that is null")
+        game.cardLogic.playCard(playerId, card.type)
+        sendGameState(lobbyId,"Player ${player!!.name} has played ${card.name} card",game)
+    }
+
+    fun parseCardJson(payload: Any?):Card{
+        val node = jacksonObjectMapper.valueToTree<com.fasterxml.jackson.databind.JsonNode>(payload)
+
+        val name = node["name"].asText()
+        val typeString = node["type"].asText()
+
+        val type = try {
+            CardType.valueOf(typeString.uppercase())
+        } catch (e: IllegalArgumentException){
+            throw IllegalArgumentException("Card type $typeString is not valid")
         }
+        return Card(name = name, type = type)
     }
 
     fun cheatDuplicate(lobbyID: UUID, playerId: UUID, payload: Any?) {

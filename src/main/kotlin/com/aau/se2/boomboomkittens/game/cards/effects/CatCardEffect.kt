@@ -8,6 +8,8 @@ import com.aau.se2.boomboomkittens.game.player.Player
 
 class CatCardEffect : CardEffect {
     override fun apply(card: Card, player: Player, cardLogic: CardLogic) {
-        throw IllegalStateException("${card.type} kann nicht alleine ausgespielt werden. Kombiniere sie mit anderen Cat-Karten.")
+
+        //Why Do this?
+        //throw IllegalStateException("${card.type} kann nicht alleine ausgespielt werden. Kombiniere sie mit anderen Cat-Karten.")
     }
 }
