@@ -1,6 +1,8 @@
 package com.aau.se2.boomboomkittens.filipp.server.controllers.rest
 
 import com.aau.se2.boomboomkittens.filipp.server.services.LobbyService
+import com.aau.se2.boomboomkittens.filipp.server.services.PlayerService
+import com.aau.se2.boomboomkittens.filipp.server.services.TimeoutService
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Test
@@ -23,6 +25,12 @@ class LobbyRestControllerTest {
 
     @Autowired
     lateinit var mockMvc : MockMvc
+
+    @MockBean
+    lateinit var timeoutService: TimeoutService
+
+    @MockBean
+    lateinit var playerService: PlayerService
 
     @MockBean
     lateinit var lobbyService: LobbyService
