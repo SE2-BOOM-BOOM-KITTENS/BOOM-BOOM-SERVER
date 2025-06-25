@@ -64,6 +64,21 @@ class LobbyRestController(
             "Added Player $playerId"
         }
     }
+
+    @PostMapping("/{lobbyId}/leave")
+    fun leaveLobby(
+        @RequestHeader("lobbyId") lobbyId: String,
+        @RequestHeader("playerId") playerId: UUID
+    ):String {
+        val player = playerService.getPlayer(playerId)
+
+        if(player != null) {
+            lobbyService.removePlayer(lobbyId, player)
+            return "Removed Player $playerId"
+        } else{
+            return "Player $playerId does not exist"
+        }
+    }
 }
 
 
