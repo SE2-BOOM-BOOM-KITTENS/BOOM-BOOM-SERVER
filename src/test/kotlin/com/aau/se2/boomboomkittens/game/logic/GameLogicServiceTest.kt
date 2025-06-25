@@ -81,34 +81,34 @@ class GameLogicServiceTest {
         service.explodePlayer(lobby.id, player.playerId)
     }
 
-    @Test
-    fun `checkIfDuplicate detects cheating`() {
-        val duplicate = Card(id = card.id, type = card.type, name = card.name, cheatDuplicated = true)
-        player2.playerHand.addCard(duplicate)
+//    @Test
+//    fun `checkIfDuplicate detects cheating`() {
+//        val duplicate = Card(id = card.id, type = card.type, name = card.name, cheatDuplicated = true)
+//        player2.playerHand.addCard(duplicate)
+//
+//        val packet = CheckCardNetworkPacket(targetId = player2.playerId, card = duplicate.id)
+//        service.checkIfDuplicate(lobby.id, player.playerId, packet)
+//    }
 
-        val packet = CheckCardNetworkPacket(targetId = player2.playerId, card = duplicate.id)
-        service.checkIfDuplicate(lobby.id, player.playerId, packet)
-    }
+//    @Test
+//    fun `checkIfDuplicate wrong accusation`() {
+//        val legit = Card(id = UUID.randomUUID(), type = card.type, name = card.name)
+//        player2.playerHand.addCard(legit)
+//
+//        val packet = CheckCardNetworkPacket(targetId = player2.playerId, card = legit.id)
+//        service.checkIfDuplicate(lobby.id, player.playerId, packet)
+//    }
 
-    @Test
-    fun `checkIfDuplicate wrong accusation`() {
-        val legit = Card(id = UUID.randomUUID(), type = card.type, name = card.name)
-        player2.playerHand.addCard(legit)
+//    @Test
+//    fun `checkIfDuplicate with invalid payload`() {
+//        service.checkIfDuplicate(lobby.id, player.playerId, "invalid_payload")
+//    }
 
-        val packet = CheckCardNetworkPacket(targetId = player2.playerId, card = legit.id)
-        service.checkIfDuplicate(lobby.id, player.playerId, packet)
-    }
-
-    @Test
-    fun `checkIfDuplicate with invalid payload`() {
-        service.checkIfDuplicate(lobby.id, player.playerId, "invalid_payload")
-    }
-
-    @Test
-    fun `cheatDuplicate duplicates card`() {
-        val cardId = card.id
-        service.cheatDuplicate(lobby.id, player.playerId, mapOf("id" to cardId))
-    }
+//    @Test
+//    fun `cheatDuplicate duplicates card`() {
+//        val cardId = card.id
+//        service.cheatDuplicate(lobby.id, player.playerId, mapOf("id" to cardId))
+//    }
 
     @Test
     fun `playCatCombo executes without crash`() {

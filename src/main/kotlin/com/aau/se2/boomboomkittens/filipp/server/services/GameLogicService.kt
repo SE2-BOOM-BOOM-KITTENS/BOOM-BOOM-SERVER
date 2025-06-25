@@ -55,6 +55,7 @@ class GameLogicService(
     }
 
     fun playCards(lobbyId: UUID,playerId: UUID, payload: Any?) {
+        logger.info("PAYLOAD: ${payload.toString()}")
         val game = getGame(lobbyId)
         val card = parseCardJson(payload)
         val player = game.getPlayerById(playerId)
@@ -68,50 +69,46 @@ class GameLogicService(
 
         val name = node["name"].asText()
         val typeString = node["type"].asText()
+        val id = node["id"].asText()
 
         val type = try {
             CardType.valueOf(typeString.uppercase())
         } catch (e: IllegalArgumentException){
             throw IllegalArgumentException("Card type $typeString is not valid")
         }
-        return Card(name = name, type = type)
+        return Card(name = name, type = type, id = UUID.fromString(id))
     }
 
     fun cheatDuplicate(lobbyID: UUID, playerId: UUID, payload: Any?) {
         val game = getGame(lobbyID)
-        val mapper = jacksonObjectMapper
-        val card = try{
-            mapper.convertValue(payload, Card::class.java)
-        }catch (e:Exception){
-            null
-        }
-        game.cardLogic.cheatDuplicateCard(playerId, card!!.id)
+        val card = parseCardJson(payload)
+
+        game.cardLogic.cheatDuplicateCard(playerId, card.id)
+        logger.info("Sending cheated hand to lobby: $lobbyID, player $playerId")
+
+        val playerHand = game.getPlayerHand(playerId)
+        val serverMessage = ServerMessage("CHEAT","You have received your cheated card",playerHand)
+        logger.info("Sending cheated hand to user $playerId")
+        sendResponse(lobbyId=lobbyID,playerId= playerId, payload = serverMessage)
     }
 
     fun checkIfDuplicate(lobbyId: UUID, playerId: UUID, payload: Any?) {
         val game = getGame(lobbyId)
-        val mapper = jacksonObjectMapper
         val accuser = game.getPlayerById(playerId)
-        val packet = try {
-            mapper.convertValue(payload, CheckCardNetworkPacket::class.java)
-        } catch (e: Exception) {
-            null
-        }
 
-        if (packet == null) {
-            sendUserError(lobbyId, playerId, "Invalid packet format")
-            return
-        }
+        val card = parseCardJson(payload)
 
-        val result = game.cardLogic.isCardDuplicate(packet.targetId, packet.card)
-        val cheater = game.getPlayerById(packet.targetId)
+        val cheater = game.playerLogic.getCurrentPlayer()
+
+        val result = game.cardLogic.isCardDuplicate(cheater!!.playerId, card.id)
+
 
         if (result) {
-            game.removePlayer(packet.targetId)
+            explodePlayer(lobbyId,playerId)
             sendGameState(lobbyId, "${cheater?.name ?: "Unknown"} was too bad at cheating", game)
         } else {
             game.cardLogic.drawCard(playerId)
-            sendGameState(lobbyId, "${accuser?.name ?: "Unknown"} wrongly accused ${packet.targetId}", game)
+            sendGameState(lobbyId, "${accuser?.name ?: "Unknown"} wrongly accused ${cheater.playerId}", game)
         }
     }
 
