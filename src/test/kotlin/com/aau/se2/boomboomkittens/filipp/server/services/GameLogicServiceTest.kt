@@ -11,12 +11,14 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import java.util.*
 
+@SpringBootTest
 class GameLogicServiceTest {
-
-    private lateinit var service: GameLogicService
     private val messagingTemplate: SimpMessagingTemplate = mock()
     private val jacksonObjectMapper: ObjectMapper = mock()
 
@@ -24,10 +26,14 @@ class GameLogicServiceTest {
     private lateinit var target: Player
     private lateinit var lobby: Lobby
 
+    @Autowired
+    lateinit var service: GameLogicService
+
+    @MockBean
+    lateinit var timeoutService: TimeoutService
+
     @BeforeEach
     fun setup() {
-        val timeoutService = TimeoutService(service)
-        service = GameLogicService(messagingTemplate,jacksonObjectMapper, timeoutService)
 
         player = Player(name = "Tester")
         target = Player(name = "Opfer")

@@ -7,6 +7,7 @@ import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.ser
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
 import com.aau.se2.boomboomkittens.filipp.server.services.LobbyService
 import com.aau.se2.boomboomkittens.filipp.server.services.PlayerService
+import com.aau.se2.boomboomkittens.filipp.server.services.TimeoutService
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.BeforeEach
@@ -44,6 +45,9 @@ class GameLogicControllerTest {
     private lateinit var principal: UserPrincipal
     private val playerId = UUID.randomUUID()
     private val lobbyId = UUID.randomUUID()
+
+    @MockBean
+    lateinit var timeoutService: TimeoutService
 
     @MockBean
     lateinit var playerService: PlayerService
