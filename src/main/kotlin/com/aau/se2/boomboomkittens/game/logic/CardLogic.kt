@@ -7,7 +7,6 @@ import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
-import kotlin.collections.removeFirst
 
 open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
     private val playerMap = mutableMapOf<UUID, Player>()
@@ -82,8 +81,13 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         val card = player.playerHand.cards.firstOrNull { it.type == cardType }
             ?: throw IllegalStateException("Player doesn't have card type $cardType")
 
+        discardPile.add(card)
         player.playerHand.removeCard(card)
-        cardType.effect.apply(card, player, this)
+        try {
+            cardType.effect.apply(card, player, this)
+        }catch (e: Exception) {
+            throw e
+        }
     }
 
     fun shuffleDeck() {

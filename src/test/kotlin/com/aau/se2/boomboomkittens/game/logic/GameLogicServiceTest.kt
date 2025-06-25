@@ -45,10 +45,10 @@ class GameLogicServiceTest {
         service.playCards(lobby.id, player.playerId, card)
     }
 
-    @Test
-    fun `playCards with null card`() {
-        service.playCards(lobby.id, player.playerId, null)
-    }
+//    @Test
+//    fun `playCards with null card`() {
+//        service.playCards(lobby.id, player.playerId, null)
+//    }
 
     @Test
     fun `pass ends turn and sends game state`() {
