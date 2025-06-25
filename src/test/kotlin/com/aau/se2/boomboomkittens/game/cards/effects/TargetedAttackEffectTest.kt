@@ -26,7 +26,7 @@ class TargetedAttackEffectTest {
         gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(attacker, victim))
         cardLogic = gameLogic.cardLogic
 
-        gameLogic.drawPile.clear()
+        gameLogic.cardLogic.drawPile.clear()
         setCurrentPlayer(attacker)
     }
 
@@ -47,8 +47,8 @@ class TargetedAttackEffectTest {
 
     @Test
     fun `targeted attack draws 2 cards if available`() {
-        gameLogic.drawPile.add(Card(CardType.SHUFFLE))
-        gameLogic.drawPile.add(Card(CardType.NOPE))
+        gameLogic.cardLogic.drawPile.add(Card(CardType.SHUFFLE))
+        gameLogic.cardLogic.drawPile.add(Card(CardType.NOPE))
 
         val effect = TargetedAttackEffect()
         val card = Card(CardType.TARGETED_ATTACK)
@@ -57,12 +57,12 @@ class TargetedAttackEffectTest {
 
         val target = getVictimFromGame()
         assertEquals(10, target.playerHand.getCardAmount())
-        assertEquals(0, gameLogic.drawPile.size)
+        assertEquals(0, gameLogic.cardLogic.drawPile.size)
     }
 
     @Test
     fun `targeted attack draws 1 card if only one exists`() {
-        gameLogic.drawPile.add(Card(CardType.ATTACK))
+        gameLogic.cardLogic.drawPile.add(Card(CardType.ATTACK))
 
         val effect = TargetedAttackEffect()
         val card = Card(CardType.TARGETED_ATTACK)
@@ -71,7 +71,7 @@ class TargetedAttackEffectTest {
 
         val target = getVictimFromGame()
         assertEquals(9, target.playerHand.getCardAmount())
-        assertEquals(0, gameLogic.drawPile.size)
+        assertEquals(0, gameLogic.cardLogic.drawPile.size)
     }
 
     @Test
@@ -83,6 +83,6 @@ class TargetedAttackEffectTest {
 
         val target = getVictimFromGame()
         assertEquals(8, target.playerHand.getCardAmount())
-        assertEquals(0, gameLogic.drawPile.size)
+        assertEquals(0, gameLogic.cardLogic.drawPile.size)
     }
 }

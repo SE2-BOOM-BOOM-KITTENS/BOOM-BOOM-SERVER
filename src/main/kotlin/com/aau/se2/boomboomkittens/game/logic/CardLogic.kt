@@ -7,6 +7,7 @@ import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
+import kotlin.collections.removeFirst
 
 open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
     private val playerMap = mutableMapOf<UUID, Player>()
@@ -107,6 +108,17 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         }
 
         println("${player.name} rearranged the top ${newOrder.size} cards.")
+    }
+
+    fun forceNextPlayerToDrawExtraCards(player: Player, amount: Int) {
+        if (amount <= 0) return
+
+        repeat(amount) {
+            if (!drawPile.isEmpty()) {
+                val card = drawPile.removeFirst()
+                player.playerHand.addCard(card)
+            }
+        }
     }
 
 

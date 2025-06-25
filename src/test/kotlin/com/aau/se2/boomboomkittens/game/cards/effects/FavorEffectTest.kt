@@ -26,7 +26,7 @@ class FavorEffectTest {
 
         gameLogic = GameLogic(UUID.randomUUID(), mutableListOf(player, target))
         cardLogic = gameLogic.cardLogic
-        gameLogic.drawPile.clear()
+        gameLogic.cardLogic.drawPile.clear()
 
         // Hand vorbereiten
         target.playerHand.addCard(Card(CardType.NOPE))

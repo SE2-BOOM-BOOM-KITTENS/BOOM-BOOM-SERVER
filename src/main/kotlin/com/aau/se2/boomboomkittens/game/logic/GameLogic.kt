@@ -16,7 +16,7 @@ open class GameLogic(
 
     val playerLogic: PlayerLogic get() = _playerLogic
     val cardLogic: CardLogic get() = _cardLogic
-    val drawPile: LinkedList<Card> = LinkedList()
+
 
     private var skipDraw = false
     private val extraTurns = mutableMapOf<UUID, Int>()
@@ -67,16 +67,6 @@ open class GameLogic(
 
     fun getPlayerHand(playerId: UUID): PlayerHand? {
         return _cardLogic.getPlayerHand(playerId)
-    }
-    fun forceNextPlayerToDrawExtraCards(player: Player, amount: Int) {
-        if (amount <= 0) return
-
-        repeat(amount) {
-            if (!drawPile.isEmpty()) {
-                val card = drawPile.removeFirst()
-                player.playerHand.addCard(card)
-            }
-        }
     }
 
     fun skipDrawForCurrentPlayer(){

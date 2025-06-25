@@ -13,6 +13,6 @@ class TargetedAttackEffect : CardEffect {
         val target = gameLogic.playerLogic.getNextPlayer()
             ?: throw IllegalStateException("No target player available for targeted attack.")
 
-        gameLogic.forceNextPlayerToDrawExtraCards(target, 2)
+        gameLogic.cardLogic.forceNextPlayerToDrawExtraCards(target, 2)
     }
 }
