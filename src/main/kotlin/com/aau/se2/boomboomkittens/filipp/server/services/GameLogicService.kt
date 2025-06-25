@@ -1,6 +1,7 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.CheckCardNetworkPacket
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.PlayerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
@@ -74,27 +75,33 @@ class GameLogicService(
         }catch (e:Exception){
             null
         }
-        game.cardLogic.cheatDuplicateCard(playerId, card!!)
+        game.cardLogic.cheatDuplicateCard(playerId, card!!.id)
     }
 
     fun checkIfDuplicate(lobbyId: UUID, playerId: UUID, payload: Any?) {
         val game = getGame(lobbyId)
         val mapper = jacksonObjectMapper
         val accuser = game.getPlayerById(playerId)
-        val packet = try{
+        val packet = try {
             mapper.convertValue(payload, CheckCardNetworkPacket::class.java)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             null
         }
-        val result = game.cardLogic.isCardDuplicate(packet!!.targetId, packet.card)
 
+        if (packet == null) {
+            sendUserError(lobbyId, playerId, "Invalid packet format")
+            return
+        }
+
+        val result = game.cardLogic.isCardDuplicate(packet.targetId, packet.card)
         val cheater = game.getPlayerById(packet.targetId)
-        if(result){
+
+        if (result) {
             game.removePlayer(packet.targetId)
-            sendGameState(lobbyId,"${cheater!!.name} was too bad at cheating",game)
-        } else{
+            sendGameState(lobbyId, "${cheater?.name ?: "Unknown"} was too bad at cheating", game)
+        } else {
             game.cardLogic.drawCard(playerId)
-            sendGameState(lobbyId,"${accuser!!.name} wrongly accused ${packet.targetId}",game)
+            sendGameState(lobbyId, "${accuser?.name ?: "Unknown"} wrongly accused ${packet.targetId}", game)
         }
     }
 
@@ -131,14 +138,15 @@ class GameLogicService(
         getPlayerHand(lobbyId,playerId)
     }
 
-    fun explodePlayer(lobbyId:UUID, playerId: UUID){
+    fun explodePlayer(lobbyId: UUID, playerId: UUID) {
         val game = getGame(lobbyId)
+        val player = game.getPlayerById(playerId) ?: return
+        val name = player.name
+
         game.removePlayer(playerId)
 
-        val player = game.getPlayerById(playerId)
-
-        sendGameState(lobbyId,"Player ${player!!.name} has exploded",game)
-        val privateServerMessage = ServerMessage("EXPLODE", "You have exploded",null)
+        sendGameState(lobbyId, "Player $name has exploded", game)
+        val privateServerMessage = ServerMessage("EXPLODE", "You have exploded", null)
         sendResponse(playerId, payload = privateServerMessage)
     }
 
@@ -206,5 +214,23 @@ class GameLogicService(
         game.cardLogic.shuffleDeck()
         sendGameState(lobbyId, "Player $playerId shuffled the deck", game)
     }
+
+
+    fun sendGameCreated(lobbyId: UUID, playerId: UUID) {
+        val confirmation = PlayerMessage(
+            lobbyId = lobbyId,
+            action = "GAME_CREATED",
+            playerName = null,
+            payload = "Game successfully created!"
+        )
+
+        messagingTemplate.convertAndSendToUser(
+            playerId.toString(),
+            "/queue/game",
+            confirmation
+        )
+    }
+
+
 
 }

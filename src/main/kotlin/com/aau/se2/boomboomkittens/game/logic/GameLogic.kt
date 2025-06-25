@@ -3,6 +3,7 @@ package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic
 import TimeoutLogic
 import com.aau.se2.boomboomkittens.filipp.server.services.TimeoutService
 import com.aau.se2.boomboomkittens.game.player.Player
+import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
 
@@ -15,6 +16,7 @@ open class GameLogic(
 
     val playerLogic: PlayerLogic get() = _playerLogic
     val cardLogic: CardLogic get() = _cardLogic
+
 
     private var skipDraw = false
     private val extraTurns = mutableMapOf<UUID, Int>()

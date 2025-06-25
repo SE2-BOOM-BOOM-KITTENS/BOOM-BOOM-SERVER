@@ -19,8 +19,10 @@ enum class CardType(val effect: CardEffect) {
     SEE_THE_FUTURE(SeeTheFutureEffect()),
     NOPE(NopeEffect()),
     FERAL_CAT(FeralCatEffect()),
+    TARGETED_ATTACK(TargetedAttackEffect()),
     ATTACK(AttackEffect()),
     REVERSE(ReverseEffect()),
     DRAW_FROM_THE_BOTTOM(DrawFromTheBottomEffect()),
     SKIP(SkipEffect()),
+    FAVOR(FavorEffect()),
 }

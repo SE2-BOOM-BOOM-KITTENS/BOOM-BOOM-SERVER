@@ -1,8 +1,8 @@
 package com.aau.se2.boomboomkittens.filipp.server.controllers.rest
 
-import com.aau.se2.boomboomkittens.game.player.LobbyPlayer
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.filipp.server.services.LobbyService
+import com.aau.se2.boomboomkittens.filipp.server.services.PlayerService
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,7 +16,9 @@ import java.util.concurrent.ConcurrentHashMap
 
 @RestController
 @RequestMapping("/lobbies")
-class LobbyRestController(private val lobbyService: LobbyService) {
+class LobbyRestController(
+    private val lobbyService: LobbyService,
+    private val playerService: PlayerService) {
 
     @GetMapping
     fun getLobbies(): ConcurrentHashMap<String, Lobby> = lobbyService.getLobbies()
@@ -32,7 +34,8 @@ class LobbyRestController(private val lobbyService: LobbyService) {
 
     @PostMapping
     fun createLobby(@RequestBody request: CreateLobbyRequest): CreateLobbyResponse {
-        val lobby = lobbyService.createLobby(request.player, request.maxPlayers)
+        val player = playerService.getPlayer(request.playerId)
+        val lobby = lobbyService.createLobby(player, request.maxPlayers)
         return CreateLobbyResponse("Created lobby", lobby.id.toString())
     }
 
@@ -54,7 +57,7 @@ class LobbyRestController(private val lobbyService: LobbyService) {
 
 
 data class CreateLobbyRequest(
-    val player: Player,
+    val playerId: UUID,
     val maxPlayers: Int
 )
 

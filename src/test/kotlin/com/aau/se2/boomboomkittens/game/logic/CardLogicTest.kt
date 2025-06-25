@@ -9,6 +9,7 @@ import com.aau.se2.boomboomkittens.game.player.Player
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -36,25 +37,30 @@ class CardLogicTest {
     }
 
     @Test
-    fun cheatDuplicateCardTest(){
+    fun cheatDuplicateCardTest() {
         cardLogic.addCardToPlayer(playerId, dummyCard)
-        cardLogic.cheatDuplicateCard(playerId, dummyCard)
+
+        val duplicate = cardLogic.cheatDuplicateCard(playerId, dummyCard.id)
 
         assertTrue(player.playerHand.containsCard(dummyCard))
-        assertTrue(player.playerHand.getCardAmount()==2)
+        assertTrue(player.playerHand.containsCard(duplicate))
+        assertEquals(2, player.playerHand.getCardAmount())
+
+        assertTrue(duplicate.cheatDuplicated)
     }
 
     @Test
-    fun isCardDuplicateTest(){
+    fun isCardDuplicateTest() {
         cardLogic.addCardToPlayer(playerId, dummyCard)
         assertTrue(player.playerHand.containsCard(dummyCard))
-        val duplicate = cardLogic.cheatDuplicateCard(playerId, dummyCard)
 
-        var result = cardLogic.isCardDuplicate(playerId, duplicate)
-        assertTrue(result)
+        val duplicate = cardLogic.cheatDuplicateCard(playerId, dummyCard.id)
 
-        result = cardLogic.isCardDuplicate(playerId, dummyCard)
-        assertFalse(result)
+        val result1 = cardLogic.isCardDuplicate(playerId, duplicate.id)
+        assertTrue(result1)
+
+        val result2 = cardLogic.isCardDuplicate(playerId, dummyCard.id)
+        assertFalse(result2)
     }
 
     @Test

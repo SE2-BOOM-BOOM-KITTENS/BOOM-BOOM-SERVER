@@ -7,6 +7,7 @@ import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.player.PlayerHand
 import java.util.*
+import kotlin.collections.removeFirst
 
 open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
     private val playerMap = mutableMapOf<UUID, Player>()
@@ -42,17 +43,27 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         player.playerHand.removeCard(card)
     }
 
-    fun cheatDuplicateCard(playerId: UUID, card: Card): Card {
-        val duplicate = Card(type = card.type, name = card.name, aliasType = card.aliasType, cheatDuplicated = true)
+    fun cheatDuplicateCard(playerId: UUID, cardId: UUID): Card {
+        val hand = getPlayerHand(playerId)
+        val original = hand?.getCardById(cardId)
+            ?: throw IllegalArgumentException("Card with ID $cardId not found in player's hand")
+
+        val duplicate = Card(
+            type = original.type,
+            name = original.name,
+            aliasType = original.aliasType,
+            cheatDuplicated = true
+        )
+
         addCardToPlayer(playerId, duplicate)
         return duplicate
     }
 
-    fun isCardDuplicate(playerId: UUID, card: Card): Boolean {
+    fun isCardDuplicate(playerId: UUID, cardId: UUID): Boolean {
 
 
         val hand = getPlayerHand(playerId)
-        val cardInHand = hand!!.getCardById(card.id)
+        val cardInHand = hand!!.getCardById(cardId)
         return cardInHand.cheatDuplicated
     }
 
@@ -97,6 +108,17 @@ open class CardLogic(playerSize: Int, val gameLogic: GameLogic) {
         }
 
         println("${player.name} rearranged the top ${newOrder.size} cards.")
+    }
+
+    fun forceNextPlayerToDrawExtraCards(player: Player, amount: Int) {
+        if (amount <= 0) return
+
+        repeat(amount) {
+            if (!drawPile.isEmpty()) {
+                val card = drawPile.removeFirst()
+                player.playerHand.addCard(card)
+            }
+        }
     }
 
 
