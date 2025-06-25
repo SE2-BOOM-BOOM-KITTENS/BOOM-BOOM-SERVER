@@ -1,6 +1,5 @@
 package com.aau.se2.boomboomkittens.game.logic
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.aau.se2.boomboomkittens.game.player.Player
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
@@ -9,56 +8,32 @@ import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.CheckCardNetworkPacket
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import java.util.*
 import kotlin.test.assertFailsWith
-import org.springframework.messaging.Message
-import org.springframework.messaging.MessageChannel
-import org.springframework.messaging.simp.SimpMessagingTemplate
 
-class DummyMessageChannel : MessageChannel {
-    override fun send(message: Message<*>, timeout: Long): Boolean = true
-    override fun send(message: Message<*>): Boolean = true
-}
 
-class DummyMessagingTemplate : SimpMessagingTemplate(DummyMessageChannel()) {
-    override fun convertAndSend(destination: String, payload: Any) {
-        println("[SEND] $destination -> $payload")
-    }
 
-    override fun convertAndSendToUser(user: String, destination: String, payload: Any) {
-        println("[SEND TO USER] $user$destination -> $payload")
-    }
-}
 
-class DummyObjectMapper : com.fasterxml.jackson.databind.ObjectMapper() {
-    override fun <T : Any?> convertValue(fromValue: Any?, toValueType: Class<T>): T {
-        @Suppress("UNCHECKED_CAST")
-        return when {
-            toValueType == Card::class.java && fromValue is Map<*, *> ->
-                Card(id = UUID.fromString(fromValue["id"].toString())) as T
-            toValueType == CheckCardNetworkPacket::class.java && fromValue is CheckCardNetworkPacket ->
-                fromValue as T
-            else -> throw IllegalArgumentException("Unsupported conversion")
-        }
-    }
-}
-
+@SpringBootTest
 class GameLogicServiceTest {
 
     private lateinit var player: Player
     private lateinit var player2: Player
     private lateinit var lobby: Lobby
-    private lateinit var service: GameLogicService
     private lateinit var card: Card
 
-    private val dummyMessaging = DummyMessagingTemplate()
+
+
+    @Autowired
+    lateinit var service: GameLogicService
 
     @BeforeEach
     fun setup() {
         player = Player(name = "Alice")
         player2 = Player(name = "Bob")
         lobby = Lobby(UUID.randomUUID(), player, mutableListOf(player, player2), 4)
-        service = GameLogicService(dummyMessaging, DummyObjectMapper())
         service.createGame(lobby)
 
         card = Card(type = CardType.FAVOR, name = "FavorCard")
