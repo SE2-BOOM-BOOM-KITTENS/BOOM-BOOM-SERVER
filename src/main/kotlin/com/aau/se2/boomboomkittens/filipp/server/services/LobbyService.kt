@@ -1,6 +1,5 @@
 package com.aau.se2.boomboomkittens.filipp.server.services
 
-import com.aau.se2.boomboomkittens.game.player.LobbyPlayer
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.springframework.stereotype.Service
@@ -32,7 +31,7 @@ class LobbyService(private val playerService: PlayerService) {
         return this.lobbies[lobbyId]
     }
 
-    private fun deleteLobby(id:String){
+    fun deleteLobby(id:String){
         this.lobbies.remove(id)
         //lobbyWebSocketController.broadcastLobbyUpdate()
     }

@@ -91,6 +91,7 @@ class GameLogicController(
         gameLogicService.createGame(lobby)
         val serverMessage = ServerMessage("GAME_CREATED", "Game Created", null)
         gameLogicService.sendResponse(lobbyId=lobbyId!!, payload = serverMessage)
+        lobbyService.deleteLobby(lobbyId.toString())
     }
 
 }
