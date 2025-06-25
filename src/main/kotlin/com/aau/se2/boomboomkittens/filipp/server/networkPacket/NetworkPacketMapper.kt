@@ -79,6 +79,7 @@ class NetworkPacketMapper {
     private fun cardToNetworkPacket(card: Card): CardNetworkPacket {
         val name = card.name
         val type = card.type
-        return CardNetworkPacket(name,type)
+        val id = card.id
+        return CardNetworkPacket(name,type,id=id)
     }
 }

@@ -1,5 +1,7 @@
 package com.aau.se2.boomboomkittens.game.cards
 
+import java.util.UUID
+
 class CardPile {
     private val pile:MutableList<Card> = mutableListOf()
 
@@ -8,6 +10,10 @@ class CardPile {
 
     fun add(card: Card) {
         pile.add(card)
+    }
+
+    fun getCardById(id: UUID): Card? {
+        return pile.find { it.id == id }
     }
 
     fun draw(): Card {
