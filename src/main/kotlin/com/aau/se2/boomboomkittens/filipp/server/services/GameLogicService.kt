@@ -1,7 +1,6 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.CheckCardNetworkPacket
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.PlayerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
@@ -10,7 +9,6 @@ import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.cards.effects.CatComboEffectHandler
-import com.aau.se2.boomboomkittens.game.player.Player
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -31,28 +29,13 @@ class GameLogicService(
     //TEMPORARY PARAMETER; FOR TESTING PURPOSES ONLY; REMOVE AFTER FIXING THE TEST CLASS
     var lobbyId: UUID? = null
 
-    //TEMPORARY SOLUTION; FOR DEBUGGING ONLY; REMOVE WHEN LOBBIES ARE IMPLEMENTED
-    init {
-        val creator = Player(name="Evil Steve")
-        val bob = Player(name="Bob")
-        val john = Player(name="John")
-        val lobby = Lobby(id= UUID.fromString("00000000-0000-0000-0000-000000001234"),creator = creator, maxPlayers = 8)
-        lobby.players.add(creator)
-        lobby.players.add(bob)
-        lobby.players.add(john)
-        lobbyId = lobby.id
-        createGame(lobby)
-    }
-
     fun createGame(lobby: Lobby) {
         val gameLogic = GameLogic(lobby.id, lobby.players)
         games[lobby.id] = gameLogic
-        val currentPlayer = gameLogic.playerLogic.getCurrentPlayer()
         logger.info("Created game for lobby: ${lobby.id}")
 
-        if (currentPlayer != null) {
-            timeoutService.startTimeout(lobby.id, currentPlayer.playerId)
-        }
+        timeoutService.createTimeout(lobby.id, gameLogic)
+
     }
 
     fun getGame(lobbyId: UUID): GameLogic {
@@ -163,7 +146,12 @@ class GameLogicService(
         val game = getGame(lobbyId)
         game.cardLogic.drawCard(playerId)
         timeoutService.cancelTimeout(lobbyId)
-        timeoutService.startTimeout(lobbyId, playerId)
+
+        val currentPlayer = game.playerLogic.getCurrentPlayer()
+
+        if (currentPlayer != null) {
+            timeoutService.startTimeout(lobbyId, currentPlayer.playerId)
+        }
         game.nextTurn()
     }
 
