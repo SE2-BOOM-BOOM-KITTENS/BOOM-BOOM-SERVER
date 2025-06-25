@@ -1,15 +1,14 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.CheckCardNetworkPacket
-import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.PlayerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.game.logic.GameLogic
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.NetworkPacketMapper
+import com.aau.se2.boomboomkittens.filipp.server.services.TimeoutService
 import com.aau.se2.boomboomkittens.game.Lobby
 import com.aau.se2.boomboomkittens.game.cards.Card
 import com.aau.se2.boomboomkittens.game.cards.CardType
 import com.aau.se2.boomboomkittens.game.cards.effects.CatComboEffectHandler
-import com.aau.se2.boomboomkittens.game.player.Player
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -20,7 +19,8 @@ import java.util.concurrent.ConcurrentHashMap
 @Service
 class GameLogicService(
     val messagingTemplate: SimpMessagingTemplate,
-    private val jacksonObjectMapper: ObjectMapper
+    private val jacksonObjectMapper: ObjectMapper,
+    private val timeoutService: TimeoutService
 ) {
     private val games = ConcurrentHashMap<UUID, GameLogic>()
     private val networkPacketMapper = NetworkPacketMapper()
@@ -29,24 +29,13 @@ class GameLogicService(
     //TEMPORARY PARAMETER; FOR TESTING PURPOSES ONLY; REMOVE AFTER FIXING THE TEST CLASS
     var lobbyId: UUID? = null
 
-
-    //TEMPORARY SOLUTION; FOR DEBUGGING ONLY; REMOVE WHEN LOBBIES ARE IMPLEMENTED
-    init {
-        val creator = Player(name="Evil Steve")
-        val bob = Player(name="Bob")
-        val john = Player(name="John")
-        val lobby = Lobby(id= UUID.fromString("00000000-0000-0000-0000-000000001234"),creator = creator, maxPlayers = 8)
-        lobby.players.add(creator)
-        lobby.players.add(bob)
-        lobby.players.add(john)
-        lobbyId = lobby.id
-        createGame(lobby)
-    }
-
     fun createGame(lobby: Lobby) {
         val gameLogic = GameLogic(lobby.id, lobby.players)
         games[lobby.id] = gameLogic
         logger.info("Created game for lobby: ${lobby.id}")
+
+        timeoutService.createTimeout(lobby.id, gameLogic)
+
     }
 
     fun getGame(lobbyId: UUID): GameLogic {
@@ -71,8 +60,6 @@ class GameLogicService(
 
         if(card != null) {
             game.cardLogic.playCard(playerId, card.type)
-
-            endTurn(lobbyId,playerId)
             sendGameState(lobbyId,"Player ${player!!.name} has played ${card.name} cards",game)
         } else {
             sendUserError(lobbyId,playerId,"You played card that is null")
@@ -165,6 +152,13 @@ class GameLogicService(
     private fun endTurn(lobbyId: UUID, playerId: UUID){
         val game = getGame(lobbyId)
         game.cardLogic.drawCard(playerId)
+        timeoutService.cancelTimeout(lobbyId)
+
+        val currentPlayer = game.playerLogic.getCurrentPlayer()
+
+        if (currentPlayer != null) {
+            timeoutService.startTimeout(lobbyId, currentPlayer.playerId)
+        }
         game.nextTurn()
     }
 
@@ -203,7 +197,6 @@ class GameLogicService(
             sendResponse(lobbyId,id, payload) // Callback für Nachrichten
 
         }
-
         handler.applyCombo(player, rawCards, target)
     }
 
@@ -220,6 +213,7 @@ class GameLogicService(
         game.cardLogic.shuffleDeck()
         sendGameState(lobbyId, "Player $playerId shuffled the deck", game)
     }
+
 
     fun sendGameCreated(lobbyId: UUID, playerId: UUID) {
         val confirmation = PlayerMessage(

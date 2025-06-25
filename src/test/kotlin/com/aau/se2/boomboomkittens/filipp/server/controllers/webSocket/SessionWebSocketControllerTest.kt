@@ -2,6 +2,7 @@ package com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket
 
 import com.aau.se2.boomboomkittens.filipp.server.controllers.clientImpl.StompFrameClient
 import com.aau.se2.boomboomkittens.filipp.server.services.PlayerService
+import com.aau.se2.boomboomkittens.filipp.server.services.TimeoutService
 import com.aau.se2.boomboomkittens.game.player.Player
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -28,6 +29,9 @@ class SessionWebSocketControllerTest {
 
     @LocalServerPort
     private val port = 0
+
+    @MockBean
+    lateinit var timeoutService: TimeoutService
 
     @MockBean
     lateinit var playerService: PlayerService

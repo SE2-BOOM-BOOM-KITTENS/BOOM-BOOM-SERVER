@@ -1,6 +1,7 @@
 package com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.controllers.webSocket
 
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.PlayerMessage
+import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.networkPacket.messages.ServerMessage
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.playerHandshake.UserPrincipal
 import com.aau.se2.boomboomkittens.com.aau.se2.boomboomkittens.filipp.server.services.GameLogicService
 import com.aau.se2.boomboomkittens.filipp.server.networkPacket.CardNetworkPacket
@@ -69,7 +70,8 @@ class GameLogicController(
     }
 
     @MessageMapping("/createGame")
-    fun createGame(playerMessage: PlayerMessage, principal: UserPrincipal) {
+    fun createGame(playerMessage: PlayerMessage, principal: UserPrincipal){
+        println("Creating game")
         val lobbyId = playerMessage.lobbyId
         val playerId = UUID.fromString(principal.name)
         val lobby = lobbyService.getLobby(lobbyId.toString())
@@ -79,9 +81,17 @@ class GameLogicController(
             return
         }
 
-        gameLogicService.createGame(lobby)
+        val creator = lobby.creator
 
-        gameLogicService.sendGameCreated(lobbyId!!, playerId)
+        //SWITCH TO != AFTER YOU CAN CREATE A LOBBY
+        if(creator.playerId == playerId){
+            gameLogicService.sendUserError(lobbyId!!,playerId, "Player call is made by a non-creator.")
+            return
+        }
+
+        gameLogicService.createGame(lobby)
+        val serverMessage = ServerMessage("GAME_CREATED", "Game Created", null)
+        gameLogicService.sendResponse(lobbyId=lobbyId!!, payload = serverMessage)
     }
 
 }
