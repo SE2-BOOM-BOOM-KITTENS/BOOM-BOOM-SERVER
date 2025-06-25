@@ -22,6 +22,9 @@ class LobbyServiceTest {
     @MockBean
     lateinit var playerService: PlayerService
 
+    @MockBean
+    lateinit var timeoutService: TimeoutService
+
     @BeforeEach
     fun clearLobbies() {
         // Sicherstellen, dass alle Lobbys entfernt werden
